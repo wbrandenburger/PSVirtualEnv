@@ -18,6 +18,8 @@ function Start-VirtualEnv {
     .EXAMPLE
         PS C:\> Start-VirtualEnv -Name venv
 
+        SUCCESS: Virtual enviroment 'venv' was started.
+
         -----------
         Description
         Starts the virtual environment 'venv', which must exist in the predefined system directory.
@@ -40,34 +42,24 @@ function Start-VirtualEnv {
 
     Process {
 
-        $virtualEnv = $Name
-
         # check whether the specified virtual environment exists
-        if (-not (Test-VirtualEnv -Name $virtualEnv -Verbose)){
+        if (-not (Test-VirtualEnv -Name $Name -Verbose)){
             Get-VirtualEnv
             return
         }
 
         # deactivation of a running virtual environment
         if (Get-ActiveVirtualEnv) {
-            Deactivate
+            Stop-VirtualEnv
         }
 
-        # get the full path of the specified virtual environment, which is located in the predefined system path
-        $virtualEnvDir = Get-VirtualEnvPath -Name $virtualEnv
-
-        # activate specified virtual environment
-        $activationPath = "$virtualEnvDir\Scripts\Activate.ps1"
-        . $activationPath
-        Write-FormatedSuccess -Message "$virtualEnv was started." -Space
+        # get the full path of the specified virtual environment, which is located in the predefined system path and activate the virtual environment
+        . (Get-VirtualEnvActivationScript -Name $Name)
+        Write-FormatedSuccess -Message "Virtual enviroment '$Name' was started." -Space
         
         $Env:OLD_PYTHON_PATH = $Env:PYTHON_PATH
-        $Env:VIRTUAL_ENV = "$virtualEnvDir"
+        $Env:VIRTUAL_ENV = $Name
 
         return
     }
 }
-
-#   alias ----------------------------------------------------------------------
-# ------------------------------------------------------------------------------
-Set-Alias -Name runvenv -Value Start-VirtualEnv

@@ -8,7 +8,7 @@
 RootModule = 'PSVirtualEnv'
 
 # Version number of this module.
-ModuleVersion = '0.1.0'
+ModuleVersion = '0.2.0'
 
 # ID used to uniquely identify this module
 GUID = '41a9e505-d878-4b65-a8bf-b90bd2f2ddf6'
@@ -82,9 +82,12 @@ NestedModules = @()
 FunctionsToExport = @(
     'Get-VirtualEnv',
     'Get-VirtualEnvAlias',
+    'Get-VirtualEnvLocal',
     'New-VirtualEnv',
     'Remove-VirtualEnv',
+    'Set-VirtualEnvLocation'
     'Start-VirtualEnv',
+    'Stop-VirtualEnv'
     'Test-VirtualEnv',
     'Find-Python'
 )
@@ -97,12 +100,12 @@ VariablesToExport = @()
 
 # Aliases to export from this module
 AliasesToExport = @(
-    'aliasvenv'
+    'cdvenv'
     'rmvenv',
     'lsvenv',
     'mkvenv'
     'runvenv'
-    'testvenv'
+    'stvenv'
 )
 
 # DSC resources to export from this module

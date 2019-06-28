@@ -63,8 +63,6 @@ function New-VirtualEnv {
 
     Process{
     
-        $virtualEnv = $Name
-
         # check whether the specified virtual environment exists
         if (Test-VirtualEnv -Name $virtualEnv){
             Write-FormatedError -Message "The virtual environment '$virtualEnv' already exists." -Space
@@ -88,16 +86,13 @@ function New-VirtualEnv {
         #}
 
         # generate the full path of the specified virtual environment, which shall be located in the predefined system path
-        $virtualEnvDir = Get-VirtualEnvPath -Name $virtualEnv
+        $virtualEnvDir = Get-VirtualEnvPath -Name $Name
    
         # create the specified virtual environment
-        Write-Host "Creating the virtual environment '$virtualEnv'... "
-         . $Path "-m" $PYTHONVIRTUALENV  "--verbose" $virtualEnvDir
-         
+        Write-Host "Creating the virtual environment '$Name'... "
+
+         . $Path "-m" $VIRTUALENVPCKG "--verbose" $virtualEnvDir
+
         Write-FormatedSuccess -Message "Virtual environment '$virtualEnvDir' was created." -Space
     }
 }
-
-#   alias ----------------------------------------------------------------------
-# ------------------------------------------------------------------------------
-Set-Alias -Name mkvenv -Value New-VirtualEnv

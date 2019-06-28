@@ -45,10 +45,8 @@ function Test-VirtualEnv {
 
     Process {
 
-        $virtualEnv = $Name
-        
         # check whether a virtual environment is specified
-        if (!$virtualEnv) {
+        if (!$Name) {
             if ($VerbosePreference) {
                 Write-FormatedError -Message "There is no virtual environment specified." -Space
             }
@@ -56,21 +54,17 @@ function Test-VirtualEnv {
         }
 
         # check if there exists the specified virtual environment in the predefined system directory
-        if ( -not (Get-ChildItem $VIRTUALENVSYSTEM | Where-Object {$_.Name -eq $virtualEnv} )) {
+        if ( -not (Get-ChildItem $VENVDIR | Where-Object {$_.Name -eq $Name} )) {
             if ($VerbosePreference) {
-                Write-FormatedError -Message "The virtual environment '$virtualEnv' does not exist." -Space
+                Write-FormatedError -Message "The virtual environment '$Name' does not exist." -Space
             }
             return $False
         }
 
-        # get the full path of the specified virtual environment, which is located in the predefined system path
-        $virtualEnvDir = Get-VirtualEnvPath -Name $virtualEnv
-
-        # check whether activation script exists
-        $activationPath = "$virtualEnvDir\Scripts\Activate.ps1"
-        if ( -not (Test-Path $activationPath )) {
+        # get the full path of the specified virtual environment, which is located in the predefined system path and test the resulting path
+        if ( -not (Test-Path (Get-VirtualEnvActivationScript -Name $Name) )) {
             if ($VerbosePreference) {
-                Write-FormatedError -Message "Enable to find the activation script. The virtual environment '$virtualEnv' seems compromized." -Space
+                Write-FormatedError -Message "Enable to find the activation script. The virtual environment '$Name' seems compromized." -Space
             }
             return $False
         }
@@ -78,7 +72,3 @@ function Test-VirtualEnv {
         return $True
     }
 }
-
-#   alias ----------------------------------------------------------------------
-# ------------------------------------------------------------------------------
-Set-Alias -Name testvenv -Value Test-VirtualEnv

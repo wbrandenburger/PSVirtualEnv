@@ -7,16 +7,13 @@
 function Get-VirtualEnvPath {
 
     <#
-    .SYNOPSIS
-        Get the absolute path of a virtual environment
-
     .DESCRIPTION
         Get the absolute path of a virtual environment, which is composed of the predefined system variable and a specified virtual environment
     
     .PARAMETER Name
 
     .OUTPUTS 
-        System.String. Absolute Path of the specified virtual environment
+        System.String. Absolute path of a specified virtual environment
     #>
 
     [OutputType([System.String])]
@@ -26,7 +23,7 @@ function Get-VirtualEnvPath {
         [System.String] $Name
     )
 
-    return ("{0}\{1}" -f $VIRTUALENVSYSTEM, $Name)
+    return Join-Path -Path $VENVDIR -ChildPath $Name
 }
 
 #   function -------------------------------------------------------------------
@@ -34,16 +31,13 @@ function Get-VirtualEnvPath {
 function Get-VirtualEnvExe {
 
     <#
-    .SYNOPSIS
-        Get the absolute path of the executable of a specified virtual environment
-
     .DESCRIPTION
         Get the absolute path of the executable of a specified virtual environment, which is composed of the predefined system variable, a specified virtual environment and the fixed location of the executable
     
     .PARAMETER Name
 
     .OUTPUTS 
-        System.String. Absolute path of the executable of the specified virtual environment
+        System.String. Absolute path of the executable of a specified virtual environment
     #>
 
     [OutputType([System.String])]
@@ -53,7 +47,79 @@ function Get-VirtualEnvExe {
         [System.String] $Name
     )
 
-    return Join-Path -Path (Get-VirtualEnvPath -Name $Name) -ChildPath $VENVPYTHONEXE 
+    return Join-Path -Path (Get-VirtualEnvPath -Name $Name) -ChildPath $VENVEXE 
+}
+
+#   function -------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+function Get-VirtualEnvActivationScript {
+
+    <#
+    .DESCRIPTION
+        Get the absolute path of the activation sript of a specified virtual environment, which is composed of the predefined system variable, a specified virtual environment and the fixed location of the executable
+    
+    .PARAMETER Name
+
+    .OUTPUTS 
+        System.String. Absolute path ofthe activation sript a specified virtual environment
+    #>
+
+    [OutputType([System.String])]
+
+    Param(
+        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment.")]
+        [System.String] $Name
+    )
+
+    return Join-Path -Path (Get-VirtualEnvPath -Name $Name) -ChildPath $VENVACTIVATION
+}
+
+#   function -------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+function Get-VirtualEnvRequirementFile {
+
+    <#
+    .DESCRIPTION
+        Get the absolute path of a requirements file related to a specific virtual environment.
+    
+    .PARAMETER Name
+
+    .OUTPUTS 
+        System.String. Absolute path of a requirements file related to a specific virtual environment
+    #>
+
+    [OutputType([System.String])]
+
+    Param(
+        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment.")]
+        [System.String] $Name
+    )
+
+    return ($VENVREQUIREMENT -replace "%rplc", "$Name")
+}
+
+#   function -------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+function Get-VirtualEnvLocalDir {
+
+    <#
+    .DESCRIPTION
+        Get the absolute path of the download directory of a virtual environment.
+    
+    .PARAMETER Name
+
+    .OUTPUTS 
+        Get the absolute path of the download directory of a virtual environment
+    #>
+
+    [OutputType([System.String])]
+
+    Param(
+        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment.")]
+        [System.String] $Name
+    )
+
+    return  Join-Path -Path $VENVLOCALDIR -ChildPath $Name
 }
 
 #   function -------------------------------------------------------------------
@@ -61,9 +127,6 @@ function Get-VirtualEnvExe {
 function Get-PythonVersion() {
     
     <#
-    .SYNOPSIS
-        Retrieve the python version of a given python distribution.
-
     .DESCRIPTION
         Retrieve the python version of a given python distribution.
     
@@ -106,9 +169,6 @@ function Get-PythonVersion() {
 function Get-ActiveVirtualEnv {
 
     <#
-    .SYNOPSIS
-        Detects activated virtual environments.
-
     .DESCRIPTION
         Detects activated virtual environments.
     
@@ -143,15 +203,15 @@ function Get-ActiveVirtualEnv {
 function Write-FormatedError {
 
     <#
-    .SYNOPSIS
-        Displays a formated error message.
-
     .DESCRIPTION
         Displays a formated error message.
 
     .PARAMETER Message
 
     .PARAMETER Space
+
+    .OUTPUTS
+        None.
     #>
 
     [OutputType([Void])]
@@ -174,15 +234,15 @@ function Write-FormatedError {
 function Write-FormatedSuccess {
     
     <#
-    .SYNOPSIS
-        Displays a formated success message.
-
     .DESCRIPTION
         Displays a formated success message.
     
     .PARAMETER Message
 
     .PARAMETER Space
+
+    .OUTPUTS
+        None.
     #>
 
     [OutputType([Void])]
@@ -203,15 +263,15 @@ function Write-FormatedSuccess {
 function Write-FormatedMessage {
     
     <#
-    .SYNOPSIS
-        Displays a formated message.
-
     .DESCRIPTION
         Displays a formated message.
     
     .PARAMETER Message
 
     .PARAMETER Space
+
+    .OUTPUTS
+        None.
     #>
 
     [OutputType([Void])]

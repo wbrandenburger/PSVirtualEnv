@@ -38,22 +38,27 @@
 
     $PSVirtualEnvConfig = Get-IniContent -FilePath (Join-Path -Path $PSVirtualEnvHome -ChildPath ("$PSVIRTUALENV" + ".ini") ) 
 
-    # set the default python distribution
-    $PYTHONEXE = $PSVirtualEnvConfig["settings"]["python-exe"]
-    $VENVPYTHONEXE = $PSVirtualEnvConfig["settings"]["pckg-venv-exe"]
+    # set the default path where virtual environments are located
+    $VENVDIR = $PSVirtualEnvConfig["directories"]["venv-dir"]
+    if (!$VENVDIR) {
+        $VENVDIR = "$Env:USERPROFILE\Envs"
+    }
+
+    if ((Test-Path $VENVDIR) -eq $false) {
+        mkdir $VENVDIR
+    }
+    $VENVCONFIGDIR = $PSVirtualEnvConfig["directories"]["venv-config-dir"]
+    $VENVLOCALDIR = $PSVirtualEnvConfig["directories"]["venv-local-dir"]
+
+    # set the default python distribution, virtual environment executable and 
+    $PYTHONEXE = $PSVirtualEnvConfig["files"]["python-exe"]
+    $VENVEXE = $PSVirtualEnvConfig["files"]["venv-exe"]
+    $VENVACTIVATION = $PSVirtualEnvConfig["files"]["venv-activation"]
+    $VENVDEACTIVATION = $PSVirtualEnvConfig["files"]["venv-deactivation"]
+    $VENVREQUIREMENT = $PSVirtualEnvConfig["files"]["venv-requirement"]
 
     # set the default virtual environment package manager
-    $PYTHONVIRTUALENV = $PSVirtualEnvConfig["settings"]["pckg-venv"]
-
-    # set the default path where virtual environments are located
-    $VIRTUALENVSYSTEM = $PSVirtualEnvConfig["settings"]["dir-venv"]
-    if (!$VIRTUALENVSYSTEM) {
-        $VIRTUALENVSYSTEM = "$Env:USERPROFILE\Envs"
-    }
-
-    if ((Test-Path $VIRTUALENVSYSTEM) -eq $false) {
-        mkdir $VIRTUALENVSYSTEM
-    }
+    $VIRTUALENVPCKG = $PSVirtualEnvConfig["settings"]["venv-pckg"]
 
 #   functions ------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -62,14 +67,36 @@
     $PSVirtualEnvFunction = Join-Path -Path $PSVirtualEnvHome -ChildPath "Functions"
 
     @(
-        "Find-Python.ps1",          # public function
-        "Get-VirtualEnv.ps1",       # public function
-        "Get-VirtualEnvAlias.ps1",  # public function
-        "New-VirtualEnv.ps1",       # public function
-        "Remove-VirtualEnv.ps1",    # public function
-        "Start-VirtualEnv.ps1",     # public function
-        "Test-VirtualEnv.ps1",      # public function
-        "AdditionalTools.ps1"       # private function
+
+        "Find-Python.ps1",              # public function
+        "Get-VirtualEnv.ps1",           # public function
+        "Get-VirtualEnvAlias.ps1",      # public function
+        "Get-VirtualEnvLocal.ps1",      # public function
+        "New-VirtualEnv.ps1",           # public function
+        "Remove-VirtualEnv.ps1",        # public function
+        "Set-VirtualEnvLocation.ps1"    # public function
+        "Start-VirtualEnv.ps1",         # public function
+        "Stop-VirtualEnv.ps1",          # public function
+        "Test-VirtualEnv.ps1",          # public function
+
+        "AdditionalTools.ps1"           # private set of functions 
+        "PythonTools.ps1"               # private set of functions
+
     ) | ForEach-Object {
         . (Join-Path -Path $PSVirtualEnvFunction -ChildPath $_)
     }
+
+#   alias ----------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+@(
+    
+    @{ Name = "cdvenv";     Value =  "Set-VirtualEnvLocation"}
+    @{ Name = "lsvenv";     Value =  "Get-VirtualEnv"}
+    @{ Name = "mkvenv";     Value =  "New-VirtualEnv"}
+    @{ Name = "rmvenv";     Value =  "Remove-VirtualEnv"}
+    @{ Name = "runvenv";    Value =  "Start-VirtualEnv"}
+    @{ Name = "stvenv";     Value =  "Stop-VirtualEnv"}
+
+) | ForEach-Object {
+    Set-Alias -Name $_.Name -Value $_.Value
+}

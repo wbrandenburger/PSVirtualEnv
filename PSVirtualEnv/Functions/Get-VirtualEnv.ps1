@@ -83,16 +83,18 @@ function Get-VirtualEnv {
         # if the name of a virtual enviroment is not specified, general information about all virtual environments in the predefined system directory are gathered
         if (-not $virtualEnv -and -not $Python) {
             #   get all virtual environment directories in predefined system directory
-            $virtualEnvSubDirs = Get-ChildItem $VIRTUALENVSYSTEM
+            $virtualEnvSubDirs = Get-ChildItem $VENVDIR
             $virtualEnvs = $Null
 
             #   call the python distribution of each virtual environnment and determine the version number
             if ($VirtualEnvSubDirs.length) {
                 $virtualEnvs= $VirtualEnvSubDirs | ForEach-Object {
-                    $virtualEnvExe = Get-VirtualEnvExe -Name $_
-                    [PSCustomObject]@{
-                        Name = $_
-                        Version = (((. $virtualEnvExe --version 2>&1) -replace "`r|`n","") -split " ")[1]
+                    if (Test-VirtualEnv -Name $_ -Inverse) {
+                        $virtualEnvExe = Get-VirtualEnvExe -Name $_
+                        [PSCustomObject]@{
+                            Name = $_
+                            Version = (((. $virtualEnvExe --version 2>&1) -replace "`r|`n","") -split " ")[1]
+                        }
                     }
                 }
 
@@ -119,54 +121,5 @@ function Get-VirtualEnv {
             return Get-PckgProperty -EnvExe $envExe
    
         }
-    }
-}
-
-#   alias ----------------------------------------------------------------------
-# ------------------------------------------------------------------------------
-Set-Alias -Name lsvenv -Value Get-VirtualEnv
-
-function Get-PckgProperty {
-
-    <#
-    .SYNOPSIS
-        Get the properties of all packages in a python environment.
-
-    .DESCRIPTION
-        Get the properties of all packages in a python environment.
-    
-    .PARAMETER EnvExe
-
-    #>
-
-    [CmdletBinding(PositionalBinding=$True)]
-
-    [OutputType([PSCustomObject])]
-
-    Param (
-        [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Executable of a python distribution.")]
-        [System.String] $EnvExe
-    )
-
-    Process {
-
-         # get the properties of all packages in the specified virtual environment
-         $envPckg = . $EnvExe -m pip list --format json | ConvertFrom-Json # all available packages
-         $envOutDated = . $EnvExe -m pip list --format json --outdated | ConvertFrom-Json # all outdated packages
-         $envIndependent = . $EnvExe -m pip list --format json --not-required | ConvertFrom-Json # all independent packages
-
-         # combine all gathered properties about the packages in the specified virtual environment
-         return $envPckg | ForEach-Object{
-             $pckg = $_
-             $outDated = $envOutDated | Where-Object {$_.Name -eq $pckg.Name}
-             $independent = $envIndependent | Where-Object {$_.Name -eq $pckg.Name}
-
-             [PSCustomObject]@{
-                 Name = $pckg.Name
-                 Version = $pckg.Version
-                 Independent = if ( $independent ) {$True} else {$Null}
-                 Latest = $outDated.Latest
-             }
-         } | Sort-Object -Property Independent -Descending | Format-Table
     }
 }

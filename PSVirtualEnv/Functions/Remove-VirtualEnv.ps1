@@ -17,7 +17,11 @@ function Remove-VirtualEnv  {
 
     .EXAMPLE
         PS C:\> Remove-VirtualEnv -Name venv
+        
+        SUCCESS: Virtual enviroment 'venv' was deleted permanently.
 
+        -----------
+        Description
         Removes the specified virtual environment 'venv'
 
     .INPUTS
@@ -37,29 +41,23 @@ function Remove-VirtualEnv  {
     )
 
     Process{
-    
-        $virtualEnv = $Name
         
         # check whether the specified virtual environment exists
-        if (-not (Test-VirtualEnv -Name $virtualEnv -Verbose)){
+        if (-not (Test-VirtualEnv -Name $Name -Verbose)){
             Get-VirtualEnv
             return
         }
 
         # deactivation of a running virtual environment
-        if (Get-ActiveVirtualEnv -Name $virtualEnv) {
+        if (Get-ActiveVirtualEnv -Name $Name) {
             Deactivate
         }
 
         # get the full path of the specified virtual environment, which is located in the predefined system path
-        $virtualEnvDir = Get-VirtualEnvPath -Name $virtualEnv
+        $virtualEnvDir = Get-VirtualEnvPath -Name $Name
         
         # remove specified virtual environment
         Remove-Item -Path $virtualEnvDir -Recurse 
-        Write-FormatedSuccess -Message "$virtualEnv was deleted permanently" -Space
+        Write-FormatedSuccess -Message "Virtual Environment '$Name' was deleted permanently." -Space
     }
 }
-
-#   alias ----------------------------------------------------------------------
-# ------------------------------------------------------------------------------
-Set-Alias -Name rmvenv -Value Remove-VirtualEnv
