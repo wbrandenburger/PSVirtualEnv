@@ -36,7 +36,6 @@
     # get the path of the config file with the module settings
     $PSVirtualEnvConfig = Join-Path -Path $PSVirtualEnvHome -ChildPath $PSVIRTUALENV 
 
-    Write-Host  (Join-Path -Path $PSVirtualEnvHome -ChildPath ("$PSVIRTUALENV" + ".ini") )
     $PSVirtualEnvConfig = Get-IniContent -FilePath (Join-Path -Path $PSVirtualEnvHome -ChildPath ("$PSVIRTUALENV" + ".ini") ) 
 
     # set the default python distribution
