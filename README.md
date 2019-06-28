@@ -2,14 +2,14 @@
 
 ## Table of Contents
 
-1. [PSVirtualEnv](#PSVirtualEnv)
-   1. [Table of Contents](#Table-of-Contents)
-   2. [Description](#Description)
-      1. [Origin](#Origin)
-   3. [Installation](#Installation)
-   4. [Examples](#Examples)
-   5. [Authors/Contributors](#AuthorsContributors)
-      1. [Author](#Author)
+- [PSVirtualEnv](#PSVirtualEnv)
+  - [Table of Contents](#Table-of-Contents)
+  - [Description](#Description)
+    - [Origin](#Origin)
+  - [Installation](#Installation)
+  - [Examples](#Examples)
+  - [Authors/Contributors](#AuthorsContributors)
+    - [Author](#Author)
 
 ## Description
 
@@ -41,5 +41,5 @@ package-virtualenv = "virtualenv"
 
 ### Author
 
-* [Wolfgang Brandenburger](https://github.com/wbrandenburger)
+- [Wolfgang Brandenburger](https://github.com/wbrandenburger)
 
