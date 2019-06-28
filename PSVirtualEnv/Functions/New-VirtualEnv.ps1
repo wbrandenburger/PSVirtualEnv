@@ -100,4 +100,4 @@ function New-VirtualEnv {
 
 #   alias ----------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-Set-Alias mkvenv New-VirtualEnv
+Set-Alias -Name mkvenv -Value New-VirtualEnv

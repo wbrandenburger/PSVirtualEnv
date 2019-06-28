@@ -40,12 +40,13 @@
 
     # set the default python distribution
     $PYTHONEXE = $PSVirtualEnvConfig["settings"]["python-exe"]
+    $VENVPYTHONEXE = $PSVirtualEnvConfig["settings"]["pckg-venv-exe"]
 
     # set the default virtual environment package manager
-    $PYTHONVIRTUALENV = $PSVirtualEnvConfig["settings"]["package-virtualenv"]
+    $PYTHONVIRTUALENV = $PSVirtualEnvConfig["settings"]["pckg-venv"]
 
     # set the default path where virtual environments are located
-    $VIRTUALENVSYSTEM = $PSVirtualEnvConfig["settings"]["dir-virtualenv"]
+    $VIRTUALENVSYSTEM = $PSVirtualEnvConfig["settings"]["dir-venv"]
     if (!$VIRTUALENVSYSTEM) {
         $VIRTUALENVSYSTEM = "$Env:USERPROFILE\Envs"
     }

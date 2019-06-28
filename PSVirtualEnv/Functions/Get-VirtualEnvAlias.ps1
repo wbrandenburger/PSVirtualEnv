@@ -44,4 +44,4 @@ function Get-VirtualEnvAlias {
 
 #   alias ----------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-Set-Alias aliasvenv Get-VirtualEnvAlias
+Set-Alias -Name aliasvenv -Value Get-VirtualEnvAlias

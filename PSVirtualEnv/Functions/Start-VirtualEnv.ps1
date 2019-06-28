@@ -70,4 +70,4 @@ function Start-VirtualEnv {
 
 #   alias ----------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-Set-Alias runvenv Start-VirtualEnv
+Set-Alias -Name runvenv -Value Start-VirtualEnv

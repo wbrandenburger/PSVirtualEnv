@@ -62,4 +62,4 @@ function Remove-VirtualEnv  {
 
 #   alias ----------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-Set-Alias rmvenv Remove-VirtualEnv
+Set-Alias -Name rmvenv -Value Remove-VirtualEnv

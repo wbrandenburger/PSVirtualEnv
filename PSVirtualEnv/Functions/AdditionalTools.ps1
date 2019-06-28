@@ -31,6 +31,33 @@ function Get-VirtualEnvPath {
 
 #   function -------------------------------------------------------------------
 # ------------------------------------------------------------------------------
+function Get-VirtualEnvExe {
+
+    <#
+    .SYNOPSIS
+        Get the absolute path of the executable of a specified virtual environment
+
+    .DESCRIPTION
+        Get the absolute path of the executable of a specified virtual environment, which is composed of the predefined system variable, a specified virtual environment and the fixed location of the executable
+    
+    .PARAMETER Name
+
+    .OUTPUTS 
+        System.String. Absolute path of the executable of the specified virtual environment
+    #>
+
+    [OutputType([System.String])]
+
+    Param(
+        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment.")]
+        [System.String] $Name
+    )
+
+    return Join-Path -Path (Get-VirtualEnvPath -Name $Name) -ChildPath $VENVPYTHONEXE 
+}
+
+#   function -------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 function Get-PythonVersion() {
     
     <#
@@ -120,8 +147,8 @@ function Write-FormatedError {
         Displays a formated error message.
 
     .DESCRIPTION
-        Stores the current system python path, such that later a restoring of that path can be applied.
-    
+        Displays a formated error message.
+
     .PARAMETER Message
 
     .PARAMETER Space
@@ -151,7 +178,7 @@ function Write-FormatedSuccess {
         Displays a formated success message.
 
     .DESCRIPTION
-        Stores the current system python path, such that later a restoring of that path can be applied.
+        Displays a formated success message.
     
     .PARAMETER Message
 
@@ -170,5 +197,34 @@ function Write-FormatedSuccess {
 
     if ($Space) { Write-Host }
     Write-Host "SUCCESS: $Message" -ForegroundColor Green
+    if ($Space) { Write-Host }
+}
+
+function Write-FormatedMessage {
+    
+    <#
+    .SYNOPSIS
+        Displays a formated message.
+
+    .DESCRIPTION
+        Displays a formated message.
+    
+    .PARAMETER Message
+
+    .PARAMETER Space
+    #>
+
+    [OutputType([Void])]
+
+    Param(
+        [Parameter(HelpMessage="Message, which should be displayed.")]
+        [System.String] $Message,
+
+        [Parameter(HelpMessage="If Space is true, spaces will be displayed.")]
+        [Switch] $Space
+    )
+
+    if ($Space) { Write-Host }
+    Write-Host "$Message"
     if ($Space) { Write-Host }
 }

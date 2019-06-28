@@ -81,4 +81,4 @@ function Test-VirtualEnv {
 
 #   alias ----------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-Set-Alias testvenv Test-VirtualEnv
+Set-Alias -Name testvenv -Value Test-VirtualEnv
