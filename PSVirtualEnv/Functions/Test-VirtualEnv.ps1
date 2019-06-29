@@ -39,7 +39,7 @@ function Test-VirtualEnv {
         [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Name of virtual environment to be tested.")]
         [System.String] $Name,
 
-        [Parameter(HelpMessage="If Inverse is true, no error will be displayed if the specified virtual environment does not exist.")]
+        [Parameter(HelpMessage="If switch 'Inverse' is true, no error will be displayed if the specified virtual environment does not exist.")]
         [Switch] $Inverse
     )
 

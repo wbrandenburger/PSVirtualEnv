@@ -84,6 +84,16 @@ function Get-VirtualEnvLocal {
         . (Get-VirtualEnvExe -Name $_.Name) -m pip download --requirement   $requirementFile --dest  $virtualEnvLocal 
         Write-FormatedSuccess -Message "Packages of virtual environment '$($_.Name)' were downloaded to '$virtualEnvLocal'"
 
+        # create the local requirement file of the specified virtual environment
+        $requirementFileLocal = Join-Path -Path $virtualEnvLocal -ChildPath ($_.Name + ".txt")
+        Write-FormatedMessage -Message "Write local requirement file for virtual environment '$($_.Name)' to '$requirementFileLocal' - $virtualEnvIdx of $($virtualEnv.length) packages " -Color "Yellow"
+        Out-File -FilePath  $requirementFileLocal -InputObject (Get-ChildItem -Path $virtualEnvLocal | Select-Object -ExpandProperty Name )
+        Write-FormatedSuccess -Message "Local requirement file '$requirementFileLocal' for virtual environment '$($_.Name)' was created."
+        
+        # write content of local requirement file to host
+        Write-Host "Content of '$requirementFileLocal':"
+        Get-Content $requirementFileLocal
+
         $virtualEnvIdx += 1
     }
 }

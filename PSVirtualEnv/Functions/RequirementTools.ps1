@@ -19,12 +19,18 @@ function Get-VirtualEnvRequirementFile {
     [OutputType([System.String])]
 
     Param(
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment.")]
+        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment or path of a requirement file.")]
         [System.String] $Name
     )
 
+    # check whether the requirement file exists
+    $requirementFile = $Name
+    if (-not (Test-Path -Path $requirementFile)) {
+        $requirementFile = $VENVREQUIREMENT -replace $REPLACEPATTERN, $Name
+    }
+
     # replace the predefined patter
-    return ($VENVREQUIREMENT -replace $REPLACEPATTERN, $Name)
+    return $requirementFile
 }
 
 #   function -------------------------------------------------------------------
@@ -124,16 +130,24 @@ function Test-VirtualEnvRequirementFile {
     [OutputType([Boolean])]
 
     Param(
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment.")]
+        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment or path of a requirement file.")]
         [System.String] $Name
     )
     
-    # get and check the requirement file
+    # check whether the requirement file exists
     $requirementFile = Get-VirtualEnvRequirementFile -Name $Name
-    if (-not (Test-Path -Path $requirementFile)){
+    if (-not (Test-Path -Path $requirementFile)) {
         if ($VerbosePreference) {
             Write-FormatedError -Message "Unable to find the requirement file of the virtual environment '$Name'." -Space
         }
+        return $False
+    }
+    else {
+        $Name = [System.IO.Path]::GetFileNameWithoutExtension($requirementFile)
+    }
+    
+    # check whether the requirement file can be bound to an existing virtual environment
+    if (-not (Test-VirtualEnv -Name $Name -Inverse)){
         return $False
     }
 

@@ -44,3 +44,36 @@ function Get-PckgProperty {
         }
     } | Sort-Object -Property Independent -Descending | Format-Table
 }
+
+#   function -------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+function Install-PythonPckg {
+
+    <#
+    .DESCRIPTION
+        Gets the properties of all packages in a python environment.
+    
+    .PARAMETER EnvExe
+
+    .PARAMETER Requirement
+
+    .OUTPUTS
+        PSCustomObject. Properties of all packages in a python environment
+    #>
+
+    
+    [CmdletBinding(PositionalBinding=$True)]
+
+    [OutputType([PSCustomObject])]
+
+    Param (
+        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Executable of a python distribution.")]
+        [System.String] $EnvExe,
+
+        [Parameter(Position=1, Mandatory=$True, HelpMessage="Path to a requirements file.")]
+        [System.String] $Requirement
+    )
+
+    # install packages from a requirement file
+    . $EnvExe -m pip install --requirement $Requirement 
+}

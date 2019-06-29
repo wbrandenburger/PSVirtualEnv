@@ -60,17 +60,29 @@ function New-VirtualEnv {
     Process{
     
         # check whether the specified virtual environment exists
-        if (Test-VirtualEnv -Name $virtualEnv){
-            Write-FormatedError -Message "The virtual environment '$virtualEnv' already exists." -Space
+        if (Test-VirtualEnv -Name $Name){
+            Write-FormatedError -Message "The virtual environment '$Name' already exists." -Space
             Get-VirtualEnv
 
             return
         }
+        
+        # check information about requirement
+        if ($Requirement) {
+            $requirementFile = Get-VirtualEnvRequirementFile -Name $Requirement
+            if (Test-VirtualEnvRequirementFile -Name $requirementFile) {
+                $requirementCmd = "--requirement $requirementFile"
+            }
+            else {
+                Write-FormatedError -Message "There can not be found a existing requirement file." -Space
+                return
+            }
+        }
 
         # find a path, where a python distribution is located.
-        $Path = Find-Python $Path -Verbose
-        if (-not $Path) { return }
-        $pythonVersion = Get-PythonVersion $Path -Verbose
+        $pythonExeLocal = Find-Python $Path -Verbose
+        if (-not $pythonExeLocal) { return }
+        $pythonVersion = Get-PythonVersion $pythonExeLocal -Verbose
 
         # generate the full path of the specified virtual environment, which shall be located in the predefined system path
         $virtualEnvDir = Get-VirtualEnvPath -Name $Name
@@ -78,8 +90,18 @@ function New-VirtualEnv {
         # create the specified virtual environment
         Write-Host "Creating the virtual environment '$Name'... "
 
-         . $Path "-m" $VIRTUALENVPCKG "--verbose" $virtualEnvDir
-
+         . $pythonExeLocal "-m" $VIRTUALENVPCKG  $virtualEnvDir "--verbose" 
+         
         Write-FormatedSuccess -Message "Virtual environment '$virtualEnvDir' was created." -Space
+
+        Get-VirtualEnv
+
+        if ($Requirement) {
+            Install-PythonPckg -EnvExe (Get-VirtualEnvExe -Name $Name) -Requirement $requirementFile
+
+            Write-FormatedSuccess -Message "Packages from requirement file '$requirementFile' were in virtual environment '$Name' installed." -Space
+            
+            Get-VirtualEnv -Name $Name
+        }
     }
 }
