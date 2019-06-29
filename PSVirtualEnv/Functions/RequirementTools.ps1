@@ -45,6 +45,8 @@ function Get-VirtualEnvRequirement {
 
     .PARAMETER All
 
+    .PARAMETER Upgrade
+
     .OUTPUTS
         None.
     #>
@@ -56,7 +58,10 @@ function Get-VirtualEnvRequirement {
         [System.String] $Name,
 
         [Parameter(HelpMessage="If switch 'All' is true, the requirement file for all existing virtual environments will be generated.")]
-        [Switch] $All
+        [Switch] $All,
+
+        [Parameter(HelpMessage="If switch 'Upgrade' is true the package will be upgraded.")]
+        [Switch] $Upgrade
     )
 
     # Get all existing virtual environments if 'Name' is not set
@@ -73,10 +78,14 @@ function Get-VirtualEnvRequirement {
         }
 
         # create the requirement file of the specified virtual environment
-        Write-FormatedMessage -Message "Create requirement file for virtual environment '$($_.Name)' - $virtualEnvIdx of $($virtualEnv.length) packages " -Color "Yellow"
+        Write-FormatedMessage -Message "Create requirement file for virtual environment '$($_.Name)'" -Color "Yellow"
         . (Get-VirtualEnvExe -Name $_.Name) -m pip freeze > (Get-VirtualEnvRequirementFile -Name $_.Name)
             Write-FormatedSuccess -Message "Requirement file for virtual environment '$($_.Name)' was created."
         
+        if ($Upgrade){
+            (Get-Content (Get-VirtualEnvRequirementFile -Name $_.Name)) -replace "==", ">=" | Out-File -FilePath (Get-VirtualEnvRequirementFile -Name $_.Name)
+        }
+
         $virtualEnvIdx += 1
     }
 }

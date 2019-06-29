@@ -8,7 +8,7 @@
 RootModule = 'PSVirtualEnv'
 
 # Version number of this module.
-ModuleVersion = '0.2.0'
+ModuleVersion = '0.2.2'
 
 # ID used to uniquely identify this module
 GUID = '41a9e505-d878-4b65-a8bf-b90bd2f2ddf6'
@@ -85,7 +85,8 @@ FunctionsToExport = @(
     'Get-VirtualEnvAlias',
     'Get-VirtualEnvLocal',
     'Get-VirtualEnvRequirement'
-    'Get-VirtualEnvSupplement' 
+    'Get-VirtualEnvSupplement'
+    'Install-VirtualEnvPckg'
     'New-VirtualEnv',
     'Remove-VirtualEnv',
     'Remove-VirtualEnvRequirement'

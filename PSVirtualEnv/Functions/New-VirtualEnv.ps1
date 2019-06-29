@@ -53,7 +53,6 @@ function New-VirtualEnv {
         [System.String] $Path,
 
         [Parameter(HelpMessage="Path to a requirements file, or name of a virtual environment.")]
-        [alias("r")]
         [System.String] $Requirement
     )
 
@@ -67,13 +66,10 @@ function New-VirtualEnv {
             return
         }
         
-        # check information about requirement
+        # get existing requirement file 
         if ($Requirement) {
             $requirementFile = Get-VirtualEnvRequirementFile -Name $Requirement
-            if (Test-VirtualEnvRequirementFile -Name $requirementFile) {
-                $requirementCmd = "--requirement $requirementFile"
-            }
-            else {
+            if (-not (Test-VirtualEnvRequirementFile -Name $requirementFile)) {
                 Write-FormatedError -Message "There can not be found a existing requirement file." -Space
                 return
             }
@@ -96,10 +92,9 @@ function New-VirtualEnv {
 
         Get-VirtualEnv
 
+        # install packages from the requirement file
         if ($Requirement) {
             Install-PythonPckg -EnvExe (Get-VirtualEnvExe -Name $Name) -Requirement $requirementFile
-
-            Write-FormatedSuccess -Message "Packages from requirement file '$requirementFile' were in virtual environment '$Name' installed." -Space
             
             Get-VirtualEnv -Name $Name
         }

@@ -52,48 +52,50 @@ function Get-VirtualEnvLocal {
         [Switch] $All
     )
     
-    # Get all existing virtual environments if 'Name' is not set
-    $virtualEnv = @{ Name = $Name }
-    if ($All -or -not $virtualEnv) {
-        $virtualEnv = Get-VirtualEnv
-    }
-
-    $virtualEnvIdx = 1
-    $virtualEnv | ForEach-Object {
-        #  check if there exists a specific virtual environment
-        if (-not (Test-VirtualEnv -Name $_.Name -Verbose)) {
-            return
+    Process {
+        # Get all existing virtual environments if 'Name' is not set
+        $virtualEnv = @{ Name = $Name }
+        if ($All -or -not $virtualEnv) {
+            $virtualEnv = Get-VirtualEnv
         }
 
-        # get absolute path of requirement file and download directoy
-        $requirementFile = Get-VirtualEnvRequirementFile -Name $_.Name
-        $virtualEnvLocal = Get-VirtualEnvLocalDir -Name $_.Name
+        $virtualEnvIdx = 1
+        $virtualEnv | ForEach-Object {
+            #  check if there exists a specific virtual environment
+            if (-not (Test-VirtualEnv -Name $_.Name -Verbose)) {
+                return
+            }
 
-        # check whether the requirement file exists and create the respective file if it can not be found
-        if (-not (Test-Path $requirementFile)){
-            Get-VirtualEnvRequirement -EnvExe (Get-VirtualEnvExe -Name $_.Name)  -Dest $requirementFile
+            # get absolute path of requirement file and download directoy
+            $requirementFile = Get-VirtualEnvRequirementFile -Name $_.Name
+            $virtualEnvLocal = Get-VirtualEnvLocalDir -Name $_.Name
+
+            # check whether the requirement file exists and create the respective file if it can not be found
+            if (-not (Test-Path $requirementFile)){
+                Get-VirtualEnvRequirement -EnvExe (Get-VirtualEnvExe -Name $_.Name)  -Dest $requirementFile
+            }
+
+            # remove a previous folder, which contains download file of packages related to a older state of the virtual environment
+            if (Test-Path $virtualEnvLocal){
+                Remove-Item -Path $virtualEnvLocal -Recurse 
+            }
+
+            # download the packages defined in the requirement file to the specified download directory
+            Write-FormatedMessage -Message "Download packages of virtual environment '$($_.Name)' to '$virtualEnvLocal' - $virtualEnvIdx of $($virtualEnv.length) packages " -Color "Yellow"
+            . (Get-VirtualEnvExe -Name $_.Name) -m pip download --requirement   $requirementFile --dest  $virtualEnvLocal 
+            Write-FormatedSuccess -Message "Packages of virtual environment '$($_.Name)' were downloaded to '$virtualEnvLocal'"
+
+            # create the local requirement file of the specified virtual environment
+            $requirementFileLocal = Join-Path -Path $virtualEnvLocal -ChildPath ($_.Name + ".txt")
+            Write-FormatedMessage -Message "Write local requirement file for virtual environment '$($_.Name)' to '$requirementFileLocal' - $virtualEnvIdx of $($virtualEnv.length) packages " -Color "Yellow"
+            Out-File -FilePath  $requirementFileLocal -InputObject (Get-ChildItem -Path $virtualEnvLocal | Select-Object -ExpandProperty Name )
+            Write-FormatedSuccess -Message "Local requirement file '$requirementFileLocal' for virtual environment '$($_.Name)' was created."
+            
+            # write content of local requirement file to host
+            Write-Host "Content of '$requirementFileLocal':"
+            Get-Content $requirementFileLocal
+
+            $virtualEnvIdx += 1
         }
-
-        # remove a previous folder, which contains download file of packages related to a older state of the virtual environment
-        if (Test-Path $virtualEnvLocal){
-            Remove-Item -Path $virtualEnvLocal -Recurse 
-        }
-
-        # download the packages defined in the requirement file to the specified download directory
-        Write-FormatedMessage -Message "Download packages of virtual environment '$($_.Name)' to '$virtualEnvLocal' - $virtualEnvIdx of $($virtualEnv.length) packages " -Color "Yellow"
-        . (Get-VirtualEnvExe -Name $_.Name) -m pip download --requirement   $requirementFile --dest  $virtualEnvLocal 
-        Write-FormatedSuccess -Message "Packages of virtual environment '$($_.Name)' were downloaded to '$virtualEnvLocal'"
-
-        # create the local requirement file of the specified virtual environment
-        $requirementFileLocal = Join-Path -Path $virtualEnvLocal -ChildPath ($_.Name + ".txt")
-        Write-FormatedMessage -Message "Write local requirement file for virtual environment '$($_.Name)' to '$requirementFileLocal' - $virtualEnvIdx of $($virtualEnv.length) packages " -Color "Yellow"
-        Out-File -FilePath  $requirementFileLocal -InputObject (Get-ChildItem -Path $virtualEnvLocal | Select-Object -ExpandProperty Name )
-        Write-FormatedSuccess -Message "Local requirement file '$requirementFileLocal' for virtual environment '$($_.Name)' was created."
-        
-        # write content of local requirement file to host
-        Write-Host "Content of '$requirementFileLocal':"
-        Get-Content $requirementFileLocal
-
-        $virtualEnvIdx += 1
     }
 }
