@@ -15,8 +15,24 @@ function Get-VirtualEnvLocal {
     
     .PARAMETER Name
 
+    .PARAMETER All
+
     .EXAMPLE
-        Get-VirtualEnvLocal
+        Get-VirtualEnvLocal -Name venv
+
+        SUCCESS: Packages of virtual environment 'venv' were downloaded to 'A:\VirtualEnv\.temp\venv'.
+
+        -----------
+        Description
+        Download all packages of the virtual environment 'venv' to a predefined download directory.
+
+    .EXAMPLE
+        Get-VirtualEnvLocal -All
+
+        -----------
+        Description
+        Download all packages of each existing virtual environment to a predefined download directory.       
+
     .INPUTS
         System.String. Name of the virtual environment, which packages shall be downloaded.
 
@@ -29,25 +45,45 @@ function Get-VirtualEnvLocal {
     [OutputType([Void])]
 
     Param (
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment, which packages shall be downloaded.")]
-        [System.String] $Name
+        [Parameter(HelpMessage="Name of the virtual environment, which packages shall be downloaded.")]
+        [System.String] $Name,
+
+        [Parameter(HelpMessage="If switch 'All' is true, the packages of all existing virtual environments will be generated.")]
+        [Switch] $All
     )
-
-    # get absolute path of requirement file and download directoy
-    $requirementFile = Get-VirtualEnvRequirementFile -Name $Name
-    $virtualEnvLocal = Get-VirtualEnvLocalDir -Name $Name
-
-    # check whether the requirement file exists and create the respective file if it can not be found
-    if (-not (Test-Path $requirementFile)){
-        Get-PckgRequirement -EnvExe (Get-VirtualEnvExe -Name $Name)  -Dest $requirementFile
+    
+    # Get all existing virtual environments if 'Name' is not set
+    $virtualEnv = @{ Name = $Name }
+    if ($All -or -not $virtualEnv) {
+        $virtualEnv = Get-VirtualEnv
     }
 
-    # remove a previous folder, which contains download file of packages related to a older state of the virtual environment
-    if (-not (Test-Path $virtualEnvLocal)){
-        Remove-Item -Path $virtualEnvLocal -Recurse 
-    }
+    $virtualEnvIdx = 1
+    $virtualEnv | ForEach-Object {
+        #  check if there exists a specific virtual environment
+        if (-not (Test-VirtualEnv -Name $_.Name -Verbose)) {
+            return
+        }
 
-    # download the packages defined in the requirement file to the specified download directory
-    . (Get-VirtualEnvExe -Name $Name) -m pip download --requirement   $requirementFile --dest  $virtualEnvLocal
-    Write-FormatedSuccess -Message "Packages of virtual environment '$Name' were downloaded to '$virtualEnvLocal'" -Space
+        # get absolute path of requirement file and download directoy
+        $requirementFile = Get-VirtualEnvRequirementFile -Name $_.Name
+        $virtualEnvLocal = Get-VirtualEnvLocalDir -Name $_.Name
+
+        # check whether the requirement file exists and create the respective file if it can not be found
+        if (-not (Test-Path $requirementFile)){
+            Get-VirtualEnvRequirement -EnvExe (Get-VirtualEnvExe -Name $_.Name)  -Dest $requirementFile
+        }
+
+        # remove a previous folder, which contains download file of packages related to a older state of the virtual environment
+        if (Test-Path $virtualEnvLocal){
+            Remove-Item -Path $virtualEnvLocal -Recurse 
+        }
+
+        # download the packages defined in the requirement file to the specified download directory
+        Write-FormatedMessage -Message "Download packages of virtual environment '$($_.Name)' to '$virtualEnvLocal' - $virtualEnvIdx of $($virtualEnv.length) packages " -Color "Yellow"
+        . (Get-VirtualEnvExe -Name $_.Name) -m pip download --requirement   $requirementFile --dest  $virtualEnvLocal 
+        Write-FormatedSuccess -Message "Packages of virtual environment '$($_.Name)' were downloaded to '$virtualEnvLocal'"
+
+        $virtualEnvIdx += 1
+    }
 }

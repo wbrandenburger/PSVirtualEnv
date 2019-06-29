@@ -8,10 +8,10 @@ function Test-VirtualEnv {
 
     <#
     .SYNOPSIS
-        Check if there exists a specific virtual environment.
+        Checks if there exists a specific virtual environment.
 
     .DESCRIPTION
-        Check if there exists a specific virtual environment in the predefined system directory.
+        Checks if there exists a specific virtual environment in the predefined system directory.
 
     .PARAMETER Name
 
@@ -25,7 +25,7 @@ function Test-VirtualEnv {
         Checks whether the virtual environment 'venv' exists.
 
     .INPUTS
-        System.String. Name of virtual environment, which should be checked.
+        System.String. Name of virtual environment to be tested.
     
     .OUTPUTS
         Boolean. True if the specified virtual environment exists.
@@ -36,7 +36,7 @@ function Test-VirtualEnv {
     [OutputType([Boolean])]
 
     Param(        
-        [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Name of virtual environment, which existence should be checked.")]
+        [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Name of virtual environment to be tested.")]
         [System.String] $Name,
 
         [Parameter(HelpMessage="If Inverse is true, no error will be displayed if the specified virtual environment does not exist.")]
@@ -64,7 +64,7 @@ function Test-VirtualEnv {
         # get the full path of the specified virtual environment, which is located in the predefined system path and test the resulting path
         if ( -not (Test-Path (Get-VirtualEnvActivationScript -Name $Name) )) {
             if ($VerbosePreference) {
-                Write-FormatedError -Message "Enable to find the activation script. The virtual environment '$Name' seems compromized." -Space
+                Write-FormatedError -Message "Unable to find the activation script. The virtual environment '$Name' seems compromized." -Space
             }
             return $False
         }

@@ -80,11 +80,15 @@ NestedModules = @()
 
 # Functions to export from this module
 FunctionsToExport = @(
+    'Clear-VirtualEnvLocal'
     'Get-VirtualEnv',
     'Get-VirtualEnvAlias',
     'Get-VirtualEnvLocal',
+    'Get-VirtualEnvRequirement'
+    'Get-VirtualEnvSupplement' 
     'New-VirtualEnv',
     'Remove-VirtualEnv',
+    'Remove-VirtualEnvRequirement'
     'Set-VirtualEnvLocation'
     'Start-VirtualEnv',
     'Stop-VirtualEnv'

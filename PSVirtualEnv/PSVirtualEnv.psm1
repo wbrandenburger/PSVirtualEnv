@@ -25,6 +25,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+#
 
 #   settings -------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -40,26 +41,36 @@
 
     # set the default path where virtual environments are located
     $VENVDIR = $PSVirtualEnvConfig["directories"]["venv-dir"]
-    if (!$VENVDIR) {
-        $VENVDIR = "$Env:USERPROFILE\Envs"
+    if (-not $VENVDIR) {
+        Write-Host "The path of the directory vor virtual envrionments are not given." -ForegroundColor Red
+        return
     }
-
-    if ((Test-Path $VENVDIR) -eq $false) {
+    if (-not (Test-Path $VENVDIR)) {
         mkdir $VENVDIR
     }
-    $VENVCONFIGDIR = $PSVirtualEnvConfig["directories"]["venv-config-dir"]
-    $VENVLOCALDIR = $PSVirtualEnvConfig["directories"]["venv-local-dir"]
+
+    $VENVCONFIGDIR = Join-Path -Path $VENVDIR -ChildPath $PSVirtualEnvConfig["directories"]["venv-config-dir"]
+    if (-not (Test-Path $VENVCONFIGDIR)) {
+        mkdir $VENVDIR
+    }
+
+    $VENVLOCALDIR = Join-Path -Path $VENVDIR -ChildPath $PSVirtualEnvConfig["directories"]["venv-local-dir"]
+    if (-not (Test-Path $VENVLOCALDIR)) {
+        mkdir $VENVDIR
+    }
 
     # set the default python distribution, virtual environment executable and 
     $PYTHONEXE = $PSVirtualEnvConfig["files"]["python-exe"]
     $VENVEXE = $PSVirtualEnvConfig["files"]["venv-exe"]
     $VENVACTIVATION = $PSVirtualEnvConfig["files"]["venv-activation"]
     $VENVDEACTIVATION = $PSVirtualEnvConfig["files"]["venv-deactivation"]
-    $VENVREQUIREMENT = $PSVirtualEnvConfig["files"]["venv-requirement"]
+    $VENVREQUIREMENT = Join-Path -Path $VENVLOCALDIR -ChildPath $PSVirtualEnvConfig["files"]["venv-requirement"]
 
     # set the default virtual environment package manager
     $VIRTUALENVPCKG = $PSVirtualEnvConfig["settings"]["venv-pckg"]
 
+    # define the replace patter
+    $REPLACEPATTERN = $PSVirtualEnvConfig["settings"]["replace-pattern"]
 #   functions ------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
@@ -67,7 +78,7 @@
     $PSVirtualEnvFunction = Join-Path -Path $PSVirtualEnvHome -ChildPath "Functions"
 
     @(
-
+        "Clear-VirtualEnvLocal.ps1"     # public function
         "Find-Python.ps1",              # public function
         "Get-VirtualEnv.ps1",           # public function
         "Get-VirtualEnvAlias.ps1",      # public function
@@ -79,8 +90,9 @@
         "Stop-VirtualEnv.ps1",          # public function
         "Test-VirtualEnv.ps1",          # public function
 
-        "AdditionalTools.ps1"           # private set of functions 
-        "PythonTools.ps1"               # private set of functions
+        "AdditionalTools.ps1",          # private set of functions 
+        "PythonTools.ps1",              # private set of functions
+        "RequirementTools.ps1"          # private set of functions
 
     ) | ForEach-Object {
         . (Join-Path -Path $PSVirtualEnvFunction -ChildPath $_)

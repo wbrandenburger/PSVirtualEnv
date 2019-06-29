@@ -44,34 +44,3 @@ function Get-PckgProperty {
         }
     } | Sort-Object -Property Independent -Descending | Format-Table
 }
-
-#   function -------------------------------------------------------------------
-# ------------------------------------------------------------------------------
-function Get-PckgRequirement {
-
-    <#
-    .DESCRIPTION
-        Gets the requirement file of a virtual enviroment by pip which is located in the config directory of the predefined virtual environment directory.
-    
-    .PARAMETER EnvExe
-
-    .PARAMETER Dest
-
-    .OUTPUTS
-        None.
-    #>
-
-    [CmdletBinding(PositionalBinding=$True)]
-
-    [OutputType([Void])]
-
-    Param (
-        [Parameter(Position=1, Mandatory=$True, HelpMessage="Executable of a python distribution.")]
-        [System.String] $EnvExe,
-
-        [Parameter(Position=2, Mandatory=$True, HelpMessage="Path of the requirement file to be created.")]
-        [System.String] $Dest
-    )
-
-    . $EnvExe -m pip freeze > $Dest
-}

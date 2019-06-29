@@ -24,7 +24,7 @@ function Set-VirtualEnvLocation {
         None.
     
     .OUTPUTS
-        PSCustomObject. The object contains all aliases of the module
+        None.
     #>
 
     [CmdletBinding()]

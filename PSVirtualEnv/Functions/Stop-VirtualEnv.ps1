@@ -40,13 +40,13 @@ function Stop-VirtualEnv {
 
         $Name =  $Env:VIRTUAL_ENV
 
-        # deactivation of a running virtual environment
+        # deactivation of a running virtual environment and create the requirement file 
         if (Get-ActiveVirtualEnv -Name $Name ) {
             . $VENVDEACTIVATION
-            Write-FormatedSuccess -Message "Virtual enviroment '$Name' was stopped." -Space
             $Env:VIRTUAL_ENV = $Null
+            Get-VirtualEnvRequirement $Name
 
-            Get-PckgRequirement -EnvExe (Get-VirtualEnvExe -Name $Name)  -Dest (Get-VirtualEnvRequirementFile -Name $Name)
+            Write-FormatedSuccess -Message "Virtual enviroment '$Name' was stopped." -Space
         }
         else {
             Write-FormatedError -Message "There is no running virtual environment." -Space

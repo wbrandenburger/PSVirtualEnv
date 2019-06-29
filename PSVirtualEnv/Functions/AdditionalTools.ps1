@@ -76,30 +76,6 @@ function Get-VirtualEnvActivationScript {
 
 #   function -------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-function Get-VirtualEnvRequirementFile {
-
-    <#
-    .DESCRIPTION
-        Get the absolute path of a requirements file related to a specific virtual environment.
-    
-    .PARAMETER Name
-
-    .OUTPUTS 
-        System.String. Absolute path of a requirements file related to a specific virtual environment
-    #>
-
-    [OutputType([System.String])]
-
-    Param(
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment.")]
-        [System.String] $Name
-    )
-
-    return ($VENVREQUIREMENT -replace "%rplc", "$Name")
-}
-
-#   function -------------------------------------------------------------------
-# ------------------------------------------------------------------------------
 function Get-VirtualEnvLocalDir {
 
     <#
@@ -133,7 +109,7 @@ function Get-PythonVersion() {
     .PARAMETER Path
 
     .OUTPUTS
-    Int. The version of the detected python distribution.
+        Int. The version of the detected python distribution.
     #>
 
     [CmdletBinding(PositionalBinding=$True)]
@@ -268,6 +244,8 @@ function Write-FormatedMessage {
     
     .PARAMETER Message
 
+    .PARAMETER Color
+
     .PARAMETER Space
 
     .OUTPUTS
@@ -280,11 +258,14 @@ function Write-FormatedMessage {
         [Parameter(HelpMessage="Message, which should be displayed.")]
         [System.String] $Message,
 
+        [Parameter(HelpMessage="Color of the message to be displayed.")]
+        [System.String] $Color="White",
+
         [Parameter(HelpMessage="If Space is true, spaces will be displayed.")]
         [Switch] $Space
     )
 
     if ($Space) { Write-Host }
-    Write-Host "$Message"
+    Write-Host "$Message" -ForegroundColor $Color
     if ($Space) { Write-Host }
 }

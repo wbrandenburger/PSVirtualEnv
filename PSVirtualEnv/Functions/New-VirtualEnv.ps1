@@ -50,15 +50,11 @@ function New-VirtualEnv {
         [System.String] $Name,
 
         [Parameter(Position=2, HelpMessage="Path to a folder or executable of a python distribution.")]
-        [System.String] $Path
+        [System.String] $Path,
 
-        # [Parameter(HelpMessage="The requirements file")]
-        # [alias("r")]
-        # [System.String] $Requirement,
-
-        # [Parameter(HelpMessage="The package to install. Repeat the parameter for more than one")]
-        # [alias("i")]
-        # [System.String[]] $Packages
+        [Parameter(HelpMessage="Path to a requirements file, or name of a virtual environment.")]
+        [alias("r")]
+        [System.String] $Requirement
     )
 
     Process{
@@ -75,15 +71,6 @@ function New-VirtualEnv {
         $Path = Find-Python $Path -Verbose
         if (-not $Path) { return }
         $pythonVersion = Get-PythonVersion $Path -Verbose
-
-        #BackupPath
-        # if ($pythonVersion -eq "2") {
-            #createNewVirtualEnv2 -Name $Name -Path $Path -Packages $Packages -RequirementFile $Requirement
-            #     $Command = (Join-Path (Join-Path (Split-Path $Python -Parent) "Scripts") "virtualenv.exe")
-        #} elseif ($pythonVersion -eq "3") {
-        #} else {
-            #RestorePath
-        #}
 
         # generate the full path of the specified virtual environment, which shall be located in the predefined system path
         $virtualEnvDir = Get-VirtualEnvPath -Name $Name

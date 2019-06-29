@@ -16,10 +16,10 @@ function Get-VirtualEnv {
     .EXAMPLE
         PS C:\> Get-VirtualEnv
 
-        Name      Version
-        ----      -------
-        GScholar  3.7.1
-        jupyter   3.7.3
+        Name    Version Local Requirement
+        ----    ------- ----- -----------
+        biology 3.7.3    True        True
+        math    3.7.3    True        True
 
         -----------
         Description
@@ -45,11 +45,7 @@ function Get-VirtualEnv {
         ----              ------- ----------- ------
         setuptools        41.0.1         True
         pip               19.1.1         True
-        virtualenvwrapper 4.8.4          True
         virtualenv        16.6.1
-        pbr               5.1.1
-        six               1.12.0
-        stevedore         1.30.0
 
         -----------
         Description
@@ -59,7 +55,7 @@ function Get-VirtualEnv {
         System.Strings. Name of the virtual environment.
 
     .OUTPUTS
-        PSCustomObject. Object with contain information about all virtual environments (name, version).
+        PSCustomObject. Object with contain information about all virtual environments.
 
     .NOTES
     #>
@@ -72,7 +68,7 @@ function Get-VirtualEnv {
         [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Information about all packages installed in the specified virtual environment will be returned.")]
         [System.String] $Name,
 
-        [Parameter(HelpMessage="If true, information about all packages installed in the default python distribution will be returned.")]
+        [Parameter(HelpMessage="If switch 'Python' is true, information about all packages installed in the default python distribution will be returned.")]
         [Switch] $Python
     )
 
@@ -82,8 +78,11 @@ function Get-VirtualEnv {
 
         # if the name of a virtual enviroment is not specified, general information about all virtual environments in the predefined system directory are gathered
         if (-not $virtualEnv -and -not $Python) {
-            #   get all virtual environment directories in predefined system directory
-            $virtualEnvSubDirs = Get-ChildItem $VENVDIR
+            #   get all virtual environment directories in predefined system directory as well as the local directories and requirement files
+            $virtualEnvSubDirs = Get-ChildItem -Path $VENVDIR
+            $virtualEnvLocalDir = Get-ChildItem -Path $VENVLOCALDIR -Directory 
+            $virtualEnvRequirement = Get-ChildItem -Path $VENVLOCALDIR -File 
+
             $virtualEnvs = $Null
 
             #   call the python distribution of each virtual environnment and determine the version number
@@ -91,13 +90,19 @@ function Get-VirtualEnv {
                 $virtualEnvs= $VirtualEnvSubDirs | ForEach-Object {
                     if (Test-VirtualEnv -Name $_ -Inverse) {
                         $virtualEnvExe = Get-VirtualEnvExe -Name $_
+                        $Name = $_
                         [PSCustomObject]@{
-                            Name = $_
+                            # name of the virtual environment
+                            Name = $Name
+                            # python version
                             Version = (((. $virtualEnvExe --version 2>&1) -replace "`r|`n","") -split " ")[1]
+                            # download directory of the virtual environment
+                            Local = if ($virtualEnvLocalDir | Where-Object{ $_ -match "^$Name$"}){Get-VirtualEnvLocalDir -Name $Name} else {$Null}
+                            # requirement file of the virtual environment
+                            Requirement = if($virtualEnvRequirement | Where-Object{ $_ -match "^$Name.txt$"}){Get-VirtualEnvRequirementFile -Name $Name} else {$Null}
                         }
                     }
                 }
-
             } else {
                 Write-FormatedError -Message "In predefined system directory do not exist any virtual environments" -Space
             }
