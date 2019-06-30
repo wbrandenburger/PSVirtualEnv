@@ -79,9 +79,9 @@ function Get-VirtualEnv {
         # if the name of a virtual enviroment is not specified, general information about all virtual environments in the predefined system directory are gathered
         if (-not $virtualEnv -and -not $Python) {
             #   get all virtual environment directories in predefined system directory as well as the local directories and requirement files
-            $virtualEnvSubDirs = Get-ChildItem -Path $VENVDIR
-            $virtualEnvLocalDir = Get-ChildItem -Path $VENVLOCALDIR -Directory 
-            $virtualEnvRequirement = Get-ChildItem -Path $VENVLOCALDIR -File 
+            $virtualEnvSubDirs = Get-ChildItem -Path $PSVirtualEnv.WorkDir
+            $virtualEnvLocalDir = Get-ChildItem -Path $PSVirtualEnv.LocalDir -Directory 
+            $virtualEnvRequirement = Get-ChildItem -Path $PSVirtualEnv.LocalDir -File 
 
             $virtualEnvs = $Null
 
@@ -121,7 +121,7 @@ function Get-VirtualEnv {
                 $envExe = Get-VirtualEnvExe -Name $virtualEnv
             }
             else {
-                $envExe = $PYTHONEXE
+                $envExe = $PSVirtualEnv.Python
             }
             return Get-PckgProperty -EnvExe $envExe
    

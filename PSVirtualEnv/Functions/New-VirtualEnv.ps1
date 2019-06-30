@@ -86,7 +86,7 @@ function New-VirtualEnv {
         # create the specified virtual environment
         Write-Host "Creating the virtual environment '$Name'... "
 
-         . $pythonExeLocal "-m" $VIRTUALENVPCKG  $virtualEnvDir "--verbose" 
+         . $pythonExeLocal "-m" virtualenv  $virtualEnvDir "--verbose" 
          
         Write-FormatedSuccess -Message "Virtual environment '$virtualEnvDir' was created." -Space
 

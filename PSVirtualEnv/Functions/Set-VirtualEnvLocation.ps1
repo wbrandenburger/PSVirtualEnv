@@ -37,7 +37,7 @@ function Set-VirtualEnvLocation {
     Process{
         
         # return all aliases of the module
-        Set-Location -Path $VENVDIR
+        Set-Location -Path $PSVirtualEnv.WorkDir
 
     }
 }

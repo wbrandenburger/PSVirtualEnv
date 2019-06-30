@@ -4,78 +4,69 @@
 
 #   settings -------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-    $PSVIRTUALENV = "PSVirtualEnv"
+    
+    # get module name and directory
+    $Script:moduleName = "PSVirtualEnv"
+    $Script:moduleDir = Split-Path -Path $MyInvocation.MyCommand.Path -Parent
 
-    # get directory of the module and generate the directory with the function to be loaded
-    $PSVirtualEnvHome = Split-Path -Path $MyInvocation.MyCommand.Path -Parent
-
-    # get the path of the config file with the module settings
-    $PSVirtualEnvConfig = Join-Path -Path $PSVirtualEnvHome -ChildPath $PSVIRTUALENV 
-
-    $PSVirtualEnvConfig = Get-IniContent -FilePath (Join-Path -Path $PSVirtualEnvHome -ChildPath ("$PSVIRTUALENV" + ".ini") ) 
-
-    # set the default path where virtual environments are located
-    $VENVDIR = $PSVirtualEnvConfig["directories"]["venv-dir"]
-    if (-not $VENVDIR) {
-        Write-Host "The path of the directory vor virtual envrionments are not given." -ForegroundColor Red
-        return
-    }
-    if (-not (Test-Path $VENVDIR)) {
-        mkdir $VENVDIR
+    # if the module shall be tested, the corresponding switch is activated to use the test configuration file
+    if ($env:PSVirtualEnv){
+        $Script:testModule = $True
     }
 
-    $VENVCONFIGDIR = Join-Path -Path $VENVDIR -ChildPath $PSVirtualEnvConfig["directories"]["venv-config-dir"]
-    if (-not (Test-Path $VENVCONFIGDIR)) {
-        mkdir $VENVDIR
+    # execute file with the specific module settings
+    . (Join-Path -Path $Script:moduleDir -ChildPath ($Script:moduleName + ".Module.ps1")) -Test:$Script:testModule
+
+    # load essential functions
+    . $ModuleVar.FunctionsFile
+
+#   configuration --------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
+    # set the default path where the virtual environments are located and their subdirectories defined in the configuration file
+
+    $PSVirtualEnv = New-Object -TypeName PSObject
+
+    @( 
+        @{Name="venv-work-dir"; Section="settings"; Variable="WorkDir"}
+        @{Name="venv-config-dir"; Section="settings"; Variable="ConfigDir"}
+        @{Name="venv-local-dir"; Section="settings"; Variable="LocalDir"}
+    ) | ForEach-Object {
+        $PSVirtualEnv  | Add-Member -MemberType NoteProperty -Name $_.Variable -Value  $ModuleVar.ConfigContent[$_.Section][$_.Name]
+
+        if (-not (Test-Path $PSVirtualEnv.($_.Variable))) {
+            Write-FormatedError -Message "The path $($PSVirtualEnv.($_.Variable)) defined in field $($_.Name) of the module configuration file can not be found." -Space
+            if (-not (New-Item -Path $PSVirtualEnv.($_.Variable) -ItemType Directory -Confirm)){
+                Write-FormatedError -Message "Import of module aborted" -Space
+                exit
+            }
+        }
     }
 
-    $VENVLOCALDIR = Join-Path -Path $VENVDIR -ChildPath $PSVirtualEnvConfig["directories"]["venv-local-dir"]
-    if (-not (Test-Path $VENVLOCALDIR)) {
-        mkdir $VENVDIR
+    # set the default python distribution, virtual environment executable and other settings defined in the configuration file
+    @( 
+        @{Name="python"; Section="settings"; Variable="Python"}
+        @{Name="venv"; Section="settings"; Variable="VirtualEnv"}
+        @{Name="venv-activation"; Section="settings"; Variable="Activation"}
+        @{Name="venv-deactivation"; Section="settings"; Variable="Dectivation"}
+        @{Name="venv-requirement"; Section="settings"; Variable="Requirement"}
+        @{Name="replace-pattern"; Section="settings"; Variable="ReplacePattern"}
+    ) | ForEach-Object {
+        $PSVirtualEnv  | Add-Member -MemberType NoteProperty -Name $_.Variable -Value  $ModuleVar.ConfigContent[$_.Section][$_.Name]
     }
 
-    # set the default python distribution, virtual environment executable and 
-    $PYTHONEXE = $PSVirtualEnvConfig["files"]["python-exe"]
-    $VENVEXE = $PSVirtualEnvConfig["files"]["venv-exe"]
-    $VENVACTIVATION = $PSVirtualEnvConfig["files"]["venv-activation"]
-    $VENVDEACTIVATION = $PSVirtualEnvConfig["files"]["venv-deactivation"]
-    $VENVREQUIREMENT = Join-Path -Path $VENVLOCALDIR -ChildPath $PSVirtualEnvConfig["files"]["venv-requirement"]
-
-    # set the default virtual environment package manager
-    $VIRTUALENVPCKG = $PSVirtualEnvConfig["settings"]["venv-pckg"]
-
-    # define the replace patter
-    $REPLACEPATTERN = $PSVirtualEnvConfig["settings"]["replace-pattern"]
 #   functions ------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
-    # get the directory with the function to be loaded
-    $PSVirtualEnvFunction = Join-Path -Path $PSVirtualEnvHome -ChildPath "Functions"
-
-    @(
-        "Clear-VirtualEnvLocal.ps1"     # public function
-        "Find-Python.ps1",              # public function
-        "Get-VirtualEnv.ps1",           # public function
-        "Get-VirtualEnvAlias.ps1",      # public function
-        "Get-VirtualEnvLocal.ps1",      # public function
-        "Install-VirtualEnvPckg.ps1"    # public function
-        "New-VirtualEnv.ps1",           # public function
-        "Remove-VirtualEnv.ps1",        # public function
-        "Set-VirtualEnvLocation.ps1"    # public function
-        "Start-VirtualEnv.ps1",         # public function
-        "Stop-VirtualEnv.ps1",          # public function
-        "Test-VirtualEnv.ps1",          # public function
-
-        "AdditionalTools.ps1",          # private set of functions 
-        "PythonTools.ps1",              # private set of functions
-        "RequirementTools.ps1"          # private set of functions
-
-    ) | ForEach-Object {
-        . (Join-Path -Path $PSVirtualEnvFunction -ChildPath $_)
+    # load all sets of public and private functions into the module scope
+    Get-ChildItem -Path $ModuleVar.FunctionsDir -Include "*.ps1" -Recurse | ForEach-Object {
+            . $_.FullName
     }
 
-#   alias ----------------------------------------------------------------------
+#   aliases --------------------------------------------------------------------
 # ------------------------------------------------------------------------------
+
+# define aliases for specific function
 @(
     
     @{ Name = "cdvenv";     Value =  "Set-VirtualEnvLocation"}
@@ -88,3 +79,5 @@
 ) | ForEach-Object {
     Set-Alias -Name $_.Name -Value $_.Value
 }
+
+return 1

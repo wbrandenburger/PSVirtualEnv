@@ -80,15 +80,15 @@ function Clear-VirtualEnvLocal {
 
         # get all virtual environment directories in predefined system directory as well as the local directories and requirement files.
         $virtualEnv = Get-VirtualEnv
-        $virtualEnvLocalDir = Get-ChildItem -Path $VENVLOCALDIR -Directory   
-        $virtualEnvRequirement = Get-ChildItem -Path $VENVLOCALDIR -File 
+        $virtualEnvLocalDir = Get-ChildItem -Path $PSVirtualEnv.LocalDir -Directory   
+        $virtualEnvRequirement = Get-ChildItem -Path $PSVirtualEnv.LocalDir -File 
 
         # remove all download directories which can not be bound to an virtual environment
         if (-not $Requirement) {
             $virtualEnvLocalDir | ForEach-Object {
                 if (-not ($_ -in $virtualEnv.Name)){
                     if ($Force) {
-                        Remove-Item -Path (Join-Path -Path $VENVLOCALDIR -ChildPath $_) -Recurse
+                        Remove-Item -Path (Join-Path -Path $PSVirtualEnv.LocalDir -ChildPath $_) -Recurse
                         Write-FormatedSuccess -Message "Download directory '$_' was removed."
                     }
                     else {
@@ -103,7 +103,7 @@ function Clear-VirtualEnvLocal {
             $virtualEnvRequirement | ForEach-Object {
                 if (-not (($_ -replace ".txt", "") -in $virtualEnv.Name)){
                     if ($Force)  {
-                        Remove-Item -Path (Join-Path -Path $VENVLOCALDIR -ChildPath $_)
+                        Remove-Item -Path (Join-Path -Path $PSVirtualEnv.LocalDir -ChildPath $_)
                         Write-FormatedSuccess -Message "Requirement file '$_' was removed."
                     }
                     else {              

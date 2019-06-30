@@ -42,7 +42,7 @@ function Stop-VirtualEnv {
 
         # deactivation of a running virtual environment and create the requirement file 
         if (Get-ActiveVirtualEnv -Name $Name ) {
-            . $VENVDEACTIVATION
+            . $PSVirtualEnv.Deactivation
             $Env:VIRTUAL_ENV = $Null
             Get-VirtualEnvRequirement $Name
 

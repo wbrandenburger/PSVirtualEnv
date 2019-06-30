@@ -54,7 +54,7 @@ function Test-VirtualEnv {
         }
 
         # check if there exists the specified virtual environment in the predefined system directory
-        if ( -not (Get-ChildItem $VENVDIR | Where-Object {$_.Name -eq $Name} )) {
+        if ( -not (Get-ChildItem $PSVirtualEnv.WorkDir | Where-Object {$_.Name -eq $Name} )) {
             if ($VerbosePreference) {
                 Write-FormatedError -Message "The virtual environment '$Name' does not exist." -Space
             }

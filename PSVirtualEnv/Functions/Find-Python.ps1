@@ -53,7 +53,7 @@ function Find-Python {
 
         # if the specified path does not contain an executable, try to detect the standard python distribution in system path
         if (-not $Path) {
-            $Path = $PYTHONEXE
+            $Path = $PSVirtualEnv.Python
             # $Path = Get-Command "python.exe" -ErrorAction SilentlyContinue  | Select-Object -ExpandProperty Source
         }
         elseif (-not $Path.EndsWith('python.exe'))

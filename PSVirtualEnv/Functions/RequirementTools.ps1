@@ -26,7 +26,7 @@ function Get-VirtualEnvRequirementFile {
     # check whether the requirement file exists
     $requirementFile = $Name
     if (-not (Test-Path -Path $requirementFile)) {
-        $requirementFile = $VENVREQUIREMENT -replace $REPLACEPATTERN, $Name
+        $requirementFile = $PSVirtualEnv.Requirement -replace $PSVirtualEnv.ReplacePattern, $Name
     }
 
     # replace the predefined patter
