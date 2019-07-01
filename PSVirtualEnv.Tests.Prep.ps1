@@ -79,3 +79,17 @@
         
         Write-Host "SUCCESS: Virtual environment '$_' exists." -ForegroundColor Green
     }
+
+#   packages of test environment -----------------------------------------------
+# ------------------------------------------------------------------------------
+    $Script:Package = @( 
+        'Click-7.0-py2.py3-none-any.whl'
+        'cycler-0.10.0-py2.py3-none-any.whl'
+        'kiwisolver-1.1.0-cp37-none-win_amd64.whl'
+        'matplotlib-3.1.0-cp37-cp37m-win_amd64.whl'
+        'numpy-1.16.4-cp37-cp37m-win_amd64.whl'
+        'pyparsing-2.4.0-py2.py3-none-any.whl'
+        'python_dateutil-2.8.0-py2.py3-none-any.whl'
+        'setuptools-41.0.1-py2.py3-none-any.whl'
+        'six-1.12.0-py2.py3-none-any.whl'
+    )

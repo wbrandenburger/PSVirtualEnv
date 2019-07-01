@@ -53,7 +53,10 @@ function New-VirtualEnv {
         [System.String] $Path,
 
         [Parameter(HelpMessage="Path to a requirement file, or name of a virtual environment.")]
-        [System.String] $Requirement
+        [System.String] $Requirement,
+
+        [Parameter(HelpMessage="If switch 'Offline' is true, the virtual environment will be created without download packages.")]
+        [Switch] $Offline
     )
 
     Process{
@@ -67,11 +70,24 @@ function New-VirtualEnv {
         }
         
         # get existing requirement file 
-        if ($Requirement) {
+        if ($Offline -and $Requirement)
+        {   
+            if (Test-Path -Path $Requirement ){
+                $requirementFile = $Requirement
+                
+                $hostPath = Get-Location
+                Set-Location -Path (Split-Path -Path $requirementFile -Parent)
+            }
+            else {
+                Write-FormatedError -Message "There can not be found a existing requirement file." -Space
+                return
+            }
+        }
+        if (-not $Offline -and $Requirement){
             $requirementFile = Get-VirtualEnvRequirementFile -Name $Requirement
             if (-not (Test-VirtualEnvRequirementFile -Name $requirementFile)) {
                 Write-FormatedError -Message "There can not be found a existing requirement file." -Space
-                return $Null
+                return
             }
         }
 
@@ -83,10 +99,15 @@ function New-VirtualEnv {
         # generate the full path of the specified virtual environment, which shall be located in the predefined system path
         $virtualEnvDir = Get-VirtualEnvPath -Name $Name
    
+        # set the offline flag, which will prevent the virtual environment to download packages to be installed
+        if ($Offline) {
+            $offlineCreation = "--never-download"
+        }
+
         # create the specified virtual environment
         Write-FormatedProcess "Creating the virtual environment '$Name'."
 
-         . $pythonExeLocal "-m" virtualenv  $virtualEnvDir --verbose
+         . $pythonExeLocal "-m" virtualenv  $virtualEnvDir --verbose $offlineCreation
         
         # check whether the virtual environment could be created
         if (Test-VirtualEnv -Name $Name -Inverse) {
@@ -104,6 +125,10 @@ function New-VirtualEnv {
             Install-PythonPckg -EnvExe (Get-VirtualEnvExe -Name $Name) -Requirement $requirementFile
             
             Get-VirtualEnv -Name $Name
+        }
+
+        if ($Offline) {
+            Set-Location -Path $hostPath
         }
     }
 }

@@ -24,6 +24,10 @@ Describe -Tags 'Module' "General module functionality" {
             Get-Alias -Definition Set-VirtualEnvLocation | Where-Object {$_.name -eq "cdvenv"} | Measure-Object | Select-Object -ExpandProperty Count | Should Be 1
         }
         # act
+        It "Copy-VirtualEnv alias exists" {
+            Get-Alias -Definition Copy-VirtualEnv | Where-Object {$_.name -eq "cpvenv"} | Measure-Object | Select-Object -ExpandProperty Count | Should Be 1
+        }
+        # act
         It "Get-VirtualEnv alias exists" {
             Get-Alias -Definition Get-VirtualEnv | Where-Object {$_.name -eq "lsvenv"} | Measure-Object | Select-Object -ExpandProperty Count | Should Be 1
         }

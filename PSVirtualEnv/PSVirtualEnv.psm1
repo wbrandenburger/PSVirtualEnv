@@ -70,6 +70,7 @@
 @(
     
     @{ Name = "cdvenv";     Value =  "Set-VirtualEnvLocation"}
+    @{ Name = "cpvenv";     Value =  "Copy-VirtualEnv"}
     @{ Name = "lsvenv";     Value =  "Get-VirtualEnv"}
     @{ Name = "mkvenv";     Value =  "New-VirtualEnv"}
     @{ Name = "rmvenv";     Value =  "Remove-VirtualEnv"}

@@ -18,7 +18,7 @@ function Get-VirtualEnvLocal {
     .PARAMETER All
 
     .EXAMPLE
-        Get-VirtualEnvLocal -Name venv
+        PS C:\>Get-VirtualEnvLocal -Name venv
 
         SUCCESS: Packages of virtual environment 'venv' were downloaded to 'A:\VirtualEnv\.temp\venv'.
 
@@ -27,7 +27,7 @@ function Get-VirtualEnvLocal {
         Download all packages of the virtual environment 'venv' to a predefined download directory.
 
     .EXAMPLE
-        Get-VirtualEnvLocal -All
+        PS C:\>Get-VirtualEnvLocal -All
 
         -----------
         Description

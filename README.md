@@ -1,8 +1,8 @@
-# [PSVirtualEnv](https://github.com/wbrandenburger/PSVirtualEnv)
+# [PSVirtualEnv](https://github.com/wbrandenburger/PSVirtualEnv) Beta
 
 ## Table of Contents
 
-- [PSVirtualEnv](#PSVirtualEnv)
+- [PSVirtualEnv Beta](#PSVirtualEnv-Beta)
   - [Table of Contents](#Table-of-Contents)
   - [Description](#Description)
     - [Origin](#Origin)
@@ -17,23 +17,40 @@ The module PSVirtualEnv is a set of powershell extensions to Ian Bicking’s vir
 
 ### Origin
 
-This code is an extension of [virtualenvwrapper-powershell](https://github.com/regisf/virtualenvwrapper-powershell)
+This module is an extension of [virtualenvwrapper-powershell](https://github.com/regisf/virtualenvwrapper-powershell) and adds more functionality to manage virtual environments with the powershell, especially offline installations.
 
 ## Installation
 
-The folder PSVirtualEnv has to be added to the directories of the system, where powershell search for modules.
+Set the environment variable `PYTHONTEMP` to the directory with the python executable
 
-Change the fields in file 'PSVirtualEnv.ini', pointing to existing locations:
+```batch
+set PYTHONTEMP=C:\Python\Python37
+```
+
+and run the file `.\PSVirtualEnv.Install.bat`.
+
+Change the fields in file 'PSVirtualEnv.ini' to existing locations:
 
 ```ini
 [settings]
+
 ; default path where virtual environments are located
-dir-virtualenv = "A:\OneDrive\Projects\VirtualEnv"
+venv-work-dir = "A:\VirtualEnv"
+
+; config path of virtual environments
+venv-config-dir =  "A:\VirtualEnv\.config"
+
+; default download path for python packages
+venv-local-dir =  "A:\VirtualEnv\.temp"
+
+; default path for the requirements
+venv-requirement = "A:\VirtualEnv\.temp\%rplc.txt"
+
 ; default python distribution
-python-exe = "C:\Python\Python37\python.exe"
-; default virtual environment package manager
-package-virtualenv = "virtualenv"
+python = "C:\Python\Python37\python.exe"
 ```
+
+Finally add the subdirectory `.\PSVirtualEnv` with its subdirectories and files to on directory of the system, where PowerShell search for modules.
 
 ## Examples
 

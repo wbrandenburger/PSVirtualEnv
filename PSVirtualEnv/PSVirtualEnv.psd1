@@ -8,7 +8,7 @@
 RootModule = 'PSVirtualEnv'
 
 # Version number of this module.
-ModuleVersion = '0.2.4'
+ModuleVersion = '0.3.0'
 
 # ID used to uniquely identify this module
 GUID = '41a9e505-d878-4b65-a8bf-b90bd2f2ddf6'
@@ -45,7 +45,7 @@ SOFTWARE.
 '
 
 # Description of the functionality provided by this module
-Description = '        The module PSVirtualEnv is a set of powershell extensions to Ian Bickings virtualenv tool in python. The module includes wrappers for creating and deleting virtual environments and otherwise managing your development workflow, making it easier to work on more than one project at a time without introducing conflicts in their dependencies.'
+Description = ' The module PSVirtualEnv is a set of powershell extensions to Ian Bickings virtualenv tool in python. The module includes wrappers for creating and deleting virtual environments and otherwise managing your development workflow, making it easier to work on more than one project at a time without introducing conflicts in their dependencies.'
 
 # Minimum version of the Windows PowerShell engine required by this module
 PowerShellVersion = '3.0'
@@ -91,19 +91,20 @@ NestedModules = @()
 # Functions to export from this module
 FunctionsToExport = @(
     'Clear-VirtualEnvLocal'
-    'Get-VirtualEnv',
-    'Get-VirtualEnvAlias',
-    'Get-VirtualEnvLocal',
+    'Copy-VirtualEnv'
+    'Get-VirtualEnv'
+    'Get-VirtualEnvAlias'
+    'Get-VirtualEnvLocal'
     'Get-VirtualEnvRequirement'
     'Get-VirtualEnvSupplement'
     'Install-VirtualEnvPckg'
-    'New-VirtualEnv',
-    'Remove-VirtualEnv',
+    'New-VirtualEnv'
+    'Remove-VirtualEnv'
     'Remove-VirtualEnvRequirement'
     'Set-VirtualEnvLocation'
-    'Start-VirtualEnv',
+    'Start-VirtualEnv'
     'Stop-VirtualEnv'
-    'Test-VirtualEnv',
+    'Test-VirtualEnv'
     'Find-Python'
 )
 
@@ -116,8 +117,9 @@ VariablesToExport = @()
 # Aliases to export from this module
 AliasesToExport = @(
     'cdvenv'
-    'rmvenv',
-    'lsvenv',
+    'cpvenv'
+    'rmvenv'
+    'lsvenv'
     'mkvenv'
     'runvenv'
     'stvenv'

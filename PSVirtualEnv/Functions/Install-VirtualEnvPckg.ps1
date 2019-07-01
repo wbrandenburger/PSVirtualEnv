@@ -9,26 +9,22 @@ function Install-VirtualEnvPckg {
 
     <#
     .SYNOPSIS
-        Download packages of a specified virtual environment.
 
     .DESCRIPTION
-        Download packages of a specified virtual environment to a predefined local directory.
+        
     
     .PARAMETER Name
 
     .PARAMETER All
 
     .EXAMPLE
-        Get-VirtualEnvLocal -Name venv
-
-        SUCCESS: Packages of virtual environment 'venv' were downloaded to 'A:\VirtualEnv\.temp\venv'.
+        PS> Install-VirtualEnvPckg -Name venv
 
         -----------
         Description
-        Download all packages of the virtual environment 'venv' to a predefined download directory.
-
+       
     .INPUTS
-        System.String. Name of the virtual environment, which packages shall be downloaded.
+        None.
 
     .OUTPUTS
         None.
@@ -46,12 +42,28 @@ function Install-VirtualEnvPckg {
         [Switch] $All,
 
         [Parameter(HelpMessage="Path to a requirements file, or name of a virtual environment.")]
-        [System.String] $Requirement
+        [System.String] $Requirement,
+
+        [Parameter(HelpMessage="If switch 'Offline' is true, the virtual environment will be created without download packages.")]
+        [Switch] $Offline
     )
     
     Process {
-
-        if ($Requirement){
+        # get existing requirement file 
+        if ($Offline -and $Requirement)
+        {   
+            if (Test-Path -Path $Requirement ){
+                $requirementFile = $Requirement
+                
+                $hostPath = Get-Location
+                Set-Location -Path (Split-Path -Path $requirementFile -Parent)
+            }
+            else {
+                Write-FormatedError -Message "There can not be found a existing requirement file." -Space
+                return
+            }
+        }
+        if (-not $Offline -and $Requirement){
             $requirementFile = Get-VirtualEnvRequirementFile -Name $Requirement
             if (-not (Test-VirtualEnvRequirementFile -Name $requirementFile)) {
                 Write-FormatedError -Message "There can not be found a existing requirement file." -Space
@@ -92,6 +104,10 @@ function Install-VirtualEnvPckg {
             }
 
             $virtualEnvIdx += 1
+        }
+
+        if ($Offline) {
+            Set-Location -Path $hostPath
         }
 
         if ($Name) {  Get-VirtualEnv -Name $Name }
