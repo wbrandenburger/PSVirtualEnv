@@ -7,6 +7,7 @@
   - [Description](#Description)
     - [Origin](#Origin)
   - [Installation](#Installation)
+  - [Dependencies](#Dependencies)
   - [Examples](#Examples)
   - [Authors/Contributors](#AuthorsContributors)
     - [Author](#Author)
@@ -51,6 +52,14 @@ python = "C:\Python\Python37\python.exe"
 ```
 
 Finally add the subdirectory `.\PSVirtualEnv` with its subdirectories and files to on directory of the system, where PowerShell search for modules.
+
+## Dependencies
+
+The following powershell modules have to be installed: 
+
+ - [PSIni](https://github.com/wbrandenburger/PsIni)
+
+Additionally, a python distribution version 3.3 or higher has to be installed.
 
 ## Examples
 
