@@ -5,6 +5,18 @@
 #   settings -------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
+#   powershell module ----------------------------------------------------------
+# ------------------------------------------------------------------------------
+
+    # install necessary powershell modules
+    if (Get-Module -ListAvailable -Name PSIni) {
+        Write-Host "SUCCESS: Module PSIni exists" -ForegroundColor Green
+    } 
+    else {
+        Write-Host "ERROR: Module does not exist" -ForegroundColor Red
+        Install-Module PSIni -Force -Verbose
+    }
+
 #   python distribution --------------------------------------------------------
 # ------------------------------------------------------------------------------
     # get module name and directory

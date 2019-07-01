@@ -27,7 +27,7 @@ Set the environment variable `PYTHONTEMP` to the directory with the python execu
 set PYTHONTEMP=C:\Python\Python37
 ```
 
-and run the file `.\PSVirtualEnv.Install.bat`.
+and run the file `.\PSVirtualEnv.Install.bat` from powershell as administrator.
 
 Change the fields in file 'PSVirtualEnv.ini' to existing locations:
 
