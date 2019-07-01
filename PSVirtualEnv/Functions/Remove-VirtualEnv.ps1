@@ -57,7 +57,17 @@ function Remove-VirtualEnv  {
         $virtualEnvDir = Get-VirtualEnvPath -Name $Name
         
         # remove specified virtual environment
-        Remove-Item -Path $virtualEnvDir -Recurse 
-        Write-FormatedSuccess -Message "Virtual Environment '$Name' was deleted permanently." -Space
+        Remove-Item -Path $virtualEnvDir -Recurse
+        
+        # check whether the virtual environment could be removed
+        if (-not (Test-Path -Path $virtualEnvDir)) {
+            Write-FormatedSuccess -Message "Virtual Environment '$Name' was deleted permanently." -Space
+        }
+        else {
+            Write-FormatedError -Message "Virtual environment '$Name' could not be deleted." -Space
+        }
+
+        Get-ChildItem -Path $PSVirtualEnv.WorkDir -Exclude "*.*" -Directory
+
     }
 }

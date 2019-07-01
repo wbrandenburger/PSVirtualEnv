@@ -48,7 +48,7 @@
         @{Name="python"; Section="settings"; Variable="Python"}
         @{Name="venv"; Section="settings"; Variable="VirtualEnv"}
         @{Name="venv-activation"; Section="settings"; Variable="Activation"}
-        @{Name="venv-deactivation"; Section="settings"; Variable="Dectivation"}
+        @{Name="venv-deactivation"; Section="settings"; Variable="Deactivation"}
         @{Name="venv-requirement"; Section="settings"; Variable="Requirement"}
         @{Name="replace-pattern"; Section="settings"; Variable="ReplacePattern"}
     ) | ForEach-Object {
@@ -59,7 +59,7 @@
 # ------------------------------------------------------------------------------
 
     # load all sets of public and private functions into the module scope
-    Get-ChildItem -Path $ModuleVar.FunctionsDir -Include "*.ps1" -Recurse | ForEach-Object {
+    Get-ChildItem -Path $ModuleVar.FunctionsDir -Filter "*.ps1" | ForEach-Object {
             . $_.FullName
     }
 

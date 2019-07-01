@@ -52,7 +52,7 @@ function New-VirtualEnv {
         [Parameter(Position=2, HelpMessage="Path to a folder or executable of a python distribution.")]
         [System.String] $Path,
 
-        [Parameter(HelpMessage="Path to a requirements file, or name of a virtual environment.")]
+        [Parameter(HelpMessage="Path to a requirement file, or name of a virtual environment.")]
         [System.String] $Requirement
     )
 
@@ -71,26 +71,33 @@ function New-VirtualEnv {
             $requirementFile = Get-VirtualEnvRequirementFile -Name $Requirement
             if (-not (Test-VirtualEnvRequirementFile -Name $requirementFile)) {
                 Write-FormatedError -Message "There can not be found a existing requirement file." -Space
-                return
+                return $Null
             }
         }
 
         # find a path, where a python distribution is located.
         $pythonExeLocal = Find-Python $Path -Verbose
-        if (-not $pythonExeLocal) { return }
+        if (-not $pythonExeLocal) { return $Null }
         $pythonVersion = Get-PythonVersion $pythonExeLocal -Verbose
 
         # generate the full path of the specified virtual environment, which shall be located in the predefined system path
         $virtualEnvDir = Get-VirtualEnvPath -Name $Name
    
         # create the specified virtual environment
-        Write-Host "Creating the virtual environment '$Name'... "
+        Write-FormatedProcess "Creating the virtual environment '$Name'."
 
-         . $pythonExeLocal "-m" virtualenv  $virtualEnvDir "--verbose" 
-         
-        Write-FormatedSuccess -Message "Virtual environment '$virtualEnvDir' was created." -Space
-
-        Get-VirtualEnv
+         . $pythonExeLocal "-m" virtualenv  $virtualEnvDir --verbose
+        
+        # check whether the virtual environment could be created
+        if (Test-VirtualEnv -Name $Name -Inverse) {
+            Write-FormatedSuccess -Message "Virtual environment '$virtualEnvDir' was created." -Space
+            Get-VirtualEnv
+        }
+        else {
+            Write-FormatedError -Message "Virtual environment '$virtualEnvDir' could not be created." -Space
+            Get-VirtualEnv
+            return $Null
+        }
 
         # install packages from the requirement file
         if ($Requirement) {

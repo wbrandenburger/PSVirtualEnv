@@ -33,25 +33,35 @@ function Stop-VirtualEnv {
 
     [OutputType([Void])]
 
-    Param(        
+    Param(
+        [Parameter(HelpMessage="If switch 'Requirement' is true, requirement file of the virtual environment to be stopped will be created.")]
+        [Switch] $Requirement
     )
 
     Process {
-
-        $Name =  $Env:VIRTUAL_ENV
-
+  
         # deactivation of a running virtual environment and create the requirement file 
-        if (Get-ActiveVirtualEnv -Name $Name ) {
-            . $PSVirtualEnv.Deactivation
-            $Env:VIRTUAL_ENV = $Null
-            Get-VirtualEnvRequirement $Name
+        $virtualEnvName =  $Env:VIRTUAL_ENV
+        if (Get-ActiveVirtualEnv -Name $virtualEnvName ) {            
+            
+            # create requirement file 
+            if ($Requirement) {
+                Get-VirtualEnvRequirement -Name $virtualEnvName
+            }
 
-            Write-FormatedSuccess -Message "Virtual enviroment '$Name' was stopped." -Space
+            # deactivate the virtual environment
+            . $PSVirtualEnv.Deactivation
+
+            # if the environment variable is not empty, deavtivation failed
+            if (-not $Env:VIRTUAL_ENV) {
+                Write-FormatedSuccess -Message "Virtual enviroment '$virtualEnvName' was stopped." -Space
+            }
+            else {
+                Write-FormatedError -Message "Virtual environment '$virtualEnvName' could not be stopped." -Space
+            }
         }
         else {
             Write-FormatedError -Message "There is no running virtual environment." -Space
         }
-        
-        return
     }
 }

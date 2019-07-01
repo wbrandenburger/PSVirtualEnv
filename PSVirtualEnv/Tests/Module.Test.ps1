@@ -9,13 +9,40 @@ Describe -Tags 'Module' "General module functionality" {
     Context "Load module $($ModuleVar.Name)" {
 
         # act
-        Import-Module $ModuleVar.ModuleDir -Force
+        Import-Module $ModuleVar.ModuleDir -Force -ErrorAction Stop
 
         # assert
         It "loads the module" {
             (Get-Module).name -contains $ModuleVar.Name | Should Be $true
         }
 
+    }
+
+    Context "Aliases of module $($ModuleVar.Name)" {
+        # act
+        It "Set-VirtualEnvLocation alias exists" {
+            Get-Alias -Definition Set-VirtualEnvLocation | Where-Object {$_.name -eq "cdvenv"} | Measure-Object | Select-Object -ExpandProperty Count | Should Be 1
+        }
+        # act
+        It "Get-VirtualEnv alias exists" {
+            Get-Alias -Definition Get-VirtualEnv | Where-Object {$_.name -eq "lsvenv"} | Measure-Object | Select-Object -ExpandProperty Count | Should Be 1
+        }
+        # act
+        It "New-VirtualEnv alias exists" {
+            Get-Alias -Definition New-VirtualEnv | Where-Object {$_.name -eq "mkvenv"} | Measure-Object | Select-Object -ExpandProperty Count | Should Be 1
+        }
+        # act
+        It "Remove-VirtualEnv alias exists" {
+            Get-Alias -Definition Remove-VirtualEnv | Where-Object {$_.name -eq "rmvenv"} | Measure-Object | Select-Object -ExpandProperty Count | Should Be 1
+        }
+        # act
+        It "Start-VirtualEnv alias exists" {
+            Get-Alias -Definition Start-VirtualEnv | Where-Object {$_.name -eq "runvenv"} | Measure-Object | Select-Object -ExpandProperty Count | Should Be 1
+        }
+        # act
+        It "Stop-VirtualEnv alias exists" {
+            Get-Alias -Definition Stop-VirtualEnv | Where-Object {$_.name -eq "stvenv"} | Measure-Object | Select-Object -ExpandProperty Count | Should Be 1
+        }
     }
 
     Context  "$($ModuleVar.Name) manifest" {

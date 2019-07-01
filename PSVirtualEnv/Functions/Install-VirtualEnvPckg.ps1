@@ -98,3 +98,49 @@ function Install-VirtualEnvPckg {
         else { Get-VirtualEnv } 
     }
 }
+
+
+#   function -------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+function Install-PythonPckg {
+
+    <#
+    .DESCRIPTION
+        Gets the properties of all packages in a python environment.
+    
+    .PARAMETER EnvExe
+
+    .PARAMETER Requirement
+
+    .OUTPUTS
+        PSCustomObject. Properties of all packages in a python environment
+    #>
+
+    
+    [CmdletBinding(PositionalBinding=$True)]
+
+    [OutputType([PSCustomObject])]
+
+    Param (
+        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Executable of a python distribution.")]
+        [System.String] $EnvExe,
+
+        [Parameter(Position=2, Mandatory=$True, HelpMessage="Path to a requirements file.")]
+        [System.String] $Requirement,
+
+        [Parameter(HelpMessage="If switch 'Upgrade' is true the package will be upgraded.")]
+        [Switch] $Upgrade
+    )
+
+    $UpgradeCmd = ""
+    if ($Upgrade) {
+        $UpgradeCmd = "--upgrade"
+    }
+
+    # install packages from a requirement file
+    Write-FormatedMessage -Message "Install missing packages from requirement file '$Requirement'." -Color Yellow
+
+    . $EnvExe -m pip install --requirement $Requirement $UpgradeCmd
+
+    Write-FormatedSuccess -Message "Packages from requirement file '$Requirement' were installed."
+}

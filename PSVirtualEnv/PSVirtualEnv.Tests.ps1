@@ -1,6 +1,8 @@
 # ==============================================================================
 #   PSVirtualEnv.Tests.ps1 -----------------------------------------------------
 # ==============================================================================
+#   dependencies ---------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 #   settings -------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -15,7 +17,14 @@
     # execute file with the specific module settings
     . (Join-Path -Path $Script:moduleDir -ChildPath ($Script:moduleName + ".Module.ps1"))
 
+    # load essential functions
+    . $ModuleVar.FunctionsFile
+    
+    # NECESSARY??????
     Set-Location -Path $Script:moduleDir 
+
+#   test environment -----------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 #   module test ----------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -68,10 +77,8 @@
 # ------------------------------------------------------------------------------
 
     # invoke all scripts below listed with pester
-    @(
-        "Module.Test.ps1"     # test module manifest
-    ) | ForEach-Object {
-        Invoke-Pester -Script  (Join-Path -Path $ModuleVar.TestsDir -ChildPath $_)
+    Get-ChildItem -Path $ModuleVar.TestsDir -Filter "*.ps1" | ForEach-Object {
+        Invoke-Pester -Script  $_.FullName
     }
 
 #   end of tests ---------------------------------------------------------------

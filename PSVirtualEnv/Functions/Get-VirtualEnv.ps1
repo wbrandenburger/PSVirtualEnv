@@ -73,11 +73,9 @@ function Get-VirtualEnv {
     )
 
     Process {
-        
-        $virtualEnv = $Name
 
         # if the name of a virtual enviroment is not specified, general information about all virtual environments in the predefined system directory are gathered
-        if (-not $virtualEnv -and -not $Python) {
+        if (-not $Name -and -not $Python) {
             #   get all virtual environment directories in predefined system directory as well as the local directories and requirement files
             $virtualEnvSubDirs = Get-ChildItem -Path $PSVirtualEnv.WorkDir
             $virtualEnvLocalDir = Get-ChildItem -Path $PSVirtualEnv.LocalDir -Directory 
@@ -90,16 +88,16 @@ function Get-VirtualEnv {
                 $virtualEnvs= $VirtualEnvSubDirs | ForEach-Object {
                     if (Test-VirtualEnv -Name $_ -Inverse) {
                         $virtualEnvExe = Get-VirtualEnvExe -Name $_
-                        $Name = $_
+                        $virtualEnvName = $_
                         [PSCustomObject]@{
                             # name of the virtual environment
-                            Name = $Name
+                            Name = $virtualEnvName
                             # python version
                             Version = (((. $virtualEnvExe --version 2>&1) -replace "`r|`n","") -split " ")[1]
                             # download directory of the virtual environment
-                            Local = if ($virtualEnvLocalDir | Where-Object{ $_ -match "^$Name$"}){Get-VirtualEnvLocalDir -Name $Name} else {$Null}
+                            Local = if ($virtualEnvLocalDir | Where-Object{ $_ -match "^$virtualEnvName$"}){Get-VirtualEnvLocalDir -Name $virtualEnvName} else {$Null}
                             # requirement file of the virtual environment
-                            Requirement = if($virtualEnvRequirement | Where-Object{ $_ -match "^$Name.txt$"}){Get-VirtualEnvRequirementFile -Name $Name} else {$Null}
+                            Requirement = if($virtualEnvRequirement | Where-Object{ $_ -match "^$virtualEnvName.txt$"}){Get-VirtualEnvRequirementFile -Name $virtualEnvName} else {$Null}
                         }
                     }
                 }
@@ -114,17 +112,62 @@ function Get-VirtualEnv {
             # get the absolute path of the executable of the specified virtual environment
             if (-not $Python) {                     
                 # check whether the specified virtual environment exists
-                if (-not (Test-VirtualEnv -Name $virtualEnv -Verbose)){
+                if (-not (Test-VirtualEnv -Name $Name -Verbose)){
                     Get-VirtualEnv
                     return $Null
                 }
-                $envExe = Get-VirtualEnvExe -Name $virtualEnv
+                $envExe = Get-VirtualEnvExe -Name $Name
+
             }
             else {
                 $envExe = $PSVirtualEnv.Python
             }
+           
             return Get-PckgProperty -EnvExe $envExe
    
         }
     }
+}
+
+#   function -------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+function Get-PckgProperty {
+
+    <#
+    .DESCRIPTION
+        Gets the properties of all packages in a python environment.
+    
+    .PARAMETER EnvExe
+
+    .OUTPUTS
+        PSCustomObject. Properties of all packages in a python environment
+    #>
+
+    [CmdletBinding(PositionalBinding=$True)]
+
+    [OutputType([PSCustomObject])]
+
+    Param (
+        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Executable of a python distribution.")]
+        [System.String] $EnvExe
+    )
+
+    # get the properties of all packages in the specified virtual environment
+    $envPckg = . $EnvExe -m pip list --format json | ConvertFrom-Json # all available packages
+    $envOutDated = . $EnvExe -m pip list --format json --outdated | ConvertFrom-Json # all outdated packages
+    $envIndependent = . $EnvExe -m pip list --format json --not-required | ConvertFrom-Json # all independent packages
+
+    # combine all gathered properties about the packages in the specified virtual environment
+    return $envPckg | ForEach-Object{
+        $pckg = $_
+        $outDated = $envOutDated | Where-Object {$_.Name -eq $pckg.Name}
+        $independent = $envIndependent | Where-Object {$_.Name -eq $pckg.Name}
+
+        [PSCustomObject]@{
+            Name = $pckg.Name
+            Version = $pckg.Version
+            Independent = if ( $independent ) {$True} else {$Null}
+            Latest = $outDated.Latest
+        }
+    } | Sort-Object -Property Independent -Descending | Format-Table
 }

@@ -4,6 +4,40 @@
 
 #   function -------------------------------------------------------------------
 # ------------------------------------------------------------------------------
+function Write-FormatedProcess {
+
+    <#
+    .DESCRIPTION
+        Displays a formated process message.
+
+    .PARAMETER Message
+
+    .PARAMETER Space
+
+    .OUTPUTS
+        None.
+    #>
+
+    [OutputType([Void])]
+
+    Param(
+        [Parameter(HelpMessage="Message, which should be displayed.")]
+        [System.String] $Message,
+
+        [Parameter(HelpMessage="If Space is true, spaces will be displayed.")]
+        [Switch] $Space
+    )
+
+    if ($Space) { Write-Host }
+    Write-Host "PROCESS: $Message" -ForegroundColor Yellow
+    if ($Space) { Write-Host }
+}
+
+#   function -------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
+#   function -------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 function Write-FormatedError {
 
     <#
@@ -64,6 +98,8 @@ function Write-FormatedSuccess {
     if ($Space) { Write-Host }
 }
 
+#   function -------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 function Write-FormatedMessage {
     
     <#
