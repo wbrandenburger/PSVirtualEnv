@@ -57,9 +57,14 @@ function Start-VirtualEnv {
         . (Get-VirtualEnvActivationScript -Name $Name)
         Write-FormatedSuccess -Message "Virtual enviroment '$Name' was started." -Space
         
-        $Env:OLD_PYTHON_PATH = $Env:PYTHON_PATH
-        $Env:VIRTUAL_ENV = $Name
+        # set environment variable
 
+            # set a backup of the pythonhome environment variable
+            [System.Environment]::SetEnvironmentVariable("VIRTUAL_ENV_PYTHONHOME",  [System.Environment]::GetEnvironmentVariable("PYTHONHOME", "process"), "process")
+            # set the pythonhome variable in scope process to the path of the virtual environment
+            [System.Environment]::SetEnvironmentVariable("PYTHONHOME", (Get-VirtualEnvPath -Name $Name), "process")
+            #set the name of the virtual environment
+            [System.Environment]::SetEnvironmentVariable("VIRTUAL_ENV", $Name ,"process")
         return
     }
 }

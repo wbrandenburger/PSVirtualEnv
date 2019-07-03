@@ -36,7 +36,12 @@
 
         if (-not (Test-Path $PSVirtualEnv.($_.Variable))) {
             Write-FormatedError -Message "The path $($PSVirtualEnv.($_.Variable)) defined in field $($_.Name) of the module configuration file can not be found." -Space
-            if (-not (New-Item -Path $PSVirtualEnv.($_.Variable) -ItemType Directory -Confirm)){
+
+            $choices = "&Yes", "&No"
+            if ($Host.UI.PromptForChoice($Null, "Create directory '$($PSVirtualEnv.($_.Variable))'?", $choices, 1) -eq 0) {
+                New-Item -Path $PSVirtualEnv.($_.Variable) -ItemType Directory
+            } 
+            else {
                 Write-FormatedError -Message "Import of module aborted" -Space
                 exit
             }
@@ -66,19 +71,19 @@
 #   aliases --------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
-# define aliases for specific function
-@(
-    
-    @{ Name = "cdvenv";     Value =  "Set-VirtualEnvLocation"}
-    @{ Name = "cpvenv";     Value =  "Copy-VirtualEnv"}
-    @{ Name = "lsvenv";     Value =  "Get-VirtualEnv"}
-    @{ Name = "mkvenv";     Value =  "New-VirtualEnv"}
-    @{ Name = "rmvenv";     Value =  "Remove-VirtualEnv"}
-    @{ Name = "runvenv";    Value =  "Start-VirtualEnv"}
-    @{ Name = "stvenv";     Value =  "Stop-VirtualEnv"}
+    # define aliases for specific function
+    @(
+        
+        @{ Name = "cdvenv";     Value =  "Set-VirtualEnvLocation"}
+        @{ Name = "cpvenv";     Value =  "Copy-VirtualEnv"}
+        @{ Name = "lsvenv";     Value =  "Get-VirtualEnv"}
+        @{ Name = "mkvenv";     Value =  "New-VirtualEnv"}
+        @{ Name = "rmvenv";     Value =  "Remove-VirtualEnv"}
+        @{ Name = "runvenv";    Value =  "Start-VirtualEnv"}
+        @{ Name = "stvenv";     Value =  "Stop-VirtualEnv"}
 
-) | ForEach-Object {
-    Set-Alias -Name $_.Name -Value $_.Value
-}
+    ) | ForEach-Object {
+        Set-Alias -Name $_.Name -Value $_.Value
+    }
 
 return 1

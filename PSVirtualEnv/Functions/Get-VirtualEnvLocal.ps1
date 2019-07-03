@@ -70,10 +70,11 @@ function Get-VirtualEnvLocal {
             $requirementFile = Get-VirtualEnvRequirementFile -Name $_.Name
             $virtualEnvLocal = Get-VirtualEnvLocalDir -Name $_.Name
 
-            # check whether the requirement file exists and create the respective file if it can not be found
-            if (-not (Test-Path $requirementFile)){
-                Get-VirtualEnvRequirement -EnvExe (Get-VirtualEnvExe -Name $_.Name)  -Dest $requirementFile
+            # remove the requirement file when it exists and create the respective file
+            if (Test-Path $requirementFile){
+                Remove-Item -Path $requirementFile -Force
             }
+            Get-VirtualEnvRequirement -Name $_.Name
 
             # remove a previous folder, which contains download file of packages related to a older state of the virtual environment
             if (Test-Path $virtualEnvLocal){
@@ -92,8 +93,9 @@ function Get-VirtualEnvLocal {
             Write-FormatedSuccess -Message "Local requirement file '$requirementFileLocal' for virtual environment '$($_.Name)' was created."
             
             # write content of local requirement file to host
-            Write-Host "Content of '$requirementFileLocal':"
-            Get-Content $requirementFileLocal
+            Write-Host
+            Write-Host "Content of '$requirementFileLocal':" -ForeGroundColor DarkGray
+            Get-Content $requirementFileLocal 
 
             $virtualEnvIdx += 1
         }

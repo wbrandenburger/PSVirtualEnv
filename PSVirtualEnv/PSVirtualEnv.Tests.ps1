@@ -20,9 +20,6 @@
     # load essential functions
     . $ModuleVar.FunctionsFile
     
-    # NECESSARY??????
-    Set-Location -Path $Script:moduleDir 
-
 #   test environment -----------------------------------------------------------
 # ------------------------------------------------------------------------------
 

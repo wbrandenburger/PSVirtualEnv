@@ -16,6 +16,8 @@ function Get-VirtualEnvRequirementFile {
         System.String. Absolute path of a requirement file related to a specific virtual environment
     #>
 
+    [CmdletBinding(PositionalBinding=$True)]
+
     [OutputType([System.String])]
 
     Param(
@@ -50,6 +52,8 @@ function Get-VirtualEnvRequirement {
     .OUTPUTS
         None.
     #>
+
+    [CmdletBinding()]
 
     [OutputType([Void])]
 

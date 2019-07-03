@@ -41,7 +41,7 @@ function Stop-VirtualEnv {
     Process {
   
         # deactivation of a running virtual environment and create the requirement file 
-        $virtualEnvName =  $Env:VIRTUAL_ENV
+        $virtualEnvName = [System.Environment]::GetEnvironmentVariable("VIRTUAL_ENV", "process")
         if (Get-ActiveVirtualEnv -Name $virtualEnvName ) {            
             
             # create requirement file 
@@ -52,8 +52,11 @@ function Stop-VirtualEnv {
             # deactivate the virtual environment
             . $PSVirtualEnv.Deactivation
 
+            # set the pythonhome variable in scope process to the stored backup variable
+            [System.Environment]::SetEnvironmentVariable("PYTHONHOME",  [System.Environment]::GetEnvironmentVariable("VIRTUAL_ENV_PYTHONHOME", "process"), "process")
+
             # if the environment variable is not empty, deavtivation failed
-            if (-not $Env:VIRTUAL_ENV) {
+            if (-not [System.Environment]::GetEnvironmentVariable("VIRTUAL_ENV", "process")) {
                 Write-FormatedSuccess -Message "Virtual enviroment '$virtualEnvName' was stopped." -Space
             }
             else {

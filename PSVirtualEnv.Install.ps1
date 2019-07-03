@@ -28,7 +28,7 @@
 
     $Script:pythonDir = $Env:PYTHONTEMP
     if (-not  $Script:pythonDir -or -not (Test-Path -Path  $Script:pythonDir)){
-        Write-Host "ERROR: Please set environment variable 'PYTHONHOME' to existing python distribution (Python>3 is recommended)." -ForegroundColor Red
+        Write-Host "ERROR: Please set environment variable 'PYTHONTEMP' to existing python distribution (Python>3 is recommended)." -ForegroundColor Red
         exit
     }
 
