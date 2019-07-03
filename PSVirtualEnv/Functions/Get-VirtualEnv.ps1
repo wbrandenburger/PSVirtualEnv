@@ -77,18 +77,19 @@ function Get-VirtualEnv {
         # if the name of a virtual enviroment is not specified, general information about all virtual environments in the predefined system directory are gathered
         if (-not $Name -and -not $Python) {
             #   get all virtual environment directories in predefined system directory as well as the local directories and requirement files
-            $virtualEnvSubDirs = Get-ChildItem -Path $PSVirtualEnv.WorkDir
-            $virtualEnvLocalDir = Get-ChildItem -Path $PSVirtualEnv.LocalDir -Directory 
-            $virtualEnvRequirement = Get-ChildItem -Path $PSVirtualEnv.LocalDir -File 
+            $virtualEnvSubDirs = Get-ChildItem -Path $PSVirtualEnv.WorkDir | Select-Object -ExpandProperty Name
+            $virtualEnvLocalDir = Get-ChildItem -Path $PSVirtualEnv.LocalDir -Directory | Select-Object -ExpandProperty Name
+            $virtualEnvRequirement = Get-ChildItem -Path $PSVirtualEnv.LocalDir -File | Select-Object -ExpandProperty Name
 
             $virtualEnvs = $Null
 
             #   call the python distribution of each virtual environnment and determine the version number
             if ($VirtualEnvSubDirs.length) {
                 $virtualEnvs= $VirtualEnvSubDirs | ForEach-Object {
-                    if (Test-VirtualEnv -Name $_ -Inverse) {
-                        $virtualEnvExe = Get-VirtualEnvExe -Name $_
-                        $virtualEnvName = $_
+                    $virtualEnvName = $_
+                    if (Test-VirtualEnv -Name $virtualEnvName) {
+                        $virtualEnvExe = Get-VirtualEnvExe -Name $virtualEnvName
+                        
                         [PSCustomObject]@{
                             # name of the virtual environment
                             Name = $virtualEnvName
