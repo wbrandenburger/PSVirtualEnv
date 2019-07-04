@@ -14,23 +14,23 @@
 
 ## Description
 
-The module PSVirtualEnv is a set of powershell extensions to Ian Bicking’s virtualenv tool in python. The module includes wrappers for creating and deleting virtual environments and otherwise managing your development workflow, making it easier to work on more than one project at a time without introducing conflicts in their dependencies.
+The module PSVirtualEnv is a set of PowerShell extensions to Ian Bicking’s virtualenv tool in python. The module includes wrappers for creating and deleting virtual environments and otherwise managing your development workflow, making it easier to work on more than one project at a time without introducing conflicts in their dependencies.
 
 ### Origin
 
-This module is an extension of [virtualenvwrapper-powershell](https://github.com/regisf/virtualenvwrapper-powershell) and adds more functionality to manage virtual environments with the powershell, especially offline installations.
+This module is an extension of [virtualenvwrapper-powershell](https://github.com/regisf/virtualenvwrapper-powershell) and adds more functionality to manage virtual environments with the PowerShell, especially offline installations.
 
 ## Installation
 
-Set the environment variable `PYTHONHOME` to the directory with the python executable
+Set the environment variable `%PYTHONHOME%` to the directory with the python executable, which comes with the installation of a python distribution.
 
 ```batch
 set PYTHONHOME=C:\Python\Python37
 ```
 
-and run the file `.\PSVirtualEnv.Install.bat` from powershell as administrator.
+and run the file `.\PSVirtualEnv.Install.bat` from PowerShell as administrator.
 
-Change the fields in file 'PSVirtualEnv.ini' to existing locations:
+The configuration file `psvirtual.ini` can be copied to the location, which is defined in environment variable `%CONFIG%`, in the directory `%HOME%\.config` or in the local module directory of PSVirtualEnv. Change the fields in file `psvirtual.ini` to existing locations:
 
 ```ini
 [settings]
@@ -55,7 +55,7 @@ Finally add the subdirectory `.\PSVirtualEnv` with its subdirectories and files 
 
 ## Dependencies
 
-The following powershell modules have to be installed: 
+The following PowerShell modules have to be installed: 
 
  - [PSIni](https://github.com/wbrandenburger/PsIni)
 
