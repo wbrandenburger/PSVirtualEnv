@@ -22,10 +22,10 @@ This module is an extension of [virtualenvwrapper-powershell](https://github.com
 
 ## Installation
 
-Set the environment variable `PYTHONTEMP` to the directory with the python executable
+Set the environment variable `PYTHONHOME` to the directory with the python executable
 
 ```batch
-set PYTHONTEMP=C:\Python\Python37
+set PYTHONHOME=C:\Python\Python37
 ```
 
 and run the file `.\PSVirtualEnv.Install.bat` from powershell as administrator.

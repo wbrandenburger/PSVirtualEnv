@@ -13,13 +13,13 @@
     
     # set test flag
     $Env:PSVirtualEnv = 1
-    
+
     # execute file with the specific module settings
     . (Join-Path -Path $Script:moduleDir -ChildPath ($Script:moduleName + ".Module.ps1"))
 
     # load essential functions
     . $ModuleVar.FunctionsFile
-    
+
 #   test environment -----------------------------------------------------------
 # ------------------------------------------------------------------------------
 

@@ -27,8 +27,23 @@ Param(
     if ($Test) {
         $Script:testFile = $ModuleVar.Name + ".Tests.ini"
     } 
-    $ModuleVar | Add-Member -MemberType NoteProperty -Name "ConfigFile" -Value (Join-Path -Path $ModuleVar.ModuleDir -ChildPath $Script:testFile)
 
+    # search for the local configuration file
+    $Script:configFile = @()
+    if ([System.Environment]::GetEnvironmentVariable("CONFIG", "process")) {
+        $Script:configFile += Join-Path -Path ([System.Environment]::GetEnvironmentVariable("CONFIG", "process")) -ChildPath $Script:testFile
+    }
+    if ([System.Environment]::GetEnvironmentVariable("HOME", "process")) {
+        $Script:configFile += Join-Path -Path ([System.Environment]::GetEnvironmentVariable("HOME", "process")) -ChildPath ".config/$Script:testFile"
+    }
+    $Script:configFile += Join-Path -Path $ModuleVar.ModuleDir -ChildPath $Script:testFile
+
+    $Script:configFile | ForEach-Object {
+        if ((Test-Path -Path $_) -and -not $ModuleVar.ConfigFile) {
+            $ModuleVar | Add-Member -MemberType NoteProperty -Name "ConfigFile" -Value $_
+        }
+    }
+    
 #   settings module  -----------------------------------------------------------
 # ------------------------------------------------------------------------------
     @(
