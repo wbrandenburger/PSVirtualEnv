@@ -28,13 +28,13 @@ This module is an extension of [virtualenvwrapper-powershell](https://github.com
 [System.Environment]::SetEnvironmentVariable("PYTHONHOME", "path-to-python", "User")
 ```
 
-1. Run the file `PSVirtualEnv.Install.bat` from PowerShell as administrator.
-2. Copy the configuration file `PSVirtualEnv.ini` to the location, which is either defined 
+2. Run the file `PSVirtualEnv.Install.bat` from PowerShell as administrator.
+3. Copy the configuration file `PSVirtualEnv.ini` to the location, which is either defined 
    1. in environment variable `%CONFIG%`,
    2. in directory `%HOME%\.config` or
    3. in local module directory of PSVirtualEnv.
    
-3. Change the fields in file `psvirtual.ini` to existing locations:
+4. Change the fields in file `psvirtual.ini` to existing locations:
 
 ```ini
 [settings]
