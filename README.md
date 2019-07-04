@@ -22,15 +22,19 @@ This module is an extension of [virtualenvwrapper-powershell](https://github.com
 
 ## Installation
 
-Set the environment variable `%PYTHONHOME%` to the directory with the python executable, which comes with the installation of a python distribution.
+1. Set the environment variable `%PYTHONHOME%` to the directory with the python executable, which comes with the installation of a python distribution. When the variable has not been set, execute in PowerShell:
 
-```batch
-set PYTHONHOME=C:\Python\Python37
+```powershell
+[System.Environment]::SetEnvironmentVariable("PYTHONHOME", "path-to-python", "User")
 ```
 
-and run the file `.\PSVirtualEnv.Install.bat` from PowerShell as administrator.
-
-The configuration file `psvirtual.ini` can be copied to the location, which is defined in environment variable `%CONFIG%`, in the directory `%HOME%\.config` or in the local module directory of PSVirtualEnv. Change the fields in file `psvirtual.ini` to existing locations:
+1. Run the file `PSVirtualEnv.Install.bat` from PowerShell as administrator.
+2. Copy the configuration file `PSVirtualEnv.ini` to the location, which is either defined 
+   1. in environment variable `%CONFIG%`,
+   2. in directory `%HOME%\.config` or
+   3. in local module directory of PSVirtualEnv.
+   
+3. Change the fields in file `psvirtual.ini` to existing locations:
 
 ```ini
 [settings]
@@ -51,13 +55,17 @@ venv-requirement = "A:\VirtualEnv\.temp\%rplc.txt"
 python = "C:\Python\Python37\python.exe"
 ```
 
-Finally add the subdirectory `.\PSVirtualEnv` with its subdirectories and files to on directory of the system, where PowerShell search for modules.
+5. Finally add the subdirectory `PSVirtualEnv` with its subdirectories and files to one of the folders defined in environment variable `PSModulePath`.
 
 ## Dependencies
 
 The following PowerShell modules have to be installed: 
 
  - [PSIni](https://github.com/wbrandenburger/PsIni)
+
+```PowerShell
+Intall-Module PSIni -Force
+```
 
 Additionally, a python distribution version 3.3 or higher has to be installed.
 
