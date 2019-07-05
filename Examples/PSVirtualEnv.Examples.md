@@ -45,11 +45,6 @@ Content of test-pkg.txt:
 Click==7.0
 ```
 
-```
-Install missing packages from requirement file 'A:\VirtualEnv\.example\test-pkg.txt'.
-SUCCESS: Packages from requirement file 'A:\VirtualEnv\.example\test-pkg.txt' were installed.
-```
-
 The virtual environment `test-online` contains the default packages and additionally the specified package from the requirements file.
 
 ```PowerShell
@@ -86,11 +81,6 @@ The requirements file `test-pkg.txt` contains the relative path of local package
 Content of `test-pkg.txt`:
 ```
 Click-7.0-py2.py3-none-any.whl
-```
-
-```
-Install missing packages from requirement file 'A:\VirtualEnv\.example\test-pkg\test-pkg.txt'.
-SUCCESS: Packages from requirement file 'A:\VirtualEnv\.example\test-pkg\test-pkg.txt' were installed.
 ```
 
 The virtual environment `test-offline` contains the default packages and additionally the specified package from the requirements file.
