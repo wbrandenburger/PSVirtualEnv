@@ -88,6 +88,7 @@ function Get-VirtualEnv {
                 $virtualEnvs= $VirtualEnvSubDirs | ForEach-Object {
                     $virtualEnvName = $_
                     if (Test-VirtualEnv -Name $virtualEnvName) {
+                        Start-VirtualEnv -Name $virtualEnvName -Silent
                         $virtualEnvExe = Get-VirtualEnvExe -Name $virtualEnvName
                         
                         [PSCustomObject]@{
@@ -100,6 +101,7 @@ function Get-VirtualEnv {
                             # requirement file of the virtual environment
                             Requirement = if($virtualEnvRequirement | Where-Object{ $_ -match "^$virtualEnvName.txt$"}){Get-VirtualEnvRequirementFile -Name $virtualEnvName} else {$Null}
                         }
+                        Stop-VirtualEnv -Silent
                     }
                 }
             } else {
@@ -116,16 +118,17 @@ function Get-VirtualEnv {
                 if (-not (Test-VirtualEnv -Name $Name -Verbose)){
                     Get-VirtualEnv
                     return $Null
-                }
-                $envExe = Get-VirtualEnvExe -Name $Name
-
+                }              
+                Start-VirtualEnv -Name $Name -Silent
+                $pkgProperty = Get-PckgProperty -EnvExe (Get-VirtualEnvExe -Name $Name)
+                Stop-VirtualEnv -Silent
+                
+                return $pkgProperty
             }
             else {
-                $envExe = $PSVirtualEnv.Python
+                $pkgProperty = Get-PckgProperty -EnvExe ($PSVirtualEnv.Python)
+                return $pkgProperty
             }
-           
-            return Get-PckgProperty -EnvExe $envExe
-   
         }
     }
 }

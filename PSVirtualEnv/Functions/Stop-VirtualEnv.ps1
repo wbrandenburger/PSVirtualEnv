@@ -35,7 +35,10 @@ function Stop-VirtualEnv {
 
     Param(
         [Parameter(HelpMessage="If switch 'Requirement' is true, requirement file of the virtual environment to be stopped will be created.")]
-        [Switch] $Requirement
+        [Switch] $Requirement,
+
+        [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="If switch 'silent' is true no output will written to host.")]
+        [Switch] $Silent
     )
 
     Process {
@@ -57,7 +60,9 @@ function Stop-VirtualEnv {
 
             # if the environment variable is not empty, deavtivation failed
             if (-not [System.Environment]::GetEnvironmentVariable("VIRTUAL_ENV", "process")) {
-                Write-FormatedSuccess -Message "Virtual enviroment '$virtualEnvName' was stopped." -Space
+                if (-not $Silent) {
+                    Write-FormatedSuccess -Message "Virtual enviroment '$virtualEnvName' was stopped." -Space
+                }
             }
             else {
                 Write-FormatedError -Message "Virtual environment '$virtualEnvName' could not be stopped." -Space

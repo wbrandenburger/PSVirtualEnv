@@ -68,7 +68,7 @@ NestedModules = @()
 
 # Functions to export from this module
 FunctionsToExport = @(
-    'Copy-VirtualEnv'
+    'Copy-VirtualEnvLocal'
     'Get-VirtualEnv'
     'Get-VirtualEnvAlias'
     'Get-VirtualEnvLocal'

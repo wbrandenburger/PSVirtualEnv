@@ -122,8 +122,10 @@ function New-VirtualEnv {
 
         # install packages from the requirement file
         if ($Requirement) {
+            Start-VirtualEnv -Name $Name -Silent
             Install-PythonPckg -EnvExe (Get-VirtualEnvExe -Name $Name) -Requirement $requirementFile
-            
+            Stop-VirtualEnv -Silent
+
             Get-VirtualEnv -Name $Name
         }
 

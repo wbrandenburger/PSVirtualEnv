@@ -144,7 +144,10 @@ function Test-VirtualEnvRequirementFile {
 
     Param(
         [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment or path of a requirement file.")]
-        [System.String] $Name
+        [System.String] $Name,
+
+        [Parameter(HelpMessage="If switch 'VirtualEnv is true, an corresponding virtual Environment will be checked.")]
+        [Switch] $VirtualEnv
     )
     
     # check whether the requirement file exists
@@ -160,8 +163,10 @@ function Test-VirtualEnvRequirementFile {
     }
     
     # check whether the requirement file can be bound to an existing virtual environment
-    if (-not (Test-VirtualEnv -Name $Name -Inverse)){
-        return $False
+    if ($VirtualEnv) {
+        if (-not (Test-VirtualEnv -Name $Name -Inverse)){
+            return $False
+        }
     }
 
     return $True

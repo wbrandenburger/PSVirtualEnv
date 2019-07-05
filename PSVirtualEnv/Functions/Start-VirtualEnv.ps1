@@ -37,7 +37,10 @@ function Start-VirtualEnv {
 
     Param(        
         [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Name of virtual environment, which should be started.")]
-        [System.String] $Name
+        [System.String] $Name,
+
+        [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="If switch 'silent' is true no output will written to host.")]
+        [Switch] $Silent
     )
 
     Process {
@@ -55,8 +58,10 @@ function Start-VirtualEnv {
 
         # get the full path of the specified virtual environment, which is located in the predefined system path and activate the virtual environment
         . (Get-VirtualEnvActivationScript -Name $Name)
-        Write-FormatedSuccess -Message "Virtual enviroment '$Name' was started." -Space
-        
+        if (-not $Silent) {
+            Write-FormatedSuccess -Message "Virtual enviroment '$Name' was started." -Space
+        }
+
         # set environment variable
 
             # set a backup of the pythonhome environment variable
