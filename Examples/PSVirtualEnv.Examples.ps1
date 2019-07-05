@@ -40,11 +40,11 @@
     # Download all packages from a virtual environment
     Get-VirtualEnvLocal -Name "test-online" 
 
-    Copy-VirtualEnvLocal -Name "test-online" -Path (Join-Path -Path $examplePath -ChildPath "test-online")
+    $OutPut = Copy-VirtualEnvLocal -Name "test-online" -Path (Join-Path -Path $examplePath -ChildPath "test-online")
 
     # Remove a virtual environment
-    Remove-VirtualEnv -Name "test-normal"
-    Remove-VirtualEnv -Name "test-online"
-    Remove-VirtualEnv -Name "test-offline"
+    $OutPut = Remove-VirtualEnv -Name "test-normal"
+    $OutPut = Remove-VirtualEnv -Name "test-online"
+    $OutPut = Remove-VirtualEnv -Name "test-offline"
 
     Get-VirtualEnv
