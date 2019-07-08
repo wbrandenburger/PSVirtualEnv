@@ -153,10 +153,16 @@ function Install-PythonPckg {
         $UpgradeCmd = "--upgrade"
     }
 
+    # set environment variable
+    Set-VirtualEnvSystem -Name $Name
+    
     # install packages from a requirement file
     Write-FormatedMessage -Message "Install missing packages from requirement file '$Requirement'." -Color Yellow
 
     . $EnvExe -m pip install --requirement $Requirement $UpgradeCmd
 
     Write-FormatedSuccess -Message "Packages from requirement file '$Requirement' were installed."
+
+    # set the pythonhome variable in scope process to the stored backup variable
+    Restore-VirtualEnvSystem
 }

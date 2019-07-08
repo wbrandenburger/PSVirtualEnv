@@ -122,9 +122,13 @@ function New-VirtualEnv {
 
         # install packages from the requirement file
         if ($Requirement) {
-            Start-VirtualEnv -Name $Name -Silent
+            # set environment variable
+            Set-VirtualEnvSystem -Name $Name
+
             Install-PythonPckg -EnvExe (Get-VirtualEnvExe -Name $Name) -Requirement $requirementFile
-            Stop-VirtualEnv -Silent
+            
+            # set the pythonhome variable in scope process to the stored backup variable
+            Restore-VirtualEnvSystem
 
             Get-VirtualEnv -Name $Name
         }

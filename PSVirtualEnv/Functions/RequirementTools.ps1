@@ -81,6 +81,9 @@ function Get-VirtualEnvRequirement {
             return
         }
 
+        # set environment variable
+        Set-VirtualEnvSystem -Name $Name
+
         # create the requirement file of the specified virtual environment
         Write-FormatedMessage -Message "Create requirement file for virtual environment '$($_.Name)'" -Color "Yellow"
         . (Get-VirtualEnvExe -Name $_.Name) -m pip freeze > (Get-VirtualEnvRequirementFile -Name $_.Name)
@@ -89,6 +92,9 @@ function Get-VirtualEnvRequirement {
         if ($Upgrade){
             (Get-Content (Get-VirtualEnvRequirementFile -Name $_.Name)) -replace "==", ">=" | Out-File -FilePath (Get-VirtualEnvRequirementFile -Name $_.Name)
         }
+
+        # set the pythonhome variable in scope process to the stored backup variable
+        Restore-VirtualEnvSystem
 
         $virtualEnvIdx += 1
     }

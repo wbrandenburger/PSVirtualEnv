@@ -88,7 +88,9 @@ function Get-VirtualEnv {
                 $virtualEnvs= $VirtualEnvSubDirs | ForEach-Object {
                     $virtualEnvName = $_
                     if (Test-VirtualEnv -Name $virtualEnvName) {
-                        Start-VirtualEnv -Name $virtualEnvName -Silent
+                         # set environment variable
+                        Set-VirtualEnvSystem -Name $virtualEnvName
+
                         $virtualEnvExe = Get-VirtualEnvExe -Name $virtualEnvName
                         
                         [PSCustomObject]@{
@@ -101,7 +103,8 @@ function Get-VirtualEnv {
                             # requirement file of the virtual environment
                             Requirement = if($virtualEnvRequirement | Where-Object{ $_ -match "^$virtualEnvName.txt$"}){Get-VirtualEnvRequirementFile -Name $virtualEnvName} else {$Null}
                         }
-                        Stop-VirtualEnv -Silent
+                        # set the pythonhome variable in scope process to the stored backup variable
+                        Restore-VirtualEnvSystem
                     }
                 }
             } else {

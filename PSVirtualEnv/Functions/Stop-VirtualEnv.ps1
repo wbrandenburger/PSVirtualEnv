@@ -56,7 +56,7 @@ function Stop-VirtualEnv {
             . $PSVirtualEnv.Deactivation
 
             # set the pythonhome variable in scope process to the stored backup variable
-            [System.Environment]::SetEnvironmentVariable("PYTHONHOME",  [System.Environment]::GetEnvironmentVariable("VIRTUAL_ENV_PYTHONHOME", "process"), "process")
+            Restore-VirtualEnvSystem
 
             # if the environment variable is not empty, deavtivation failed
             if (-not [System.Environment]::GetEnvironmentVariable("VIRTUAL_ENV", "process")) {

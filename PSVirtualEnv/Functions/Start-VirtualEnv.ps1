@@ -39,7 +39,7 @@ function Start-VirtualEnv {
         [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Name of virtual environment, which should be started.")]
         [System.String] $Name,
 
-        [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="If switch 'silent' is true no output will written to host.")]
+        [Parameter(HelpMessage="If switch 'silent' is true no output will written to host.")]
         [Switch] $Silent
     )
 
@@ -48,7 +48,7 @@ function Start-VirtualEnv {
         # check whether the specified virtual environment exists
         if (-not (Test-VirtualEnv -Name $Name -Verbose)){
             Get-VirtualEnv
-            return
+            return $Null
         }
 
         # deactivation of a running virtual environment
@@ -63,13 +63,8 @@ function Start-VirtualEnv {
         }
 
         # set environment variable
+        Set-VirtualEnvSystem -Name $Name
 
-            # set a backup of the pythonhome environment variable
-            [System.Environment]::SetEnvironmentVariable("VIRTUAL_ENV_PYTHONHOME",  [System.Environment]::GetEnvironmentVariable("PYTHONHOME", "process"), "process")
-            # set the pythonhome variable in scope process to the path of the virtual environment
-            [System.Environment]::SetEnvironmentVariable("PYTHONHOME", (Get-VirtualEnvPath -Name $Name), "process")
-            #set the name of the virtual environment
-            [System.Environment]::SetEnvironmentVariable("VIRTUAL_ENV", $Name ,"process")
-        return
+        return $Null
     }
 }

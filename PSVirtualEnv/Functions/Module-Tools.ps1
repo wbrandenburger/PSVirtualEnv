@@ -4,6 +4,61 @@
 
 #   function -------------------------------------------------------------------
 # ------------------------------------------------------------------------------
+function Set-VirtualEnvSystem {
+
+    <#
+    .DESCRIPTION
+        Set environment variable
+    
+    .PARAMETER Name
+
+    .OUTPUTS 
+        None.
+    #>
+
+    [OutputType([System.String])]
+
+    Param(
+        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment.")]
+        [System.String] $Name
+    )
+
+    # set a backup of the pythonhome environment variable
+    [System.Environment]::SetEnvironmentVariable("VIRTUAL_ENV_PYTHONHOME",  [System.Environment]::GetEnvironmentVariable("PYTHONHOME", "process"), "process")
+    # set the pythonhome variable in scope process to the path of the virtual environment
+    [System.Environment]::SetEnvironmentVariable("PYTHONHOME", (Get-VirtualEnvPath -Name $Name), "process")
+    #set the name of the virtual environment
+    [System.Environment]::SetEnvironmentVariable("VIRTUAL_ENV", $Name ,"process")
+    
+    Return $Null
+}
+
+function Restore-VirtualEnvSystem {
+    <#
+    .DESCRIPTION
+        Restore environment variable
+    
+    .PARAMETER Name
+
+    .OUTPUTS 
+        None.
+    #>
+
+    [OutputType([Void])]
+
+    Param ()
+
+    # set the pythonhome variable in scope process to the stored backup variable
+    [System.Environment]::SetEnvironmentVariable("PYTHONHOME",  [System.Environment]::GetEnvironmentVariable("VIRTUAL_ENV_PYTHONHOME", "process"), "process")
+
+    # emtpy the name of the virtual environment
+    [System.Environment]::SetEnvironmentVariable("VIRTUAL_ENV", $Null ,"process")
+
+    Return $Null
+}
+
+#   function -------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 function Get-VirtualEnvPath {
 
     <#
