@@ -93,13 +93,13 @@ VariablesToExport = @()
 
 # Aliases to export from this module
 AliasesToExport = @(
-    'cdvenv'
-    'cpvenv'
-    'rmvenv'
-    'lsvenv'
-    'mkvenv'
-    'runvenv'
-    'stvenv'
+    'cd-venv'
+    'cp-venv'
+    'rm-venv'
+    'ls-venv'
+    'mk-venv'
+    'start-venv'
+    'stop-venv'
 )
 
 # DSC resources to export from this module

@@ -53,7 +53,7 @@ function Start-VirtualEnv {
 
         # deactivation of a running virtual environment
         if (Get-ActiveVirtualEnv) {
-            Stop-VirtualEnv
+            Stop-VirtualEnv -Silent:$Silent
         }
 
         # get the full path of the specified virtual environment, which is located in the predefined system path and activate the virtual environment
@@ -68,3 +68,13 @@ function Start-VirtualEnv {
         return $Null
     }
 }
+
+
+# $choiceIndex = 1
+# $options = Get-VirtualEnv  | ForEach-Object { if ($_.Name) {
+#     New-Object System.Management.Automation.Host.ChoiceDescription "&$choiceIndex - $($_.Name)"
+#     $choiceIndex++
+#     }
+# }
+# $chosenIndex = $Host.UI.PromptForChoice($Null, "Which virtual environment should be started?", $options, 0)
+# $SubscriptionToUse = $all_subscriptions[$chosenIndex]

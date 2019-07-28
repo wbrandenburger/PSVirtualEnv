@@ -74,13 +74,13 @@
     # define aliases for specific function
     @(
         
-        @{ Name = "cdvenv";     Value =  "Set-VirtualEnvLocation"}
-        @{ Name = "cpvenv";     Value =  "Copy-VirtualEnv"}
-        @{ Name = "lsvenv";     Value =  "Get-VirtualEnv"}
-        @{ Name = "mkvenv";     Value =  "New-VirtualEnv"}
-        @{ Name = "rmvenv";     Value =  "Remove-VirtualEnv"}
-        @{ Name = "runvenv";    Value =  "Start-VirtualEnv"}
-        @{ Name = "stvenv";     Value =  "Stop-VirtualEnv"}
+        @{ Name = "cd-venv";     Value =  "Set-VirtualEnvLocation"}
+        @{ Name = "cp-venv";     Value =  "Copy-VirtualEnv"}
+        @{ Name = "ls-venv";     Value =  "Get-VirtualEnv"}
+        @{ Name = "mk-venv";     Value =  "New-VirtualEnv"}
+        @{ Name = "rm-venv";     Value =  "Remove-VirtualEnv"}
+        @{ Name = "start-venv";  Value =  "Start-VirtualEnv"}
+        @{ Name = "stop-venv";   Value =  "Stop-VirtualEnv"}
 
     ) | ForEach-Object {
         Set-Alias -Name $_.Name -Value $_.Value
