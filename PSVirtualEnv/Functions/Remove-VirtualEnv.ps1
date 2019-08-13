@@ -44,7 +44,7 @@ function Remove-VirtualEnv  {
     [OutputType([Void])]
 
     Param(
-        [ValidateSet([ValidateVirtualEnvMandatory])]
+        [ValidateSet([ValidateVirtualEnv])]
         [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of virtual environment, which should be removed.")]
         [System.String] $Name
     )
