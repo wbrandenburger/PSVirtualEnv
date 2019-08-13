@@ -2,6 +2,14 @@
 #   Install-VirtualEnvPckg.ps1 -------------------------------------------------
 # ==============================================================================
 
+#   Class ----------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+Class ValidateVirtualEnv : System.Management.Automation.IValidateSetValuesGenerator {
+    [String[]] GetValidValues() {
+        return [String[]] ((Get-VirtualEnv | Select-Object -ExpandProperty Name) + "" )
+    }
+}
+
 #   function -------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
@@ -35,6 +43,7 @@ function Install-VirtualEnvPckg {
     [OutputType([Void])]
 
     Param (
+        [ValidateSet([ValidateVirtualEnv])]
         [Parameter(ValueFromPipeline=$True, HelpMessage="Name of the virtual environment to be changed.")]
         [System.String] $Name,
 
@@ -110,8 +119,7 @@ function Install-VirtualEnvPckg {
             Set-Location -Path $hostPath
         }
 
-        if ($Name) {  Get-VirtualEnv -Name $Name }
-        else { Get-VirtualEnv } 
+        return $Null
     }
 }
 

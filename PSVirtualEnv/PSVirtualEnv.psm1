@@ -86,4 +86,4 @@
         Set-Alias -Name $_.Name -Value $_.Value
     }
 
-return 1
+return 0

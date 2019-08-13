@@ -2,6 +2,14 @@
 #   Copy-VirtualEnvLocal.ps1 ---------------------------------------------------
 # ==============================================================================
 
+#   Class ----------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+Class ValidateVirtualEnv : System.Management.Automation.IValidateSetValuesGenerator {
+    [String[]] GetValidValues() {
+        return [String[]] (Get-VirtualEnv | Select-Object -ExpandProperty Name)
+    }
+}
+
 #   function -------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 function Copy-VirtualEnvLocal {
@@ -33,6 +41,7 @@ function Copy-VirtualEnvLocal {
     [OutputType([Void])]
 
     Param (
+        [ValidateSet([ValidateVirtualEnv])]
         [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment to be changed.")]
         [System.String] $Name,
 

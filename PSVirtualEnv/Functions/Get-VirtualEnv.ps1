@@ -2,6 +2,14 @@
 #   Get-VirtualEnv.ps1 ---------------------------------------------------------
 # ==============================================================================
 
+#   Class ----------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+Class ValidateVirtualEnv : System.Management.Automation.IValidateSetValuesGenerator {
+    [String[]] GetValidValues() {
+        return [String[]] ((Get-VirtualEnv | Select-Object -ExpandProperty Name) + "" )
+    }
+}
+
 #   function -------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 function Get-VirtualEnv {
@@ -65,6 +73,7 @@ function Get-VirtualEnv {
     [OutputType([PSCustomObject])]
 
     Param (
+        [ValidateSet([ValidateVirtualEnv])]
         [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Information about all packages installed in the specified virtual environment will be returned.")]
         [System.String] $Name,
 
@@ -176,5 +185,6 @@ function Get-PckgProperty {
             Independent = if ( $independent ) {$True} else {$Null}
             Latest = $outDated.Latest
         }
-    } | Sort-Object -Property Independent -Descending | Format-Table
+    } | Format-Table
+    # | Sort-Object -Property Independent -Descending
 }

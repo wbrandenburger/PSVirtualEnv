@@ -2,6 +2,14 @@
 #   Remove-VirtualEnv.ps1 ------------------------------------------------------
 # ==============================================================================
 
+#   Class ----------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+Class ValidateVirtualEnv : System.Management.Automation.IValidateSetValuesGenerator {
+    [String[]] GetValidValues() {
+        return [String[]] (Get-VirtualEnv | Select-Object -ExpandProperty Name)
+    }
+}
+
 #   function -------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 function Remove-VirtualEnv  {
@@ -35,8 +43,9 @@ function Remove-VirtualEnv  {
 
     [OutputType([Void])]
 
-    Param(        
-        [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Name of virtual environment, which should be removed.")]
+    Param(
+        [ValidateSet([ValidateVirtualEnvMandatory])]
+        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of virtual environment, which should be removed.")]
         [System.String] $Name
     )
 

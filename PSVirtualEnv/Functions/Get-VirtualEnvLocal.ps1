@@ -45,6 +45,7 @@ function Get-VirtualEnvLocal {
     [OutputType([Void])]
 
     Param (
+        # [ValidateSet([ValidateVirtualEnvOptional])]
         [Parameter(HelpMessage="Name of the virtual environment, which packages shall be downloaded.")]
         [System.String] $Name,
 

@@ -2,6 +2,14 @@
 #   Start-VirtualEnv.ps1 -------------------------------------------------------
 # ==============================================================================
 
+#   Class ----------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+Class ValidateVirtualEnv : System.Management.Automation.IValidateSetValuesGenerator {
+    [String[]] GetValidValues() {
+        return [String[]] (Get-VirtualEnv | Select-Object -ExpandProperty Name)
+    }
+}
+
 #   function -------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 function Start-VirtualEnv {
@@ -35,8 +43,9 @@ function Start-VirtualEnv {
 
     [OutputType([Void])]
 
-    Param(        
-        [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Name of virtual environment, which should be started.")]
+    Param(
+        [ValidateSet([ValidateVirtualEnv])]     
+        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of virtual environment, which should be started.")]
         [System.String] $Name,
 
         [Parameter(HelpMessage="If switch 'silent' is true no output will written to host.")]

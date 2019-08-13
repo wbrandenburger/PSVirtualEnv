@@ -26,7 +26,7 @@ Copyright = 'Copyright (c) 2019 Wolfgang Brandenburger'
 Description = ' The module PSVirtualEnv is a set of powershell extensions to Ian Bickings virtualenv tool in python. The module includes wrappers for creating and deleting virtual environments and otherwise managing your development workflow, making it easier to work on more than one project at a time without introducing conflicts in their dependencies.'
 
 # Minimum version of the Windows PowerShell engine required by this module
-PowerShellVersion = '3.0'
+PowerShellVersion = '6.0'
 
 # Name of the Windows PowerShell host required by this module
 PowerShellHostName = ''
