@@ -2,6 +2,15 @@
 #   New-VirtualEnv.ps1 ---------------------------------------------------------
 # ==============================================================================
 
+#   Class ----------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+Class ValidateRequirements : System.Management.Automation.IValidateSetValuesGenerator {
+    [String[]] GetValidValues() {
+        return [String[]] ((Get-ChildItem A:\VirtualEnv\.require\ -Recurse -Include "*.txt" | Select-Object -ExpandProperty FullName) + "")
+    }
+}
+
+
 #   function -------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 function New-VirtualEnv {
@@ -52,6 +61,7 @@ function New-VirtualEnv {
         [Parameter(Position=2, HelpMessage="Path to a folder or executable of a python distribution.")]
         [System.String] $Path,
 
+        [ValidateSet([ValidateRequirements])]
         [Parameter(HelpMessage="Path to a requirement file, or name of a virtual environment.")]
         [System.String] $Requirement,
 

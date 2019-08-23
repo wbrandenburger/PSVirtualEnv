@@ -50,6 +50,7 @@ function Install-VirtualEnvPckg {
         [Parameter(HelpMessage="If switch 'All' is true, all existing virtual environments will be changed.")]
         [Switch] $All,
 
+        [ValidateSet([ValidateRequirements])]
         [Parameter(HelpMessage="Path to a requirements file, or name of a virtual environment.")]
         [System.String] $Requirement,
 
