@@ -1,19 +1,21 @@
-# ==============================================================================
-#   Test-PythonPath.ps1 --------------------------------------------------------
-# ==============================================================================
+# ===========================================================================
+#   Find-Python.ps1 ---------------------------------------------------------
+# ===========================================================================
 
-#   function -------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
 function Find-Python {
 
     <#
     .SYNOPSIS
-        Find a path, where a python distribution is located.
+        Find a path, where a python distribution might located.
 
     .DESCRIPTION
-        Find a path, where a python distribution is located.
+        Find a path, where a python distribution might located.
 
     .PARAMETER Python
+
+    .PARAMETER FORCE
 
     .EXAMPLE
         PS C:\> Find-Python C:\Python\Python3
@@ -46,32 +48,48 @@ function Find-Python {
 
     Param(        
         [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Path to a folder or executable of a python distribution.")]
-        [System.String] $Path
+        [System.String] $Path,
+
+        [Parameter(HelpMessage="Forces installation of virtualenwrapper if not found.")]
+        [Switch] $Force
     )
 
     Process{
 
         # if the specified path does not contain an executable, try to detect the standard python distribution in system path
-        if (-not $Path) {
-            $Path = $PSVirtualEnv.Python
-            # $Path = Get-Command "python.exe" -ErrorAction SilentlyContinue  | Select-Object -ExpandProperty Source
-        }
-        elseif (-not $Path.EndsWith('python.exe'))
-        {
-            $Path = Join-Path $Path "python.exe"
-        } 
+        $python_list = @(
+            "$Path",
+            "$($PSVirtualEnv.Python)",
+            [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.EnvPython, "user"),
+           [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.EnvPython, "machine")
+        )
 
-        # check, whether the defined executbale does exist
-        if (-not $Path -or -not (Test-Path $Path)) 
-        {            
-            if ($VerbosePreference) {
-                Write-FormatedError -Message "The python distribution can not be located." -Space
+        for($i= 0; $i -lt $python_list.Length; $i++){
+
+            if ($python_list[$i] -and -not $python_list[$i].EndsWith('python.exe')){
+                $python_list[$i] = Join-Path -Path $python_list[$i] -ChildPath "python.exe"
+            } 
+
+            # check, whether the defined executbale does exist
+            if (Test-Path $python_list[$i]) 
+            {   
+                $python_packages = Get-VirtualEnvPackage -Python $python_list[$i] -Unformatted
+                if (-not ($python_packages | Where-Object {$_.Name -eq "virtualenv"})) {
+                    if (-not $Force) {
+                        Write-FormattedError -Message "The python distribution does not provide the required package 'virtualenvwrapper'. Please install the package manually." -Module $PSVirtualEnv.Name -Space -Silent:(!$VerbosePreference)
+                            return
+                    }
+                    else {
+                        . $python_list[$i] -m pip install virtualenv 2>&1> $Null
+                        Write-FormattedWarning -Message "The python distribution does not provide the required package 'virtualenvwrapper'. Package will be installed automatically for full functionality." -Module $PSVirtualEnv.Name -Space -Silent:(!$VerbosePreference)
+                    }
+                }
+
+                return  $python_list[$i]
             }
-            return $Null
         }
 
-        # return the path to an existing executable of a python distribution
-
-        return $Path
+        Write-FormattedError -Message "The python distribution can not be located. Set an existing python distribution in configuration file or set the environment variable '$($PSVirtualEnv.EnvPython)'" -Module $PSVirtualEnv.Name -Space -Silent:(!$VerbosePreference)
+        return
     }
 }

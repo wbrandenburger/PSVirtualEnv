@@ -1,9 +1,9 @@
-# ==============================================================================
-#   AdditionalTools.ps1 --------------------------------------------------------
-# ==============================================================================
+# ===========================================================================
+#   Module-Tools.ps1 --------------------------------------------------------
+# ===========================================================================
 
-#   function -------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
 function Set-VirtualEnvSystem {
 
     <#
@@ -24,11 +24,11 @@ function Set-VirtualEnvSystem {
     )
 
     # set a backup of the pythonhome environment variable
-    [System.Environment]::SetEnvironmentVariable("VIRTUAL_ENV_PYTHONHOME",  [System.Environment]::GetEnvironmentVariable("PYTHONHOME", "process"), "process")
+    [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.EnvBackup,  [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.EnvPython, "process"), "process")
     # set the pythonhome variable in scope process to the path of the virtual environment
-    [System.Environment]::SetEnvironmentVariable("PYTHONHOME", (Get-VirtualEnvPath -Name $Name), "process")
+    [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.EnvPython, (Get-VirtualEnvPath -Name $Name), "process")
     #set the name of the virtual environment
-    [System.Environment]::SetEnvironmentVariable("VIRTUAL_ENV", $Name ,"process")
+    [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.EnvVenv, $Name ,"process")
     
     Return $Null
 }
@@ -49,16 +49,16 @@ function Restore-VirtualEnvSystem {
     Param ()
 
     # set the pythonhome variable in scope process to the stored backup variable
-    [System.Environment]::SetEnvironmentVariable("PYTHONHOME",  [System.Environment]::GetEnvironmentVariable("VIRTUAL_ENV_PYTHONHOME", "process"), "process")
+    [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.EnvPython,  [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.EnvBackup, "process"), "process")
 
     # emtpy the name of the virtual environment
-    [System.Environment]::SetEnvironmentVariable("VIRTUAL_ENV", $Null ,"process")
+    [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.EnvVenv, $Null ,"process")
 
     Return $Null
 }
 
-#   function -------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
 function Get-VirtualEnvPath {
 
     <#
@@ -81,9 +81,9 @@ function Get-VirtualEnvPath {
     return Join-Path -Path $PSVirtualEnv.WorkDir -ChildPath $Name
 }
 
-#   function -------------------------------------------------------------------
-# ------------------------------------------------------------------------------
-function Get-VirtualEnvExe {
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
+function Get-VirtualPython {
 
     <#
     .DESCRIPTION
@@ -105,8 +105,8 @@ function Get-VirtualEnvExe {
     return Join-Path -Path (Get-VirtualEnvPath -Name $Name) -ChildPath $PSVirtualEnv.VirtualEnv 
 }
 
-#   function -------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
 function Get-VirtualEnvActivationScript {
 
     <#
@@ -129,8 +129,8 @@ function Get-VirtualEnvActivationScript {
     return Join-Path -Path (Get-VirtualEnvPath -Name $Name) -ChildPath $PSVirtualEnv.Activation
 }
 
-#   function -------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
 function Get-VirtualEnvLocalDir {
 
     <#
@@ -153,8 +153,8 @@ function Get-VirtualEnvLocalDir {
     return  Join-Path -Path $PSVirtualEnv.LocalDir -ChildPath $Name
 }
 
-#   function -------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
 function Get-PythonVersion() {
     
     <#
@@ -186,7 +186,7 @@ function Get-PythonVersion() {
     $pythonVersion3 = $pythonVersion -match "^Python\s3" -and -not $pythonVersion2
     if (-not $pythonVersion2 -and -not $pythonVersion3) {
         if ($VerbosePreference) {
-            Write-FormatedError -Message "This module is not compatible with the detected python version $pythonVersion"
+            Write-FormattedError -Message "This module is not compatible with the detected python version $pythonVersion"
         }
         return $Null
     }
@@ -195,8 +195,8 @@ function Get-PythonVersion() {
     return $(if ($pythonVersion2) {"2"} else {"3"})
 }
 
-#   function -------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
 function Get-ActiveVirtualEnv {
 
     <#
@@ -208,6 +208,8 @@ function Get-ActiveVirtualEnv {
     .OUTPUTS 
        Boolean. True if the specified virtual environment is running, respectivly false if it is not activated.
     #>
+    
+    [CmdletBinding(PositionalBinding=$True)]
 
     [OutputType([Boolean])]
 
@@ -215,10 +217,11 @@ function Get-ActiveVirtualEnv {
         [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment.")]
         [System.String] $Name
     )
-
-    if ($Env:VIRTUAL_ENV) {
+    
+    $virtual_env = [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.EnvVenv, "process")
+    if ($virtual_env) {
         if ($Name) {
-            if (([System.String]$Env:VIRTUAL_ENV).EndsWith($Name)) {
+            if (([System.String]$virtual_env).EndsWith($Name)) {
                 return $True
             }
             return $False;

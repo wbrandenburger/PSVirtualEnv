@@ -1,18 +1,20 @@
-# ==============================================================================
-#   New-VirtualEnv.ps1 ---------------------------------------------------------
-# ==============================================================================
+# ===========================================================================
+#   New-VirtualEnv.ps1 ------------------------------------------------------
+# ===========================================================================
 
-#   Class ----------------------------------------------------------------------
-# ------------------------------------------------------------------------------
-Class ValidateRequirements : System.Management.Automation.IValidateSetValuesGenerator {
+#   validation ---------------------------------------------------------------
+# ----------------------------------------------------------------------------
+Class ValidateRequirements: 
+    System.Management.Automation.IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
-        return [String[]] ((Get-ChildItem A:\VirtualEnv\.require\ -Recurse -Include "*.txt" | Select-Object -ExpandProperty FullName) + "")
+        $require_dir = [System.Environment]::GetEnvironmentVariable("VENV_REQUIRE", "process")
+        return [String[]] (((Get-ChildItem -Path $require_dir -Include "*requirements.txt" -Recurse).FullName | ForEach-Object {
+            $_ -replace ($require_dir -replace "\\", "\\")}) + "")
     }
 }
 
-
-#   function -------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
 function New-VirtualEnv {
 
     <#
@@ -23,6 +25,12 @@ function New-VirtualEnv {
         Creates a virtual environment in the predefined system directory.
 
     .PARAMETER Name
+
+    .PARAMETER Path
+
+    .PARAMETER Requirement
+
+    .PARAMETER OFFLINE
 
     .EXAMPLE
         PS C:\> New-VirtualEnv -Name venv
@@ -42,6 +50,14 @@ function New-VirtualEnv {
         Description
         Creates the specified virtual environment in the predefined directory with the defined python distribution.
 
+    .EXAMPLE
+        PS C:\> New-VirtualEnv -Name venv -Requirement papis-requirements.txt
+
+        SUCCESS: Virtual environment 'A:\VirtualEnv\venv' was created.
+
+        -----------
+        Description
+        Creates the specified virtual environment and install packages which are defined in requirements.txt
 
     .INPUTS
         System.String. Name of virtual environment, which should be removed.
@@ -50,7 +66,7 @@ function New-VirtualEnv {
         None.
     #>
 
-    [CmdletBinding(SupportsShouldProcess=$True, ConfirmImpact="None", PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding=$True)]
 
     [OutputType([Void])]
 
@@ -63,88 +79,71 @@ function New-VirtualEnv {
 
         [ValidateSet([ValidateRequirements])]
         [Parameter(HelpMessage="Path to a requirement file, or name of a virtual environment.")]
-        [System.String] $Requirement,
+        [System.String] $Requirement
 
-        [Parameter(HelpMessage="If switch 'Offline' is true, the virtual environment will be created without download packages.")]
-        [Switch] $Offline
+        # [Parameter(HelpMessage="If switch 'Offline' is true, the virtual environment will be created without download packages.")]
+        # [Switch] $Offline
     )
 
     Process{
     
         # check whether the specified virtual environment exists
         if (Test-VirtualEnv -Name $Name){
-            Write-FormatedError -Message "The virtual environment '$Name' already exists." -Space
+            Write-FormattedError -Message "The virtual environment '$Name' already exists." -Module $PSVirtualEnv.Name -Space
             Get-VirtualEnv
 
             return
         }
         
-        # get existing requirement file 
-        if ($Offline -and $Requirement)
-        {   
-            if (Test-Path -Path $Requirement ){
-                $requirementFile = $Requirement
-                
-                $hostPath = Get-Location
-                Set-Location -Path (Split-Path -Path $requirementFile -Parent)
-            }
-            else {
-                Write-FormatedError -Message "There can not be found a existing requirement file." -Space
-                return
-            }
+        # deactivation of a running virtual environment
+        if (Get-ActiveVirtualEnv) {
+            Stop-VirtualEnv -Silent:$Silent
         }
-        if (-not $Offline -and $Requirement){
-            $requirementFile = Get-VirtualEnvRequirementFile -Name $Requirement
-            if (-not (Test-VirtualEnvRequirementFile -Name $requirementFile)) {
-                Write-FormatedError -Message "There can not be found a existing requirement file." -Space
-                return
-            }
+
+        # get existing requirement file 
+        if ($Requirement) {   
+            $requirement_file = Join-Path -Path $PSVirtualEnv.RequireDir -ChildPath $Requirement
         }
 
         # find a path, where a python distribution is located.
         $pythonExeLocal = Find-Python $Path -Verbose
-        if (-not $pythonExeLocal) { return $Null }
-        $pythonVersion = Get-PythonVersion $pythonExeLocal -Verbose
+        if (-not $pythonExeLocal){
+            return
+        }
+        # $pythonVersion = Get-PythonVersion $pythonExeLocal -Verbose
 
         # generate the full path of the specified virtual environment, which shall be located in the predefined system path
         $virtualEnvDir = Get-VirtualEnvPath -Name $Name
    
-        # set the offline flag, which will prevent the virtual environment to download packages to be installed
-        if ($Offline) {
-            $offlineCreation = "--never-download"
-        }
+        # # set the offline flag, which will prevent the virtual environment to download packages to be installed
+        # if ($Offline) {
+        #     $offlineCreation = "--never-download"
+        # }
 
         # create the specified virtual environment
-        Write-FormatedProcess "Creating the virtual environment '$Name'."
+        Write-FormattedProcess "Creating the virtual environment '$Name'." -Module $PSVirtualEnv.Name
 
-         . $pythonExeLocal "-m" virtualenv  $virtualEnvDir --verbose $offlineCreation
+         . $pythonExeLocal -m virtualenv  $virtualEnvDir --verbose $offlineCreation
         
         # check whether the virtual environment could be created
-        if (Test-VirtualEnv -Name $Name -Inverse) {
-            Write-FormatedSuccess -Message "Virtual environment '$virtualEnvDir' was created." -Space
-            Get-VirtualEnv
+        if (Test-VirtualEnv -Name $Name) {
+            Write-FormattedSuccess -Message "Virtual environment '$virtualEnvDir' was created." -Module $PSVirtualEnv.Name -Space
         }
         else {
-            Write-FormatedError -Message "Virtual environment '$virtualEnvDir' could not be created." -Space
+            Write-FormattedError -Message "Virtual environment '$virtualEnvDir' could not be created." -Module $PSVirtualEnv.Name -Space
             Get-VirtualEnv
             return $Null
         }
 
         # install packages from the requirement file
         if ($Requirement) {
-            # set environment variable
-            Set-VirtualEnvSystem -Name $Name
-
-            Install-PythonPckg -EnvExe (Get-VirtualEnvExe -Name $Name) -Requirement $requirementFile
-            
-            # set the pythonhome variable in scope process to the stored backup variable
-            Restore-VirtualEnvSystem
-
+            Install-VirtualEnvPackage -Python (Get-VirtualPython -Name $Name) -Requirement $requirement_file
+        
             Get-VirtualEnv -Name $Name
         }
 
-        if ($Offline) {
-            Set-Location -Path $hostPath
-        }
+        # if ($Offline) {
+        #     Set-Location -Path $hostPath
+        # }
     }
 }

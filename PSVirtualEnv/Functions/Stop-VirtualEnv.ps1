@@ -1,9 +1,9 @@
-# ==============================================================================
-#   Stop-VirtualEnv.ps1 --------------------------------------------------
-# ==============================================================================
+# ===========================================================================
+#   Stop-VirtualEnv.ps1 -----------------------------------------------------
+# ===========================================================================
 
-#   function -------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
 function Stop-VirtualEnv {
 
     <#
@@ -13,6 +13,8 @@ function Stop-VirtualEnv {
     .DESCRIPTION
         Stops current virtual environment.
 
+    .PARAMETER Silent
+    
     .EXAMPLE
         PS C:\> Stop-VirtualEnv
 
@@ -29,29 +31,21 @@ function Stop-VirtualEnv {
         None.
     #>
 
-    [CmdletBinding(SupportsShouldProcess=$True, ConfirmImpact="None", PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding=$True)]
 
     [OutputType([Void])]
 
     Param(
-        [Parameter(HelpMessage="If switch 'Requirement' is true, requirement file of the virtual environment to be stopped will be created.")]
-        [Switch] $Requirement,
-
-        [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="If switch 'silent' is true no output will written to host.")]
+        [Parameter(HelpMessage="If switch 'silent' is true no output will written to host.")]
         [Switch] $Silent
     )
 
-    Process {
+    Process { 
   
-        # deactivation of a running virtual environment and create the requirement file 
-        $virtualEnvName = [System.Environment]::GetEnvironmentVariable("VIRTUAL_ENV", "process")
-        if (Get-ActiveVirtualEnv -Name $virtualEnvName ) {            
-            
-            # create requirement file 
-            if ($Requirement) {
-                Get-VirtualEnvRequirement -Name $virtualEnvName
-            }
-
+        # deactivation of a running virtual environment
+        $virtual_env = [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.EnvVenv, "process")
+        if (Get-ActiveVirtualEnv -Name $virtual_env ) {            
+    
             # deactivate the virtual environment
             . $PSVirtualEnv.Deactivation
 
@@ -59,17 +53,17 @@ function Stop-VirtualEnv {
             Restore-VirtualEnvSystem
 
             # if the environment variable is not empty, deavtivation failed
-            if (-not [System.Environment]::GetEnvironmentVariable("VIRTUAL_ENV", "process")) {
+            if (-not [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.EnvVenv, "process")) {
                 if (-not $Silent) {
-                    Write-FormatedSuccess -Message "Virtual enviroment '$virtualEnvName' was stopped." -Space
+                    Write-FormattedSuccess -Message "Virtual enviroment '$virtual_env' was stopped." -Module $PSVirtualEnv.Name -Space
                 }
             }
             else {
-                Write-FormatedError -Message "Virtual environment '$virtualEnvName' could not be stopped." -Space
+                Write-FormattedError -Message "Virtual environment '$virtual_env' could not be stopped." -Module $PSVirtualEnv.Name -Space
             }
         }
         else {
-            Write-FormatedError -Message "There is no running virtual environment." -Space
+            Write-FormattedError -Message "There is no running virtual environment." -Module $PSVirtualEnv.Name -Space
         }
     }
 }

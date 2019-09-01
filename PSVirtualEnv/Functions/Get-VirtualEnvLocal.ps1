@@ -1,9 +1,9 @@
-# ==============================================================================
-#   Get-VirtualEnvLocal.ps1 ----------------------------------------------------
-# ==============================================================================
+# ===========================================================================
+#   Get-VirtualEnvLocal.ps1 -------------------------------------------------
+# ===========================================================================
 
-#   function -------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
 function Get-VirtualEnvLocal {
 
     <#
@@ -86,18 +86,18 @@ function Get-VirtualEnvLocal {
             }
 
             # download the packages defined in the requirement file to the specified download directory
-            Write-FormatedMessage -Message "Download packages of virtual environment '$($_.Name)' to '$virtualEnvLocal' - $virtualEnvIdx of $($virtualEnv.length) packages " -Color "Yellow"
-            . (Get-VirtualEnvExe -Name $_.Name) -m pip download --requirement   $requirementFile --dest  $virtualEnvLocal 
-            Write-FormatedSuccess -Message "Packages of virtual environment '$($_.Name)' were downloaded to '$virtualEnvLocal'"
+            Write-FormattedMessage -Message "Download packages of virtual environment '$($_.Name)' to '$virtualEnvLocal' - $virtualEnvIdx of $($virtualEnv.length) packages " -Color "Yellow"
+            . (Get-VirtualPython -Name $_.Name) -m pip download --requirement   $requirementFile --dest  $virtualEnvLocal 
+            Write-FormattedSuccess -Message "Packages of virtual environment '$($_.Name)' were downloaded to '$virtualEnvLocal'"
 
             # set the pythonhome variable in scope process to the stored backup variable
             Restore-VirtualEnvSystem
 
             # create the local requirement file of the specified virtual environment
             $requirementFileLocal = Join-Path -Path $virtualEnvLocal -ChildPath ($_.Name + ".txt")
-            Write-FormatedMessage -Message "Write local requirement file for virtual environment '$($_.Name)' to '$requirementFileLocal' - $virtualEnvIdx of $($virtualEnv.length) packages " -Color "Yellow"
+            Write-FormattedMessage -Message "Write local requirement file for virtual environment '$($_.Name)' to '$requirementFileLocal' - $virtualEnvIdx of $($virtualEnv.length) packages " -Color "Yellow"
             Out-File -FilePath  $requirementFileLocal -InputObject (Get-ChildItem -Path $virtualEnvLocal | Select-Object -ExpandProperty Name )
-            Write-FormatedSuccess -Message "Local requirement file '$requirementFileLocal' for virtual environment '$($_.Name)' was created."
+            Write-FormattedSuccess -Message "Local requirement file '$requirementFileLocal' for virtual environment '$($_.Name)' was created."
             
             # write content of local requirement file to host
             Write-Host

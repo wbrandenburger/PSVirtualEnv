@@ -1,17 +1,17 @@
-# ==============================================================================
-#   Copy-VirtualEnvLocal.ps1 ---------------------------------------------------
-# ==============================================================================
+# ===========================================================================
+#   Copy-VirtualEnvLocal.ps1 ------------------------------------------------
+# ===========================================================================
 
-#   Class ----------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+#   Class -------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 Class ValidateVirtualEnv : System.Management.Automation.IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
         return [String[]] (Get-VirtualEnv | Select-Object -ExpandProperty Name)
     }
 }
 
-#   function -------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
 function Copy-VirtualEnvLocal {
     
     <#
@@ -62,7 +62,7 @@ function Copy-VirtualEnvLocal {
 
         # abort if parent folder of the destination does not exist
         if (-not (Test-Path -Path (Split-Path -Path $Path -Parent))) {
-            Write-FormatedError -Message "Directory '$(Split-Path -Path $Path -Parent)' does not exist."
+            Write-FormattedError -Message "Directory '$(Split-Path -Path $Path -Parent)' does not exist."
             return $Null
         }
 
@@ -76,11 +76,11 @@ function Copy-VirtualEnvLocal {
         } 
 
         if (-not (Test-Path -Path $Path) -and $Reverse){
-            Write-FormatedError -Message "Directory '$Path' does not exist."
+            Write-FormattedError -Message "Directory '$Path' does not exist."
             return $Null
         }
 
-        Write-FormatedProcess -Message "Copying local files of virtual environment '$Name' to '$Path'."
+        Write-FormattedProcess -Message "Copying local files of virtual environment '$Name' to '$Path'."
         
         $copyPath = Get-VirtualEnvLocalDir -Name $Name
         if ($Reverse) {
@@ -90,6 +90,6 @@ function Copy-VirtualEnvLocal {
         
         Copy-Item -Path $copyPath -Destination $Path -Recurse -Force -ErrorAction Stop
 
-        Write-FormatedSuccess -Message "Files was copied."
+        Write-FormattedSuccess -Message "Files was copied."
     }
 }

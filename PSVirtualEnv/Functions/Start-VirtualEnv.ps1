@@ -1,17 +1,17 @@
-# ==============================================================================
-#   Start-VirtualEnv.ps1 -------------------------------------------------------
-# ==============================================================================
+# ===========================================================================
+#   Start-VirtualEnv.ps1 ----------------------------------------------------
+# ===========================================================================
 
-#   Class ----------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+#   validation --------------------------------------------------------------
+# ---------------------------------------------------------------------------
 Class ValidateVirtualEnv : System.Management.Automation.IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
         return [String[]] (Get-VirtualEnv | Select-Object -ExpandProperty Name)
     }
 }
 
-#   function -------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
 function Start-VirtualEnv {
 
     <#
@@ -22,6 +22,8 @@ function Start-VirtualEnv {
         Starts a specific virtual environment in the predefined system directory.
 
     .PARAMETER Name
+
+    .PARAMETER Silent
 
     .EXAMPLE
         PS C:\> Start-VirtualEnv -Name venv
@@ -39,7 +41,7 @@ function Start-VirtualEnv {
         None.
     #>
 
-    [CmdletBinding(SupportsShouldProcess=$True, ConfirmImpact="None", PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding=$True)]
 
     [OutputType([Void])]
 
@@ -55,7 +57,7 @@ function Start-VirtualEnv {
     Process {
 
         # check whether the specified virtual environment exists
-        if (-not (Test-VirtualEnv -Name $Name -Verbose)){
+        if (-not $(Test-VirtualEnv -Name $Name -Verbose)){
             Get-VirtualEnv
             return $Null
         }
@@ -66,9 +68,9 @@ function Start-VirtualEnv {
         }
 
         # get the full path of the specified virtual environment, which is located in the predefined system path and activate the virtual environment
-        . (Get-VirtualEnvActivationScript -Name $Name)
+        . $(Get-VirtualEnvActivationScript -Name $Name)
         if (-not $Silent) {
-            Write-FormatedSuccess -Message "Virtual enviroment '$Name' was started." -Space
+            Write-FormattedSuccess -Message "Virtual enviroment '$Name' was started." -Module $PSVirtualEnv.Name -Space
         }
 
         # set environment variable
@@ -77,13 +79,3 @@ function Start-VirtualEnv {
         return $Null
     }
 }
-
-
-# $choiceIndex = 1
-# $options = Get-VirtualEnv  | ForEach-Object { if ($_.Name) {
-#     New-Object System.Management.Automation.Host.ChoiceDescription "&$choiceIndex - $($_.Name)"
-#     $choiceIndex++
-#     }
-# }
-# $chosenIndex = $Host.UI.PromptForChoice($Null, "Which virtual environment should be started?", $options, 0)
-# $SubscriptionToUse = $all_subscriptions[$chosenIndex]

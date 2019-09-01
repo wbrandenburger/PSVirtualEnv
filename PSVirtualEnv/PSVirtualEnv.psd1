@@ -1,6 +1,6 @@
-# ==============================================================================
+# ===========================================================================
 #   PSVirtualEnv.psd1 ----------------------------------------------------------
-# ==============================================================================
+# ===========================================================================
 
 @{
 
@@ -8,7 +8,7 @@
 RootModule = 'PSVirtualEnv'
 
 # Version number of this module.
-ModuleVersion = '0.3.0'
+ModuleVersion = '1.0'
 
 # ID used to uniquely identify this module
 GUID = '41a9e505-d878-4b65-a8bf-b90bd2f2ddf6'
@@ -55,7 +55,9 @@ RequiredModules = @(
 RequiredAssemblies = @()
 
 # Script files (.ps1) that are run in the caller's environment prior to importing this module.
-ScriptsToProcess = @()
+ScriptsToProcess = @(
+    'ScriptsToProcess.ps1'
+)
 
 # Type files (.ps1xml) to be loaded when importing this module
 TypesToProcess = @()
@@ -68,21 +70,15 @@ NestedModules = @()
 
 # Functions to export from this module
 FunctionsToExport = @(
-    'Copy-VirtualEnvLocal'
     'Get-VirtualEnv'
-    'Get-VirtualEnvAlias'
-    'Get-VirtualEnvLocal'
     'Get-VirtualEnvRequirement'
-    'Get-VirtualEnvSupplement'
-    'Install-VirtualEnvPckg'
+    'Find-Python'
+    'Install-VirtualEnv'
     'New-VirtualEnv'
     'Remove-VirtualEnv'
-    'Remove-VirtualEnvRequirement'
     'Set-VirtualEnvLocation'
     'Start-VirtualEnv'
     'Stop-VirtualEnv'
-    'Test-VirtualEnv'
-    'Find-Python'
 )
 
 # Cmdlets to export from this module

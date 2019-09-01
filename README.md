@@ -25,7 +25,7 @@ This module is an extension of [virtualenvwrapper-powershell](https://github.com
 1. Set the environment variable `%PYTHONHOME%` to the directory with the python executable, which comes with the installation of a python distribution. When the variable has not been set, execute in PowerShell:
 
 ```powershell
-[System.Environment]::SetEnvironmentVariable("PYTHONHOME", "path-to-python", "User")
+[System.Environment]::SetEnvironmentVariable($PSVirtualEnv.EnvPython, "path-to-python", "User")
 ```
 
 2. Run the file `PSVirtualEnv.Install.bat` from PowerShell as administrator.

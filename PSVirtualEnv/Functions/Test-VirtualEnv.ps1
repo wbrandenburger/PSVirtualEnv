@@ -1,9 +1,9 @@
-# ==============================================================================
-#   Test-VirtualEnv.ps1 --------------------------------------------------------
-# ==============================================================================
+# ===========================================================================
+#   Test-VirtualEnv.ps1 -----------------------------------------------------
+# ===========================================================================
 
-#   function -------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
 function Test-VirtualEnv {
 
     <#
@@ -37,35 +37,33 @@ function Test-VirtualEnv {
 
     Param(        
         [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Name of virtual environment to be tested.")]
-        [System.String] $Name,
-
-        [Parameter(HelpMessage="If switch 'Inverse' is true, no error will be displayed if the specified virtual environment does not exist.")]
-        [Switch] $Inverse
+        [System.String] $Name
     )
 
     Process {
 
         # check whether a virtual environment is specified
         if (!$Name) {
-            if ($VerbosePreference) {
-                Write-FormatedError -Message "There is no virtual environment specified." -Space
-            }
+            Write-FormattedError -Message "There is no virtual environment specified." -Module $PSVirtualEnv.Name -Space -Silent:(!$VerbosePreference)
             return $False
         }
 
-        # check if there exists the specified virtual environment in the predefined system directory
-        if ( -not (Get-ChildItem $PSVirtualEnv.WorkDir | Where-Object {$_.Name -eq $Name} )) {
-            if ($VerbosePreference) {
-                Write-FormatedError -Message "The virtual environment '$Name' does not exist." -Space
+        # check whether the test of a python distribution is specified
+        if($Name -eq "python") {
+            if (Find-Python){
+                return $True
             }
+        }
+
+        # check if there exists the specified virtual environment in the predefined system directory
+        if ( -not $(Get-ChildItem $PSVirtualEnv.WorkDir | Where-Object {$_.Name -eq $Name} )) {
+            Write-FormattedError -Message "The virtual environment '$Name' does not exist." -Module $PSVirtualEnv.Name -Space -Silent:(!$VerbosePreference)
             return $False
         }
 
         # get the full path of the specified virtual environment, which is located in the predefined system path and test the resulting path
-        if ( -not (Test-Path (Get-VirtualEnvActivationScript -Name $Name) )) {
-            if ($VerbosePreference) {
-                Write-FormatedError -Message "Unable to find the activation script. The virtual environment '$Name' seems compromized." -Space
-            }
+        if ( -not $(Test-Path $(Get-VirtualEnvActivationScript -Name $Name) )) {
+            Write-FormattedError -Message "Unable to find the activation script. The virtual environment '$Name' seems compromized." -Module $PSVirtualEnv.Name -Space -Silent:(!$VerbosePreference)
             return $False
         }
 

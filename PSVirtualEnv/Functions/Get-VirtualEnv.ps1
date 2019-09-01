@@ -1,17 +1,17 @@
-# ==============================================================================
-#   Get-VirtualEnv.ps1 ---------------------------------------------------------
-# ==============================================================================
+# ===========================================================================
+#   Get-VirtualEnv.ps1 ------------------------------------------------------
+# ===========================================================================
 
-#   Class ----------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+#   validaation -------------------------------------------------------------
+# ---------------------------------------------------------------------------
 Class ValidateVirtualEnv : System.Management.Automation.IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
         return [String[]] ((Get-VirtualEnv | Select-Object -ExpandProperty Name) + "" )
     }
 }
 
-#   function -------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
 function Get-VirtualEnv {
 
     <#
@@ -21,13 +21,17 @@ function Get-VirtualEnv {
     .DESCRIPTION
         Return all existing virtual environments in predefined system directory as PSObject with version number.
 
+    .PARAMETER Name
+
+    .PARAMETER Python
+
     .EXAMPLE
         PS C:\> Get-VirtualEnv
 
-        Name    Version Local Requirement
-        ----    ------- ----- -----------
-        biology 3.7.3    True        True
-        math    3.7.3    True        True
+        Name    Version
+        ----    -------
+        biology 3.7.3
+        math    3.7.3
 
         -----------
         Description
@@ -36,11 +40,11 @@ function Get-VirtualEnv {
     .EXAMPLE
         PS C:\> Get-VirtualEnv -Name venv
 
-        Name            Version Independent Latest
-        ----            ------- ----------- ------
+        Name            Version  Latest
+        ----            -------  ------
         cycler          0.10.0
         kiwisolver      1.1.0
-        matplotlib      3.1.0   True
+        matplotlib      3.1.0
 
         -----------
         Description
@@ -49,10 +53,10 @@ function Get-VirtualEnv {
     .EXAMPLE
         PS C:\> Get-VirtualEnv -Python
 
-        Name              Version Independent Latest
-        ----              ------- ----------- ------
-        setuptools        41.0.1         True
-        pip               19.1.1         True
+        Name              Version  Latest
+        ----              -------  ------
+        setuptools        41.0.1
+        pip               19.1.1
         virtualenv        16.6.1
 
         -----------
@@ -78,83 +82,102 @@ function Get-VirtualEnv {
         [System.String] $Name,
 
         [Parameter(HelpMessage="If switch 'Python' is true, information about all packages installed in the default python distribution will be returned.")]
-        [Switch] $Python
+        [Switch] $Python,
+
+        [Parameter(HelpMessage="Return information about required packages.")]
+        [Switch] $Full,
+
+        [Parameter(HelpMessage="Return information not as readable table with additional details.")]
+        [Switch] $Unformatted
     )
 
     Process {
 
-        # if the name of a virtual enviroment is not specified, general information about all virtual environments in the predefined system directory are gathered
+        # return information about python distribution
+        if ($Python) {
+            return $(Get-VirtualEnvPackage -Python $PSVirtualEnv.Python -full:$Full -Unformatted:$Unformatted)
+        }
+        
+        # return information about specified virtual distribution
+        if ($Name) {                     
+            # check whether the specified virtual environment exists
+            if (-not $(Test-VirtualEnv -Name $Name -Verbose)){
+                Get-VirtualEnv
+                return $Null
+            }
+
+            Start-VirtualEnv -Name $Name -Silent
+            $pkgProperty = $(Get-VirtualEnvPackage -Python $PSVirtualEnv.Python -full:$Full -Unformatted:$Unformatted)
+            Stop-VirtualEnv -Silent
+            
+            return $pkgProperty
+        }
+
+        #  return information about all virtual environments in the predefined system directory are gathered
         if (-not $Name -and -not $Python) {
-            #   get all virtual environment directories in predefined system directory as well as the local directories and requirement files
+            # get all virtual environment directories in predefined system directory as well as the local directories and requirement files
             $virtualEnvSubDirs = Get-ChildItem -Path $PSVirtualEnv.WorkDir | Select-Object -ExpandProperty Name
-            $virtualEnvLocalDir = Get-ChildItem -Path $PSVirtualEnv.LocalDir -Directory | Select-Object -ExpandProperty Name
-            $virtualEnvRequirement = Get-ChildItem -Path $PSVirtualEnv.LocalDir -File | Select-Object -ExpandProperty Name
 
             $virtualEnvs = $Null
 
-            #   call the python distribution of each virtual environnment and determine the version number
+            # call the python distribution of each virtual environnment and determine the version number
             if ($VirtualEnvSubDirs.length) {
                 $virtualEnvs= $VirtualEnvSubDirs | ForEach-Object {
-                    $virtualEnvName = $_
-                    if (Test-VirtualEnv -Name $virtualEnvName) {
+                    if (Test-VirtualEnv -Name $_) {
                          # set environment variable
-                        Set-VirtualEnvSystem -Name $virtualEnvName
+                        Set-VirtualEnvSystem -Name $_
 
-                        $virtualEnvExe = Get-VirtualEnvExe -Name $virtualEnvName
-                        
+                        $virtualEnvExe = Get-VirtualPython -Name $_
+                        # name of virtual environment and python version
                         [PSCustomObject]@{
-                            # name of the virtual environment
-                            Name = $virtualEnvName
-                            # python version
+                            Name = $_
                             Version = (((. $virtualEnvExe --version 2>&1) -replace "`r|`n","") -split " ")[1]
-                            # download directory of the virtual environment
-                            Local = if ($virtualEnvLocalDir | Where-Object{ $_ -match "^$virtualEnvName$"}){Get-VirtualEnvLocalDir -Name $virtualEnvName} else {$Null}
-                            # requirement file of the virtual environment
-                            Requirement = if($virtualEnvRequirement | Where-Object{ $_ -match "^$virtualEnvName.txt$"}){Get-VirtualEnvRequirementFile -Name $virtualEnvName} else {$Null}
                         }
-                        # set the pythonhome variable in scope process to the stored backup variable
+                        # # set the pythonhome variable in scope process to the stored backup variable
                         Restore-VirtualEnvSystem
                     }
                 }
-            } else {
-                Write-FormatedError -Message "In predefined system directory do not exist any virtual environments" -Space
-            }
 
-            #   return information of all detected virtual environments
-            return $virtualEnvs
-        }
-        else {            
-            # get the absolute path of the executable of the specified virtual environment
-            if (-not $Python) {                     
-                # check whether the specified virtual environment exists
-                if (-not (Test-VirtualEnv -Name $Name -Verbose)){
-                    Get-VirtualEnv
-                    return $Null
-                }              
-                Start-VirtualEnv -Name $Name -Silent
-                $pkgProperty = Get-PckgProperty -EnvExe (Get-VirtualEnvExe -Name $Name)
-                Stop-VirtualEnv -Silent
-                
-                return $pkgProperty
-            }
+                return $virtualEnvs
+            } 
             else {
-                $pkgProperty = Get-PckgProperty -EnvExe ($PSVirtualEnv.Python)
-                return $pkgProperty
+                Write-FormattedError -Message "In predefined system directory do not exist any virtual environments" -Module $PSVirtualEnv.Name -Space 
             }
         }
+
     }
 }
 
-#   function -------------------------------------------------------------------
-# ------------------------------------------------------------------------------
-function Get-PckgProperty {
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
+function Get-VirtualEnvPackage {
 
     <#
     .DESCRIPTION
         Gets the properties of all packages in a python environment.
     
-    .PARAMETER EnvExe
+    .PARAMETER Python
+    
+    .EXAMPLE
+        PS C:\> Get-VirtualEnvPackage -Python C:\Python\Python37\python.exe
 
+        Name       Version Latest
+        ----       ------- ------
+        doc8       0.8.0
+        pip        19.2.1
+        setuptools 41.0.1
+        virtualenv 16.6.1
+
+
+        Name                  Version Required Latest
+        ----                  ------- -------- ------
+        chardet               3.0.4       True
+        docutils              0.15.2      True
+        pbr                   5.4.2       True
+
+        -----------
+        Description
+        Return information about all packages installed in the default python distribution. Those packages which are independet are displayed in a separated table
     .OUTPUTS
         PSCustomObject. Properties of all packages in a python environment
     #>
@@ -164,27 +187,71 @@ function Get-PckgProperty {
     [OutputType([PSCustomObject])]
 
     Param (
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Executable of a python distribution.")]
-        [System.String] $EnvExe
+        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Executable of system's python distribution or of a virtual environment.")]
+        [System.String] $Python,
+
+        [Parameter(HelpMessage="Return information about required packages.")]
+        [Switch] $Full,
+
+        [Parameter(HelpMessage="Return information not as readable table with additional details.")]
+        [Switch] $Unformatted
     )
 
-    # get the properties of all packages in the specified virtual environment
-    $envPckg = . $EnvExe -m pip list --format json | ConvertFrom-Json # all available packages
-    $envOutDated = . $EnvExe -m pip list --format json --outdated | ConvertFrom-Json # all outdated packages
-    $envIndependent = . $EnvExe -m pip list --format json --not-required | ConvertFrom-Json # all independent packages
+    # get all packages in the specified virtual environment
+    $venv_package = . $Python -m pip list --format json | ConvertFrom-Json 
+
+    # get all outdated packages 
+    $venv_outdated = . $Python -m pip list --format json --outdated | ConvertFrom-Json 
+    # get all independent packages
+    $venv_independent = . $Python -m pip list --format json --not-required | ConvertFrom-Json 
 
     # combine all gathered properties about the packages in the specified virtual environment
-    return $envPckg | ForEach-Object{
-        $pckg = $_
-        $outDated = $envOutDated | Where-Object {$_.Name -eq $pckg.Name}
-        $independent = $envIndependent | Where-Object {$_.Name -eq $pckg.Name}
+    $venv_package = $venv_package | ForEach-Object{
+        $package = $_
+        $package_outdated = $venv_outdated | Where-Object {$_.Name -eq $package.Name}
+        $package_independent = $venv_independent | Where-Object {$_.Name -eq $Package.Name}
 
         [PSCustomObject]@{
-            Name = $pckg.Name
-            Version = $pckg.Version
-            Independent = if ( $independent ) {$True} else {$Null}
-            Latest = $outDated.Latest
+            Name = $package.Name
+            Version = $package.Version
+            Latest = $package_outdated.Latest
+            Required = if ( $package_independent ) {$Null} else {$True}
+
         }
-    } | Format-Table
-    # | Sort-Object -Property Independent -Descending
+    } 
+
+    # return all packages which are independent from others in a separated table
+    $result = $venv_package
+    # | Format-Table -Property Name, Version, Latest
+    $result = $venv_package | Where-Object {-not $_.Required} 
+
+    if ($Full) {
+    $requires_dict = @{}
+    $result | ForEach-Object{
+        $package = $_.Name
+        $result_info = . $Python -m pip show $package
+        $result_info | ForEach-Object{
+                $result_requires = $_ -Split "^Requires: "
+                if ($result_requires.Length -gt 1){
+                    foreach($required_package in ($result_requires[1] -Split ", ")){
+                        $requires_dict[$required_package] = $package
+                    }
+                }
+            }
+        }
+
+    $result_required = $venv_package | Where-Object {$_.Required} 
+    $result_required | ForEach-Object {
+            if ($requires_dict.ContainsKey($_.Name)) {
+                $_ | Add-Member -MemberType NoteProperty -Name "Required-by" -Value $requires_dict[$_.Name]
+            }
+        }
+    }
+
+    if ($Unformatted){
+        return $result,  $result_required
+    }
+    else {
+        return  ($result | Format-Table -Property Name, Version, Latest), ($result_required | Format-Table -Property Name, Version, Required-by, Latest)
+    }
 }

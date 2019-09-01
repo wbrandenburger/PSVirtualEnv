@@ -1,9 +1,9 @@
-# ==============================================================================
-#   Set-VirtualEnvLocation.ps1 -------------------------------------------------
-# ==============================================================================
+# ===========================================================================
+#   Set-VirtualEnvLocation.ps1 ----------------------------------------------
+# ===========================================================================
 
-#   function -------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
 function Set-VirtualEnvLocation {
 
     <#
@@ -20,6 +20,7 @@ function Set-VirtualEnvLocation {
         -----------
         Description
         Set the location of the predefined virtual environment directory.
+
     .INPUTS
         None.
     
@@ -27,16 +28,15 @@ function Set-VirtualEnvLocation {
         None.
     #>
 
-    [CmdletBinding()]
+    [CmdletBinding(PositionalBinding=$True)]
 
     [OutputType([Void])]
 
-    Param(
-    )
+    Param()
 
     Process{
         
-        # return all aliases of the module
+        # set location of virtual env wokring directory
         Set-Location -Path $PSVirtualEnv.WorkDir
 
     }

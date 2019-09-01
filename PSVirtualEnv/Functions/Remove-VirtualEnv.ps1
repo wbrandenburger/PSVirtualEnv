@@ -1,17 +1,17 @@
-# ==============================================================================
-#   Remove-VirtualEnv.ps1 ------------------------------------------------------
-# ==============================================================================
+# ===========================================================================
+#   Remove-VirtualEnv.ps1 ---------------------------------------------------
+# ===========================================================================
 
-#   Class ----------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+#   validation --------------------------------------------------------------
+# ---------------------------------------------------------------------------
 Class ValidateVirtualEnv : System.Management.Automation.IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
         return [String[]] (Get-VirtualEnv | Select-Object -ExpandProperty Name)
     }
 }
 
-#   function -------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
 function Remove-VirtualEnv  {
 
     <#
@@ -39,9 +39,9 @@ function Remove-VirtualEnv  {
         None.
     #>
 
-    [CmdletBinding(SupportsShouldProcess=$True, ConfirmImpact="None", PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding=$True)]
 
-    [OutputType([Void])]
+    [OutputType([PSCustomObject])]
 
     Param(
         [ValidateSet([ValidateVirtualEnv])]
@@ -52,31 +52,31 @@ function Remove-VirtualEnv  {
     Process{
         
         # check whether the specified virtual environment exists
-        if (-not (Test-VirtualEnv -Name $Name -Verbose)){
+        if (-not $(Test-VirtualEnv -Name $Name -Verbose)){
             Get-VirtualEnv
             return
         }
 
         # deactivation of a running virtual environment
         if (Get-ActiveVirtualEnv -Name $Name) {
-            Deactivate
+            . $PSVirtualEnv.Deactivation
         }
 
         # get the full path of the specified virtual environment, which is located in the predefined system path
         $virtualEnvDir = Get-VirtualEnvPath -Name $Name
         
         # remove specified virtual environment
-        Remove-Item -Path $virtualEnvDir -Recurse
+        Remove-Item -Path $virtualEnvDir -Recurse -Force
         
         # check whether the virtual environment could be removed
-        if (-not (Test-Path -Path $virtualEnvDir)) {
-            Write-FormatedSuccess -Message "Virtual Environment '$Name' was deleted permanently." -Space
+        if (-not $(Test-Path -Path $virtualEnvDir)) {
+            Write-FormattedSuccess -Message "Virtual Environment '$Name' was deleted permanently." -Module $PSVirtualEnv.Name -Space
         }
         else {
-            Write-FormatedError -Message "Virtual environment '$Name' could not be deleted." -Space
+            Write-FormattedError -Message "Virtual environment '$Name' could not be deleted." -Module $PSVirtualEnv.Name -Space
         }
 
-        Get-ChildItem -Path $PSVirtualEnv.WorkDir -Exclude "*.*" -Directory
+        return $(Get-VirtualEnv)
 
     }
 }
