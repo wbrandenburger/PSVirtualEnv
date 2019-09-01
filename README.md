@@ -37,7 +37,7 @@ Install-Module PSVirtualEnv
 
 PSVirtualEnv needs a Python distribution (Version >= 3) whose working directory has to be defined in environment variable `%PYTHONHOME%` or in the systems configuration file of PSVirtualEnv.
 
-The following PowerShell modules will be automatically installed:
+The following PowerShell module will be automatically installed:
 
 - [PSIni](https://github.com/lipkau/PsIni)
 
@@ -82,7 +82,7 @@ python = "C:\Python\Python37\python.exe"
 
 Creates a virtual environment in the predefined directory and install via a requirements file project related packages. All available requirement files can be accessed by autocompletion.
 
-```s
+```log
     PS C:\> New-VirtualEnv -Name venv -Requirement \requirements.txt
 
     [PSVirtualEnv]::PROCESS: Creating new virtual environment 'venv'.
@@ -109,7 +109,7 @@ Creates a virtual environment in the predefined directory and install via a requ
 
 Starts and stops a specific virtual environment in the predefined directory. All available virtual environments can be accessed by autocompletion.
 
-```s
+```log
     PS C:\> Start-VirtualEnv -Name venv
 
     [PSVirtualEnv]::SUCCESS: Virtual enviroment 'venv' was started.
@@ -125,7 +125,7 @@ Starts and stops a specific virtual environment in the predefined directory. All
 
 Return information about all independent packages installed in the specified virtual environment and shows potentially newer versions. All available virtual environments can be accessed by autocompletion.
 
-```s
+```log
         PS C:\> Get-VirtualEnv -Name venv
 
         Name       Version Latest
