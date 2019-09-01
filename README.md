@@ -1,16 +1,16 @@
-# [PSVirtualEnv](https://github.com/wbrandenburger/PSVirtualEnv) Beta
+# [PSVirtualEnv](https://github.com/wbrandenburger/PSVirtualEnv)
 
 ## Table of Contents
 
-- [PSVirtualEnv Beta](#PSVirtualEnv-Beta)
-  - [Table of Contents](#Table-of-Contents)
-  - [Description](#Description)
-    - [Origin](#Origin)
-  - [Installation](#Installation)
-  - [Dependencies](#Dependencies)
-  - [Examples](#Examples)
-  - [Authors/Contributors](#AuthorsContributors)
-    - [Author](#Author)
+- [PSVirtualEnv](#psvirtualenv)
+  - [Table of Contents](#table-of-contents)
+  - [Description](#description)
+    - [Origin](#origin)
+  - [Installation](#installation)
+  - [Dependencies](#dependencies)
+  - [Examples](#examples)
+  - [Authors/Contributors](#authorscontributors)
+    - [Author](#author)
 
 ## Description
 
