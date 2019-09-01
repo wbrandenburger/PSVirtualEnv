@@ -83,26 +83,26 @@ python = "C:\Python\Python37\python.exe"
 Creates a virtual environment in the predefined directory and install via a requirements file project related packages. All available requirement files can be accessed by autocompletion.
 
 ```log
-    PS C:\> New-VirtualEnv -Name venv -Requirement \requirements.txt
+  PS C:\> New-VirtualEnv -Name venv -Requirement \requirements.txt
 
-    [PSVirtualEnv]::PROCESS: Creating new virtual environment 'venv'.
-    New python executable in C:\Users\User\PSVirtualEnv\venv\Scripts\python.exe
-    Installing setuptools, pip, wheel...
-    done.
+  [PSVirtualEnv]::PROCESS: Creating new virtual environment 'venv'.
+  New python executable in C:\Users\User\PSVirtualEnv\venv\Scripts\python.exe
+  Installing setuptools, pip, wheel...
+  done.
 
-    [PSVirtualEnv]::SUCCESS: Virtual environment 'C:\Users\User\PSVirtualEnv\venv' was created.
+  [PSVirtualEnv]::SUCCESS: Virtual environment 'C:\Users\User\PSVirtualEnv\venv' was created.
 
-    [PSVirtualEnv]::PROCESS: Try to install missing packages from requirement file 'C:\Users\User\PSVirtualEnv\.require\requirements.txt'.
+  [PSVirtualEnv]::PROCESS: Try to install missing packages from requirement file 'C:\Users\User\PSVirtualEnv\.require\requirements.txt'.
 
-    [PSVirtualEnv]::SUCCESS: Packages from requirement file 'C:\Users\User\PSVirtualEnv\.require\requirements.txt' were installed.
+  [PSVirtualEnv]::SUCCESS: Packages from requirement file 'C:\Users\User\PSVirtualEnv\.require\requirements.txt' were installed.
 
 
-    Name       Version Latest
-    ----       ------- ------
-    package    version
-    pip        19.2.3
-    setuptools 41.2.0
-    wheel      0.33.6
+  Name       Version Latest
+  ----       ------- ------
+  package    version
+  pip        19.2.3
+  setuptools 41.2.0
+  wheel      0.33.6
 ```
 
 ### Working with virtual environments
@@ -110,15 +110,15 @@ Creates a virtual environment in the predefined directory and install via a requ
 Starts and stops a specific virtual environment in the predefined directory. All available virtual environments can be accessed by autocompletion.
 
 ```log
-    PS C:\> Start-VirtualEnv -Name venv
+  PS C:\> Start-VirtualEnv -Name venv
 
-    [PSVirtualEnv]::SUCCESS: Virtual enviroment 'venv' was started.
+  [PSVirtualEnv]::SUCCESS: Virtual enviroment 'venv' was started.
 
-    [venv] PS C:\>Stop-VirtualEnv
+  [venv] PS C:\>Stop-VirtualEnv
 
-    [PSVirtualEnv]::SUCCESS: Virtual enviroment 'venv' was stopped.
+  [PSVirtualEnv]::SUCCESS: Virtual enviroment 'venv' was stopped.
 
-    PS C:\>
+  PS C:\>
 ```
 
 ### Manage virtual environments
@@ -126,14 +126,14 @@ Starts and stops a specific virtual environment in the predefined directory. All
 Return information about all independent packages installed in the specified virtual environment and shows potentially newer versions. All available virtual environments can be accessed by autocompletion.
 
 ```log
-        PS C:\> Get-VirtualEnv -Name venv
+  PS C:\> Get-VirtualEnv -Name venv
 
-        Name       Version Latest
-        ----       ------- ------
-        Click      7.0
-        pip        19.2.3
-        setuptools 41.2.0
-        wheel      0.33.6
+  Name       Version Latest
+  ----       ------- ------
+  Click      7.0
+  pip        19.2.3
+  setuptools 41.2.0
+  wheel      0.33.6
 ```
 
 ## Authors/Contributors
