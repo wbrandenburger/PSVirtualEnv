@@ -176,8 +176,8 @@ venv-deactivation = deactivate
 
     # define aliases for specific function
     @(
-        @{ Name = "in-venv";     Value = "Install-VirtualEnv"}
         @{ Name = "cd-venv";     Value = "Set-VirtualEnvLocation"}
+        @{ Name = "in-venv";     Value = "Install-VirtualEnv"}
         @{ Name = "ls-venv";     Value = "Get-VirtualEnv"}
         @{ Name = "mk-venv";     Value = "New-VirtualEnv"}
         @{ Name = "rm-venv";     Value = "Remove-VirtualEnv"}

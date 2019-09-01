@@ -16,10 +16,10 @@ function Remove-VirtualEnv  {
 
     <#
     .SYNOPSIS
-        Removes a specific virtual environment.
+        Removes a specific virtual environment in the predefined directory.
 
     .DESCRIPTION
-        Removes a specific virtual environment in the predefined system directory. All available virtual environments can be accesed by autocompletion.
+        Removes a specific virtual environment in the predefined virtual environment directory. All available virtual environments can be accessed by autocompletion.
 
     .PARAMETER Name
 
@@ -30,7 +30,7 @@ function Remove-VirtualEnv  {
 
         -----------
         Description
-        Removes the specified virtual environment 'venv'. All available virtual environments can be accesed by autocompletion.
+        Removes the specified virtual environment 'venv'. All available virtual environments can be accessed by autocompletion.
 
     .EXAMPLE
         PS C:\> rm-venv venv

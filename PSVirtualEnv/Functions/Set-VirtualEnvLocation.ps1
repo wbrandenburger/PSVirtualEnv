@@ -16,10 +16,10 @@ function Set-VirtualEnvLocation {
 
     <#
     .SYNOPSIS
-        Set the location of the predefined virtual environment directory.
+        Set the location of the predefined directory.
 
     .DESCRIPTION
-        Set the location of the predefined virtual environment directory. All available virtual environments can be accesed by autocompletion.
+        Set the location of the predefined virtual environment directory. All available virtual environments can be accessed by autocompletion.
 
     .PARAMETER Name
 
@@ -48,7 +48,7 @@ function Set-VirtualEnvLocation {
 
         -----------
         Description
-        Set the location of the specified virtual environment 'venv'. All available virtual environments can be accesed by autocompletion.
+        Set the location of the specified virtual environment 'venv'. All available virtual environments can be accessed by autocompletion.
 
     .INPUTS
         None.

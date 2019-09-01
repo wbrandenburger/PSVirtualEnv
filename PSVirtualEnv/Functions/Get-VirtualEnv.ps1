@@ -16,10 +16,10 @@ function Get-VirtualEnv {
 
     <#
     .SYNOPSIS
-        Get all existing virtual environments in predefined system directory.
+        List all existing virtual environments in predefined directory.
 
     .DESCRIPTION
-        Return all existing virtual environments in predefined system directory as PSObject with version number. All available virtual environments can be accesed by automcompletion.
+        Return all existing virtual environments in predefined virtual environment directory as PSObject with version number. All available virtual environments can be accessed by autocompletion.
 
     .PARAMETER Name
 
@@ -34,7 +34,7 @@ function Get-VirtualEnv {
 
         -----------
         Description
-        Return all existing virtual environments in predefined system directory. Flags 'Full' and 'Unformatted' does not have any implications if merely virtual environments are queried.
+        Return all existing virtual environments in predefined directory. Flags 'Full' and 'Unformatted' does not have any implications if merely virtual environments are queried.
 
 
         .EXAMPLE
@@ -44,7 +44,7 @@ function Get-VirtualEnv {
         ---- -------
         venv 3.7.3
 
-         Return all existing virtual environments in predefined system directory with predefined alias.
+         Return all existing virtual environments in predefined directory with predefined alias.
 
     .EXAMPLE
         PS C:\> Get-VirtualEnv -Name venv
@@ -119,9 +119,9 @@ function Get-VirtualEnv {
             return $(Get-VirtualEnvPackage -Python $(Get-VirtualPython -Name $Name) -full:$Full -Unformatted:$Unformatted)
         }
 
-        #  return information about all virtual environments in the predefined system directory are gathered
+        #  return information about all virtual environments in the predefined directory are gathered
         if (-not $Name -and -not $Python) {
-            # get all virtual environment directories in predefined system directory as well as the local directories and requirement files
+            # get all virtual environment directories in predefined directory as well as the local directories and requirement files
             $virtualEnvSubDirs = Get-ChildItem -Path $PSVirtualEnv.WorkDir | Select-Object -ExpandProperty Name
 
             $virtualEnvs = $Null
@@ -144,7 +144,7 @@ function Get-VirtualEnv {
                 return $virtualEnvs
             } 
             else {
-                Write-FormattedError -Message "In predefined system directory do not exist any virtual environments" -Module $PSVirtualEnv.Name -Space 
+                Write-FormattedError -Message "In predefined directory do not exist any virtual environments" -Module $PSVirtualEnv.Name -Space 
             }
         }
 

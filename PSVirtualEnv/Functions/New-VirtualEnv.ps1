@@ -22,7 +22,7 @@ function New-VirtualEnv {
         Creates a virtual environment.
 
     .DESCRIPTION
-        Creates a virtual environment in the predefined system directory and install via a requirements file project related packages. All available requirement files can be accesed by autocompletion.
+        Creates a virtual environment in the predefined virtual environment directory and install via a requirements file project related packages. All available requirement files can be accessed by autocompletion.
 
     .PARAMETER Name
 
@@ -73,9 +73,6 @@ function New-VirtualEnv {
         [PSVirtualEnv]::SUCCESS: Virtual environment 'C:\Users\User\PSVirtualEnv\venv' was created.
 
         [PSVirtualEnv]::PROCESS: Try to install missing packages from requirement file 'C:\Users\User\PSVirtualEnv\.require\requirements.txt'.
-        Collecting 'package' (from -r C:\Users\User\PSVirtualEnv\.require\requirements.txt (line 1))
-        Installing collected packages: 'package'
-        Successfully installed 'package'-'version'
 
         [PSVirtualEnv]::SUCCESS: Packages from requirement file 'C:\Users\User\PSVirtualEnv\.require\requirements.txt' were installed.
 
@@ -89,7 +86,7 @@ function New-VirtualEnv {
 
         -----------
         Description
-        Creates the specified virtual environment 'venv' and install packages which are defined in 'requirements.txt'. Before execution, the requirements file has to be created in the requirements folder, specified in configuration file. All available requirement files can be accesed by autocompletion.
+        Creates the specified virtual environment 'venv' and install packages which are defined in 'requirements.txt'. Before execution, the requirements file has to be created in the requirements folder, specified in configuration file. All available requirement files can be accessed by autocompletion.
 
     .INPUTS
         System.String. Name of virtual environment, which should be created.

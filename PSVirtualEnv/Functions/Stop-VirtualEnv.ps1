@@ -8,17 +8,17 @@ function Stop-VirtualEnv {
 
     <#
     .SYNOPSIS
-        Stops current virtual environment.
+        Stops current running  virtual environment.
 
     .DESCRIPTION
-        Stops current virtual environment.
+        Stops current running virtual environment.
 
     .PARAMETER Silent
     
     .EXAMPLE
         [venv] PS C:\> Stop-VirtualEnv
 
-        SUCCESS: Virtual enviroment 'venv' was stopped.
+        [PSVirtualEnv]::SUCCESS: Virtual enviroment 'venv' was stopped.
 
         PS C:\>
 

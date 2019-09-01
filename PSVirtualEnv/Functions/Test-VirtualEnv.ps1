@@ -11,7 +11,7 @@ function Test-VirtualEnv {
         Checks if there exists a specific virtual environment.
 
     .DESCRIPTION
-        Checks if there exists a specific virtual environment in the predefined system directory.
+        Checks if there exists a specific virtual environment in the predefined directory.
 
     .PARAMETER Name
 
@@ -55,7 +55,7 @@ function Test-VirtualEnv {
             }
         }
 
-        # check if there exists the specified virtual environment in the predefined system directory
+        # check if there exists the specified virtual environment in the predefined directory
         if ( -not $(Get-ChildItem $PSVirtualEnv.WorkDir | Where-Object {$_.Name -eq $Name} )) {
             Write-FormattedError -Message "The virtual environment '$Name' does not exist." -Module $PSVirtualEnv.Name -Space -Silent:(!$VerbosePreference)
             return $False

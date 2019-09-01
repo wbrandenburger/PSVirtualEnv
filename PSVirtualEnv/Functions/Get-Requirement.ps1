@@ -19,7 +19,7 @@ function Get-Requirement {
         Create the requirement file of a specific virtual environment.
         
     .DESCRIPTION
-        Create the requirement file of a specific virtual environment in predefined requirements folder.. All available virtual environments can be accesed by automcompletion. Flag 'All' enables the creation of requirments file for all existing virtual environments. Flag 'Upgrade' replaces in resulting requirement file '==' with '>=' for the use of upgrading packages.
+        Create the requirement file of a specific virtual environment in predefined requirements folder.. All available virtual environments can be accessed by autocompletion. Flag 'All' enables the creation of requirments file for all existing virtual environments. Flag 'Upgrade' replaces in resulting requirement file '==' with '>=' for the use of upgrading packages.
     
     .PARAMETER Name
 
@@ -37,7 +37,7 @@ function Get-Requirement {
 
         -----------
         Description
-        Get the content of a existing requirement file in predefined requirements folder. All available virtual environments can be accesed by autocompletion.
+        Get the content of a existing requirement file in predefined requirements folder. All available virtual environments can be accessed by autocompletion.
 
     .EXAMPLE
         PS C:\>Get-Requirement -Name venv
@@ -47,7 +47,7 @@ function Get-Requirement {
 
         -----------
         Description
-        Get the content of a existing requirement file in predefined requirements folder. All available virtual environments can be accesed by autocompletion.
+        Get the content of a existing requirement file in predefined requirements folder. All available virtual environments can be accessed by autocompletion.
 
     .EXAMPLE
 

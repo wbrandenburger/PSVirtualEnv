@@ -22,7 +22,7 @@ function Get-RequirementContent {
         Get the content of a existing requirement file.
 
     .DESCRIPTION
-        Get the content of a existing requirement file in predefined requirements folder. All available requirement files can be accesed by autocompletion.
+        Get the content of a existing requirement file in predefined requirements folder. All available requirement files can be accessed by autocompletion.
     
     .PARAMETER Requirement
 
@@ -34,7 +34,7 @@ function Get-RequirementContent {
 
         -----------
         Description
-        Get the content of a existing requirement file in predefined requirements folder. All available virtual environments can be accesed by autocompletion.
+        Get the content of a existing requirement file in predefined requirements folder. All available virtual environments can be accessed by autocompletion.
 
     .INPUTS
         System.String. Relative path of existing requirement file

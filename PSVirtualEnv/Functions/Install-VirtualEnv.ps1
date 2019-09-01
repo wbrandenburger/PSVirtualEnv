@@ -31,7 +31,7 @@ function Install-VirtualEnv {
     .SYNOPSIS
         Install or upgrade packages from command line or requirement files to virtual environments.
     .DESCRIPTION
-        Install or upgrade packages from command line or requirement files to virtual environments. All available requirement files can be accesed by autocompletion.
+        Install or upgrade packages from command line or requirement files to virtual environments. All available requirement files can be accessed by autocompletion.
     .PARAMETER Name
 
     .PARAMETER Python
@@ -48,12 +48,9 @@ function Install-VirtualEnv {
 
     .EXAMPLE
         PS C:\> Install-VirtualEnvPckg -Name venv -Package package
-        [PSVirtualEnv]::PROCESS: Try to install packages from requirement file 'requirement-file'.
-        Collecting 'package' (from -r 'requirement-file')
-        Installing collected packages: 'package'
-        Successfully installed 'package'
+        [PSVirtualEnv]::PROCESS: Try to install packages from requirement file 'C:\Users\User\PSVirtualEnv\.require\package-requirements.txt'.
 
-        [PSVirtualEnv]::SUCCESS: Packages from requirement file 'requirement-file' were installed.
+        [PSVirtualEnv]::SUCCESS: Packages from requirement file 'C:\Users\User\PSVirtualEnv\.require\package-requirements.txt' were installed.
 
         -----------
         Description
@@ -62,7 +59,7 @@ function Install-VirtualEnv {
     .EXAMPLE
         PS C:\> in-venv venv -Package package
 
-        [PSVirtualEnv]::SUCCESS: Packages from requirement file 'requirement-file' were installed.
+        [PSVirtualEnv]::SUCCESS: Packages from requirement file C:\Users\User\PSVirtualEnv\.require\package-requirements.txt' were installed.
 
         -----------
         Description
@@ -71,7 +68,7 @@ function Install-VirtualEnv {
     .EXAMPLE
         PS C:\> Install-VirtualEnvPckg -Python -Package package
 
-        [PSVirtualEnv]::SUCCESS: Packages from requirement file 'requirement-file' were installed.
+        [PSVirtualEnv]::SUCCESS: Packages from requirement file 'C:\Users\User\PSVirtualEnv\.require\package-requirements.txt' were installed.
 
         -----------
         Description
@@ -80,25 +77,19 @@ function Install-VirtualEnv {
     .EXAMPLE
         PS C:\> Install-VirtualEnvPckg -Name venv -Requirement \requirements.txt
 
-        [PSVirtualEnv]::SUCCESS: Packages from requirement file 'requirements.txt' were installed.
+        [PSVirtualEnv]::SUCCESS: Packages from requirement file 'C:\Users\User\PSVirtualEnv\.require\requirements.txt' were installed.
 
         -----------
         Description
-        Install packages defined in requirements file to specified virtual environment 'venv'. All available requirement files can be accesed by autocompletion.
+        Install packages defined in requirements file to specified virtual environment 'venv'. All available requirement files can be accessed by autocompletion.
 
 
     .EXAMPLE
         PS C:\> Install-VirtualEnvPckg -Name venv -Uninstall -Package package
 
-        [PSVirtualEnv]::PROCESS: Try to uninstall packages from requirement file 'requirement-file'.
-        Uninstalling 'Package':
-        Would remove:
-        'path-to-virtual-env-venv>\'package'.dist-info\*
-        'path-to-virtual-env-venv>\'package'*
-        Proceed (y/n)? y
-        Successfully uninstalled 'package'
+        [PSVirtualEnv]::PROCESS: Try to uninstall packages from requirement file 'C:\Users\User\PSVirtualEnv\.require\package-requirements.txt'.
 
-        [PSVirtualEnv]::SUCCESS: Packages from requirement file 'requirement-file' were uninstalled.
+        [PSVirtualEnv]::SUCCESS: Packages from requirement file 'C:\Users\User\PSVirtualEnv\.require\package-requirements.txt' were uninstalled.
 
         -----------
         Description
@@ -107,10 +98,11 @@ function Install-VirtualEnv {
     .EXAMPLE
         PS C:\> Install-VirtualEnvPckg -Name venv -Upgrade
 
-        [PSVirtualEnv]::PROCESS: Try to upgrade packages from requirement file 'requirement-file'.
+        [PSVirtualEnv]::PROCESS: Try to upgrade packages from requirement file 'C:\Users\User\PSVirtualEnv\.require\venv-requirements.txt'.
+
         Requirement already up-to-date: 'package'>='version' 
 
-        [PSVirtualEnv]::SUCCESS: Packages from requirement file 'requirement-file' were upgraded.
+        [PSVirtualEnv]::SUCCESS: Packages from requirement file 'C:\Users\User\PSVirtualEnv\.require\venv-requirements.txt' were upgraded.
 
     .INPUTS
         System.String. Name of existing virtual environment.

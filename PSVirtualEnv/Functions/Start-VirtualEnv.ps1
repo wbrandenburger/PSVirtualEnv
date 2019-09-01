@@ -16,10 +16,10 @@ function Start-VirtualEnv {
 
     <#
     .SYNOPSIS
-        Starts a specific virtual environment.
+        Starts a specific virtual environment in the predefined directory.
 
     .DESCRIPTION
-        Starts a specific virtual environment in the predefined system directory. All available virtual environments can be accesed by autocompletion.
+        Starts a specific virtual environment in the predefined virtual environment directory. All available virtual environments can be accessed by autocompletion.
 
     .PARAMETER Name
 
@@ -34,7 +34,7 @@ function Start-VirtualEnv {
         
         -----------
         Description
-        Starts the virtual environment 'venv', which must exist in the predefined system directory. All available virtual environments can be accesed by autocompletion.
+        Starts the virtual environment 'venv', which must exist in the predefined directory. All available virtual environments can be accessed by autocompletion.
 
     .EXAMPLE
         PS C:\> start-venv venv
