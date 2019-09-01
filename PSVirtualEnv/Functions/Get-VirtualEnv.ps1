@@ -19,7 +19,7 @@ function Get-VirtualEnv {
         Get all existing virtual environments in predefined system directory.
 
     .DESCRIPTION
-        Return all existing virtual environments in predefined system directory as PSObject with version number.
+        Return all existing virtual environments in predefined system directory as PSObject with version number. All available virtual environments can be accesed by automcompletion.
 
     .PARAMETER Name
 
@@ -28,43 +28,53 @@ function Get-VirtualEnv {
     .EXAMPLE
         PS C:\> Get-VirtualEnv
 
-        Name    Version
-        ----    -------
-        biology 3.7.3
-        math    3.7.3
+        Name Version
+        ---- -------
+        venv 3.7.3
 
         -----------
         Description
-        Return all existing virtual environments in predefined system directory.
+        Return all existing virtual environments in predefined system directory. Flags 'Full' and 'Unformatted' does not have any implications if merely virtual environments are queried.
+
+
+        .EXAMPLE
+        PS C:\> ls-venv
+
+        Name Version
+        ---- -------
+        venv 3.7.3
+
+         Return all existing virtual environments in predefined system directory with predefined alias.
 
     .EXAMPLE
         PS C:\> Get-VirtualEnv -Name venv
 
-        Name            Version  Latest
-        ----            -------  ------
-        cycler          0.10.0
-        kiwisolver      1.1.0
-        matplotlib      3.1.0
+        Name       Version Latest
+        ----       ------- ------
+        Click      7.0
+        pip        19.2.3
+        setuptools 41.2.0
+        wheel      0.33.6
 
         -----------
         Description
-        Return information about all packages installed in the specified virtual environment 'venv'.
+        Return information about all independent packages installed in the specified virtual environment 'venv' and shows potentially newer versions. Flags 'Full' lists additionally all packages of the virtual environment, and "Unformatted' does not pipe results to cmdlet 'Format-Table'.
 
     .EXAMPLE
         PS C:\> Get-VirtualEnv -Python
 
-        Name              Version  Latest
-        ----              -------  ------
-        setuptools        41.0.1
-        pip               19.1.1
-        virtualenv        16.6.1
+        Name       Version  Latest
+        ----       -------  ------
+        pip        19.2.3
+        setuptools 41.2.0
+        virtualenv 16.6.1
 
         -----------
         Description
-        Return information about all packages installed in the default python distribution.
+        RReturn information about all independent packages installed in the default python distribution.  Flags 'Full' lists additionally all packages of the virtual environment, and "Unformatted' does not pipe results to cmdlet 'Format-Table'.
 
     .INPUTS
-        System.Strings. Name of the virtual environment.
+        System.Strings. Name of existing virtual environment.
 
     .OUTPUTS
         PSCustomObject. Object with contain information about all virtual environments.
@@ -106,11 +116,7 @@ function Get-VirtualEnv {
                 return $Null
             }
 
-            Start-VirtualEnv -Name $Name -Silent
-            $pkgProperty = $(Get-VirtualEnvPackage -Python $PSVirtualEnv.Python -full:$Full -Unformatted:$Unformatted)
-            Stop-VirtualEnv -Silent
-            
-            return $pkgProperty
+            return $(Get-VirtualEnvPackage -Python $(Get-VirtualPython -Name $Name) -full:$Full -Unformatted:$Unformatted)
         }
 
         #  return information about all virtual environments in the predefined system directory are gathered
@@ -124,16 +130,13 @@ function Get-VirtualEnv {
             if ($VirtualEnvSubDirs.length) {
                 $virtualEnvs= $VirtualEnvSubDirs | ForEach-Object {
                     if (Test-VirtualEnv -Name $_) {
-                         # set environment variable
+                         # set environment variable, get name of virtual environment and python version and set the pythonhome variable in scope process to the stored backup variable
                         Set-VirtualEnvSystem -Name $_
-
-                        $virtualEnvExe = Get-VirtualPython -Name $_
-                        # name of virtual environment and python version
+                        $python_venv = Get-VirtualPython -Name $_
                         [PSCustomObject]@{
                             Name = $_
-                            Version = (((. $virtualEnvExe --version 2>&1) -replace "`r|`n","") -split " ")[1]
+                            Version = (((. $python_venv --version 2>&1) -replace "`r|`n","") -split " ")[1]
                         }
-                        # # set the pythonhome variable in scope process to the stored backup variable
                         Restore-VirtualEnvSystem
                     }
                 }
@@ -158,26 +161,6 @@ function Get-VirtualEnvPackage {
     
     .PARAMETER Python
     
-    .EXAMPLE
-        PS C:\> Get-VirtualEnvPackage -Python C:\Python\Python37\python.exe
-
-        Name       Version Latest
-        ----       ------- ------
-        doc8       0.8.0
-        pip        19.2.1
-        setuptools 41.0.1
-        virtualenv 16.6.1
-
-
-        Name                  Version Required Latest
-        ----                  ------- -------- ------
-        chardet               3.0.4       True
-        docutils              0.15.2      True
-        pbr                   5.4.2       True
-
-        -----------
-        Description
-        Return information about all packages installed in the default python distribution. Those packages which are independet are displayed in a separated table
     .OUTPUTS
         PSCustomObject. Properties of all packages in a python environment
     #>
@@ -197,12 +180,11 @@ function Get-VirtualEnvPackage {
         [Switch] $Unformatted
     )
 
-    # get all packages in the specified virtual environment
-    $venv_package = . $Python -m pip list --format json | ConvertFrom-Json 
+    Set-VirtualEnvSystem -Python $Python
 
-    # get all outdated packages 
+    # get all packages in the specified virtual environment,  get all outdated packages and get all independent packages
+    $venv_package = . $Python -m pip list --format json | ConvertFrom-Json 
     $venv_outdated = . $Python -m pip list --format json --outdated | ConvertFrom-Json 
-    # get all independent packages
     $venv_independent = . $Python -m pip list --format json --not-required | ConvertFrom-Json 
 
     # combine all gathered properties about the packages in the specified virtual environment
@@ -239,7 +221,9 @@ function Get-VirtualEnvPackage {
                 }
             }
         }
-
+   
+    Restore-VirtualEnvSystem
+   
     $result_required = $venv_package | Where-Object {$_.Required} 
     $result_required | ForEach-Object {
             if ($requires_dict.ContainsKey($_.Name)) {
@@ -247,7 +231,7 @@ function Get-VirtualEnvPackage {
             }
         }
     }
-
+    
     if ($Unformatted){
         return $result,  $result_required
     }

@@ -19,7 +19,7 @@ function Start-VirtualEnv {
         Starts a specific virtual environment.
 
     .DESCRIPTION
-        Starts a specific virtual environment in the predefined system directory.
+        Starts a specific virtual environment in the predefined system directory. All available virtual environments can be accesed by autocompletion.
 
     .PARAMETER Name
 
@@ -28,11 +28,22 @@ function Start-VirtualEnv {
     .EXAMPLE
         PS C:\> Start-VirtualEnv -Name venv
 
-        SUCCESS: Virtual enviroment 'venv' was started.
+        [PSVirtualEnv]::SUCCESS: Virtual enviroment 'venv' was started.
+
+        [venv] PS C:\>
+        
+        -----------
+        Description
+        Starts the virtual environment 'venv', which must exist in the predefined system directory. All available virtual environments can be accesed by autocompletion.
+
+    .EXAMPLE
+        PS C:\> start-venv venv
+
+        [PSVirtualEnv]::SUCCESS: Virtual enviroment 'venv' was started.
 
         -----------
         Description
-        Starts the virtual environment 'venv', which must exist in the predefined system directory.
+        Starts the virtual environment 'venv' with predefined alias of command.
 
     .INPUTS
         System.String. Name of virtual environment, which should be started.

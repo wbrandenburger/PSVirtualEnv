@@ -19,18 +19,27 @@ function Remove-VirtualEnv  {
         Removes a specific virtual environment.
 
     .DESCRIPTION
-        Removes a specific virtual environment in the predefined system directory.
+        Removes a specific virtual environment in the predefined system directory. All available virtual environments can be accesed by autocompletion.
 
     .PARAMETER Name
 
     .EXAMPLE
         PS C:\> Remove-VirtualEnv -Name venv
         
-        SUCCESS: Virtual enviroment 'venv' was deleted permanently.
+        [PSVirtualEnv]::SUCCESS: Virtual Environment 'venv' was deleted permanently.
 
         -----------
         Description
-        Removes the specified virtual environment 'venv'
+        Removes the specified virtual environment 'venv'. All available virtual environments can be accesed by autocompletion.
+
+    .EXAMPLE
+        PS C:\> rm-venv venv
+        
+        [PSVirtualEnv]::SUCCESS: Virtual Environment 'venv' was deleted permanently.
+
+        -----------
+        Description
+        Removes the specified virtual environment 'venv' with predefined alias of command.
 
     .INPUTS
         System.String. Name of virtual environment, which should be removed.

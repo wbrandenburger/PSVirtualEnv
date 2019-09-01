@@ -11,14 +11,23 @@ function Find-Python {
         Find a path, where a python distribution might located.
 
     .DESCRIPTION
-        Find a path, where a python distribution might located.
+        Find a path, where a python distribution might located. 'Find-Python' searches for a python distribution in configuration file and environment variable '%PYTHONHOME%'. Via flag 'Force' the python package 'virtualenv' can be installed in valide distribution.
 
     .PARAMETER Python
 
     .PARAMETER FORCE
 
     .EXAMPLE
-        PS C:\> Find-Python C:\Python\Python3
+        PS C:\> Find-Python
+
+        C:\Python\Python37\python.exe
+
+        -----------
+        Description
+        Return the path to an existing executable of a python distribution
+
+    .EXAMPLE
+        PS C:\> Find-Python -PathC:\Python\Python37
 
         C:\Python\Python3\python.exe
 
@@ -27,7 +36,16 @@ function Find-Python {
         Return the path to an existing executable of a python distribution
 
     .EXAMPLE
-        PS C:\> Find-Python C:\Python\Python3\python.exe
+        PS C:\> Find-Python -Path C:\Python\Python37\python.exe
+
+        C:\Python\Python3\python.exe
+
+        -----------
+        Description
+        Return the path to an existing executable of a python distribution
+
+    .EXAMPLE
+        PS C:\> Find-Python -Path C:\Python\Python37\python.exe
 
         C:\Python\Python3\python.exe
 
@@ -50,7 +68,7 @@ function Find-Python {
         [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Path to a folder or executable of a python distribution.")]
         [System.String] $Path,
 
-        [Parameter(HelpMessage="Forces installation of virtualenwrapper if not found.")]
+        [Parameter(HelpMessage="Forces installation of package 'virtualenv' if not found.")]
         [Switch] $Force
     )
 

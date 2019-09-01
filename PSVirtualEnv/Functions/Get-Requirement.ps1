@@ -1,22 +1,25 @@
 # ===========================================================================
-#   Get-VirtualEnvRequirement.ps1 -------------------------------------------
+#   Get-Requirement.ps1 -----------------------------------------------------
 # ===========================================================================
 
 #   validation --------------------------------------------------------------
 # ---------------------------------------------------------------------------
 Class ValidateVirtualEnv : System.Management.Automation.IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
-        return [String[]] ((Get-VirtualEnv | Select-Object -ExpandProperty Name) + "" + "python")
+        return [String[]] ((Get-VirtualEnv | Select-Object -ExpandProperty Name) ,"python" ,"")
     }
 }
 
 #   function ----------------------------------------------------------------
 # ---------------------------------------------------------------------------
-function Get-VirtualEnvRequirement {
+function Get-Requirement {
 
     <#
-    .DESCRIPTION
+    .SYNOPSIS
         Create the requirement file of a specific virtual environment.
+        
+    .DESCRIPTION
+        Create the requirement file of a specific virtual environment in predefined requirements folder.. All available virtual environments can be accesed by automcompletion. Flag 'All' enables the creation of requirments file for all existing virtual environments. Flag 'Upgrade' replaces in resulting requirement file '==' with '>=' for the use of upgrading packages.
     
     .PARAMETER Name
 
@@ -26,6 +29,46 @@ function Get-VirtualEnvRequirement {
 
     .PARAMETER Upgrade
 
+    .EXAMPLE
+        PS C:\>Get-Requirement -Name venv
+        PS C:\>Get-RequirementContent -Requirement \venv-requirements.txt
+        Click==7.0
+        PS C:\>
+
+        -----------
+        Description
+        Get the content of a existing requirement file in predefined requirements folder. All available virtual environments can be accesed by autocompletion.
+
+    .EXAMPLE
+        PS C:\>Get-Requirement -Name venv
+        PS C:\>Get-RequirementContent -Requirement \venv-requirements.txt
+        Click==7.0
+        PS C:\>
+
+        -----------
+        Description
+        Get the content of a existing requirement file in predefined requirements folder. All available virtual environments can be accesed by autocompletion.
+
+    .EXAMPLE
+
+        PS C:\>Get-Requirement -Python
+        PS C:\>Get-RequirementContent -Requirement \python-requirements.txt
+        virtualenv==16.7.4
+        PS C:\>
+ 
+        -----------
+        Description
+        Get the requirement file of the default python distribution.
+
+    .EXAMPLE
+        PS C:\>Get-Requirement -Name venv -Upgrade
+        PS C:\>Get-RequirementContent -Requirement \venv-requirements.txt
+        Click>=7.0
+        PS C:\>
+
+        -----------
+        Description
+        Get the requirement file of a existing requirement file in predefined requirements folder. Flag 'Upgrade' replaces in resulting requirement file '==' with '>=' for the use of upgrading packages.
     .OUTPUTS
         None.
     #>
@@ -80,7 +123,7 @@ function Get-VirtualEnvRequirement {
         $virtualEnv | ForEach-Object {
 
             # get full path of requirement file
-            $requirement_file = Get-VirtualEnvRequirementFile -Name $_.Name
+            $requirement_file = Get-RequirementFile -Name $_.Name
 
             # get python distribution
             if ($Python) {
@@ -102,7 +145,7 @@ function Get-VirtualEnvRequirement {
 
 #   function ----------------------------------------------------------------
 # ---------------------------------------------------------------------------
-function Get-VirtualEnvRequirementFile {
+function Get-RequirementFile {
 
     <#
     .DESCRIPTION

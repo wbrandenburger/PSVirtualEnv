@@ -22,7 +22,7 @@ function New-VirtualEnv {
         Creates a virtual environment.
 
     .DESCRIPTION
-        Creates a virtual environment in the predefined system directory.
+        Creates a virtual environment in the predefined system directory and install via a requirements file project related packages. All available requirement files can be accesed by autocompletion.
 
     .PARAMETER Name
 
@@ -30,37 +30,69 @@ function New-VirtualEnv {
 
     .PARAMETER Requirement
 
-    .PARAMETER OFFLINE
-
     .EXAMPLE
         PS C:\> New-VirtualEnv -Name venv
 
-        SUCCESS: Virtual environment 'A:\VirtualEnv\venv' was created.
+        [PSVirtualEnv]::PROCESS: Creating new virtual environment 'venv'.
+        New python executable in C:\Users\User\PSVirtualEnv\venv\Scripts\python.exe
+        Installing setuptools, pip, wheel...
+        done.
+
+        [PSVirtualEnv]::SUCCESS: Virtual environment 'C:\Users\User\PSVirtualEnv\venv' was created.
 
         -----------
         Description
-        Creates the specified virtual environment in the predefined directory with the default python distribution.
+        Creates the specified virtual environment 'venv' in the predefined directory with the default python distribution.
+
+    .EXAMPLE
+        PS C:\> mk-venv venv
+
+        [PSVirtualEnv]::SUCCESS: Virtual environment 'C:\Users\User\PSVirtualEnv\venv' was created
+
+        -----------
+        Description
+        Creates the specified virtual environment 'venv' with predefined alias of command
    
     .EXAMPLE
         PS C:\> New-VirtualEnv -Name venv -Path C:\Python35\python.exe
 
-        SUCCESS: Virtual environment 'A:\VirtualEnv\venv' was created.
+        [PSVirtualEnv]::SUCCESS: Virtual environment 'C:\Users\User\PSVirtualEnv\venv' was created.
 
         -----------
         Description
-        Creates the specified virtual environment in the predefined directory with the defined python distribution.
+        Creates the specified virtual environment 'venv' in the predefined directory with the defined python distribution.
 
     .EXAMPLE
-        PS C:\> New-VirtualEnv -Name venv -Requirement papis-requirements.txt
+        PS C:\> New-VirtualEnv -Name venv -Requirement \requirements.txt
 
-        SUCCESS: Virtual environment 'A:\VirtualEnv\venv' was created.
+        [PSVirtualEnv]::PROCESS: Creating new virtual environment 'venv'.
+        New python executable in C:\Users\User\PSVirtualEnv\venv\Scripts\python.exe
+        Installing setuptools, pip, wheel...
+        done.
+
+        [PSVirtualEnv]::SUCCESS: Virtual environment 'C:\Users\User\PSVirtualEnv\venv' was created.
+
+        [PSVirtualEnv]::PROCESS: Try to install missing packages from requirement file 'C:\Users\User\PSVirtualEnv\.require\requirements.txt'.
+        Collecting 'package' (from -r C:\Users\User\PSVirtualEnv\.require\requirements.txt (line 1))
+        Installing collected packages: 'package'
+        Successfully installed 'package'-'version'
+
+        [PSVirtualEnv]::SUCCESS: Packages from requirement file 'C:\Users\User\PSVirtualEnv\.require\requirements.txt' were installed.
+
+
+        Name       Version Latest
+        ----       ------- ------
+        package    version
+        pip        19.2.3
+        setuptools 41.2.0
+        wheel      0.33.6
 
         -----------
         Description
-        Creates the specified virtual environment and install packages which are defined in requirements.txt
+        Creates the specified virtual environment 'venv' and install packages which are defined in 'requirements.txt'. Before execution, the requirements file has to be created in the requirements folder, specified in configuration file. All available requirement files can be accesed by autocompletion.
 
     .INPUTS
-        System.String. Name of virtual environment, which should be removed.
+        System.String. Name of virtual environment, which should be created.
     
     .OUTPUTS
         None.
@@ -74,7 +106,7 @@ function New-VirtualEnv {
         [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment to be created.")]
         [System.String] $Name,
 
-        [Parameter(Position=2, HelpMessage="Path to a folder or executable of a python distribution.")]
+        [Parameter(Position=2, HelpMessage="Relative path to a folder or executable of a python distribution.")]
         [System.String] $Path,
 
         [ValidateSet([ValidateRequirements])]
@@ -105,13 +137,6 @@ function New-VirtualEnv {
             $requirement_file = Join-Path -Path $PSVirtualEnv.RequireDir -ChildPath $Requirement
         }
 
-        # find a path, where a python distribution is located.
-        $pythonExeLocal = Find-Python $Path -Verbose
-        if (-not $pythonExeLocal){
-            return
-        }
-        # $pythonVersion = Get-PythonVersion $pythonExeLocal -Verbose
-
         # generate the full path of the specified virtual environment, which shall be located in the predefined system path
         $virtualEnvDir = Get-VirtualEnvPath -Name $Name
    
@@ -121,10 +146,14 @@ function New-VirtualEnv {
         # }
 
         # create the specified virtual environment
-        Write-FormattedProcess "Creating the virtual environment '$Name'." -Module $PSVirtualEnv.Name
+        Write-FormattedProcess "Creating new virtual environment '$Name'." -Module $PSVirtualEnv.Name
 
-         . $pythonExeLocal -m virtualenv  $virtualEnvDir --verbose $offlineCreation
-        
+        $verbose_cmd = ""
+        if ($VerbosePreference){
+            $verbose_cmd = "--verbose"
+        }
+        . $PSVirtualEnv.Python -m virtualenv  $virtualEnvDir $verbose_cmd
+
         # check whether the virtual environment could be created
         if (Test-VirtualEnv -Name $Name) {
             Write-FormattedSuccess -Message "Virtual environment '$virtualEnvDir' was created." -Module $PSVirtualEnv.Name -Space
@@ -137,9 +166,10 @@ function New-VirtualEnv {
 
         # install packages from the requirement file
         if ($Requirement) {
-            Install-VirtualEnvPackage -Python (Get-VirtualPython -Name $Name) -Requirement $requirement_file
+            $python_venv = Get-VirtualPython -Name $Name
+            Install-VirtualEnvPackage -Python $python_venv -Requirement $requirement_file
         
-            Get-VirtualEnv -Name $Name
+            Get-VirtualEnvPackage -Python $python_venv
         }
 
         # if ($Offline) {

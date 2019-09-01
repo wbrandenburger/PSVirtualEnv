@@ -12,6 +12,8 @@ function Set-VirtualEnvSystem {
     
     .PARAMETER Name
 
+    .PARAMETER PYTHON
+
     .OUTPUTS 
         None.
     #>
@@ -19,16 +21,24 @@ function Set-VirtualEnvSystem {
     [OutputType([System.String])]
 
     Param(
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment.")]
-        [System.String] $Name
+        [Parameter(HelpMessage="Name of the virtual environment.")]
+        [System.String] $Name,
+
+        [Parameter(HelpMessage="Executable of a python distribution.")]
+        [System.String] $Python
     )
 
     # set a backup of the pythonhome environment variable
     [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.EnvBackup,  [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.EnvPython, "process"), "process")
     # set the pythonhome variable in scope process to the path of the virtual environment
-    [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.EnvPython, (Get-VirtualEnvPath -Name $Name), "process")
+    if ($Name) {
+        $Python = Get-VirtualEnvPath -Name $Name
+    }
+    
+    [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.EnvPython, $python_path, "process")
+
     #set the name of the virtual environment
-    [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.EnvVenv, $Name ,"process")
+    [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.EnvVenv, $Name,"process")
     
     Return $Null
 }
@@ -186,7 +196,7 @@ function Get-PythonVersion() {
     $pythonVersion3 = $pythonVersion -match "^Python\s3" -and -not $pythonVersion2
     if (-not $pythonVersion2 -and -not $pythonVersion3) {
         if ($VerbosePreference) {
-            Write-FormattedError -Message "This module is not compatible with the detected python version $pythonVersion"
+            Write-FormattedError -Message "This module is not compatible with the detected python version $pythonVersion" -Module $PSVirtualEnv.Name
         }
         return $Null
     }

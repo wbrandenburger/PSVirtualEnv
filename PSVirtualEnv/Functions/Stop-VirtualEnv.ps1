@@ -16,13 +16,26 @@ function Stop-VirtualEnv {
     .PARAMETER Silent
     
     .EXAMPLE
-        PS C:\> Stop-VirtualEnv
+        [venv] PS C:\> Stop-VirtualEnv
 
         SUCCESS: Virtual enviroment 'venv' was stopped.
 
+        PS C:\>
+
         -----------
         Description
-        Stops current virtual environment.
+        Stops current virtual environment. 
+
+    .EXAMPLE
+        [venv] PS C:\> Stop-venv
+
+        SUCCESS: Virtual enviroment 'venv' was stopped.
+
+        PS C:\>
+        
+        -----------
+        Description
+        Stops current virtual environment with predefined alias of command.
 
     .INPUTS
         None.

@@ -13,7 +13,7 @@
 RootModule = 'PSVirtualEnv.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.2.0'
+ModuleVersion = '0.2.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -77,7 +77,8 @@ RequiredModules = @(
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = @(
     'Get-VirtualEnv',
-    'Get-VirtualEnvRequirement',
+    'Get-Requirement',
+    'Get-RequirementContent',
     'Find-Python',
     'Install-VirtualEnv',
     'New-VirtualEnv',
@@ -91,12 +92,12 @@ FunctionsToExport = @(
 CmdletsToExport = @()
 
 # Variables to export from this module
-VariablesToExport = '*'
+VariablesToExport = 'PSVirtualEnv'
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
 AliasesToExport = @(
     'cd-venv',
-    'cp-venv',
+    'in-venv'
     'rm-venv',
     'ls-venv',
     'mk-venv',

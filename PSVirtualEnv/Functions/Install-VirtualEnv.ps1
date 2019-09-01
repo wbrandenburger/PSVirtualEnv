@@ -6,7 +6,7 @@
 # ---------------------------------------------------------------------------
 Class ValidateVirtualEnv : System.Management.Automation.IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
-        return [String[]] ((Get-VirtualEnv | Select-Object -ExpandProperty Name) + "" + "python")
+        return [String[]] ((Get-VirtualEnv | Select-Object -ExpandProperty Name)  ,"python" ,"")
     }
 }
 
@@ -29,9 +29,9 @@ function Install-VirtualEnv {
 
     <#
     .SYNOPSIS
-
+        Install or upgrade packages from command line or requirement files to virtual environments.
     .DESCRIPTION
-        
+        Install or upgrade packages from command line or requirement files to virtual environments. All available requirement files can be accesed by autocompletion.
     .PARAMETER Name
 
     .PARAMETER Python
@@ -47,13 +47,73 @@ function Install-VirtualEnv {
     .PARAMETER Offline
 
     .EXAMPLE
-        PS> Install-VirtualEnvPckg -Name venv
+        PS C:\> Install-VirtualEnvPckg -Name venv -Package package
+        [PSVirtualEnv]::PROCESS: Try to install packages from requirement file 'requirement-file'.
+        Collecting 'package' (from -r 'requirement-file')
+        Installing collected packages: 'package'
+        Successfully installed 'package'
+
+        [PSVirtualEnv]::SUCCESS: Packages from requirement file 'requirement-file' were installed.
 
         -----------
         Description
-       
+        Install package 'package' to specified virtual environment 'venv' by creating a requirement file with specified package and pipe it to virtual envinroments package manager.
+
+    .EXAMPLE
+        PS C:\> in-venv venv -Package package
+
+        [PSVirtualEnv]::SUCCESS: Packages from requirement file 'requirement-file' were installed.
+
+        -----------
+        Description
+        Install package 'package' to specified virtual environment 'venv' with predefined alias of command.
+
+    .EXAMPLE
+        PS C:\> Install-VirtualEnvPckg -Python -Package package
+
+        [PSVirtualEnv]::SUCCESS: Packages from requirement file 'requirement-file' were installed.
+
+        -----------
+        Description
+        Install package 'package' to default python distribution.
+
+    .EXAMPLE
+        PS C:\> Install-VirtualEnvPckg -Name venv -Requirement \requirements.txt
+
+        [PSVirtualEnv]::SUCCESS: Packages from requirement file 'requirements.txt' were installed.
+
+        -----------
+        Description
+        Install packages defined in requirements file to specified virtual environment 'venv'. All available requirement files can be accesed by autocompletion.
+
+
+    .EXAMPLE
+        PS C:\> Install-VirtualEnvPckg -Name venv -Uninstall -Package package
+
+        [PSVirtualEnv]::PROCESS: Try to uninstall packages from requirement file 'requirement-file'.
+        Uninstalling 'Package':
+        Would remove:
+        'path-to-virtual-env-venv>\'package'.dist-info\*
+        'path-to-virtual-env-venv>\'package'*
+        Proceed (y/n)? y
+        Successfully uninstalled 'package'
+
+        [PSVirtualEnv]::SUCCESS: Packages from requirement file 'requirement-file' were uninstalled.
+
+        -----------
+        Description
+        Remove package 'package' from specified virtual environment 'venv' by creating a requirement file with specified package and pipe it to virtual envinroments package manager.
+
+    .EXAMPLE
+        PS C:\> Install-VirtualEnvPckg -Name venv -Upgrade
+
+        [PSVirtualEnv]::PROCESS: Try to upgrade packages from requirement file 'requirement-file'.
+        Requirement already up-to-date: 'package'>='version' 
+
+        [PSVirtualEnv]::SUCCESS: Packages from requirement file 'requirement-file' were upgraded.
+
     .INPUTS
-        None.
+        System.String. Name of existing virtual environment.
 
     .OUTPUTS
         None.
@@ -69,7 +129,7 @@ function Install-VirtualEnv {
         [System.String] $Name="",
 
         [ValidateSet([ValidateRequirements])]
-        [Parameter(Position=2, HelpMessage="Path to a requirements file, or name of a virtual environment.")]
+        [Parameter(Position=2, HelpMessage="Relative path to a requirements file, or name of a virtual environment.")]
         [System.String] $Requirement="",
 
         [Parameter(HelpMessage="Package to be installed.")]
@@ -135,8 +195,10 @@ function Install-VirtualEnv {
 
             # get existing requirement file 
             if ($Upgrade) {
-                $requirement_file = Get-VirtualEnvRequirementFile -Name $_.Name 
-                Get-VirtualEnvRequirement -Name $_.Name -Upgrade -Python:$Python
+                if (-not $requirement_file){
+                    $requirement_file = Get-RequirementFile -Name $_.Name
+                }
+                Get-Requirement -Name $_.Name -Upgrade -Python:$Python
             }
 
              # get python distribution
@@ -201,18 +263,22 @@ function Install-VirtualEnvPackage {
         $Upgrade = $False
         $install_Cmd = "uninstall"
     }
+    $message = $install_cmd
 
     # if packages mmight be upgraded, consider upgrading in installation command
     $upgrade_cmd = ""
     if ($Upgrade) {
         $upgrade_cmd = "--upgrade"
+        $message = "upgrade"
     }
 
     # install packages from a requirement file
-    Write-FormattedProcess -Message "Try to $($install_cmd) missing packages from requirement file '$Requirement'." -Module $PSVirtualEnv.Name
+    Write-FormattedProcess -Message "Try to $($message) packages from requirement file '$Requirement'." -Module $PSVirtualEnv.Name
 
+    Set-VirtualEnvSystem -Python $Python
     . $Python -m pip $install_cmd --requirement $Requirement $upgrade_cmd
+    Restore-VirtualEnvSystem
 
-    Write-FormattedSuccess -Message "Packages from requirement file '$Requirement' were $($install_cmd)ed." -Module $PSVirtualEnv.Name
+    Write-FormattedSuccess -Message "Packages from requirement file '$Requirement' were $($message)ed." -Module $PSVirtualEnv.Name -Space
 
 }
