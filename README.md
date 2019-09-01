@@ -8,6 +8,7 @@
     - [Origin](#origin)
   - [Installation](#installation)
   - [Dependencies](#dependencies)
+  - [Settings](#settings)
   - [Examples](#examples)
   - [Authors/Contributors](#authorscontributors)
     - [Author](#author)
@@ -22,19 +23,23 @@ This module is an extension of [virtualenvwrapper-powershell](https://github.com
 
 ## Installation
 
-1. Set the environment variable `%PYTHONHOME%` to the directory with the python executable, which comes with the installation of a python distribution. When the variable has not been set, execute in PowerShell:
+PSVirtualEnv is published to the Powershell Gallery and can be installed as follows:
 
 ```powershell
-[System.Environment]::SetEnvironmentVariable($PSVirtualEnv.EnvPython, "path-to-python", "User")
+Install-Module PSVirtualEnv
 ```
 
-2. Run the file `PSVirtualEnv.Install.bat` from PowerShell as administrator.
-3. Copy the configuration file `PSVirtualEnv.ini` to the location, which is either defined 
-   1. in environment variable `%CONFIG%`,
-   2. in directory `%HOME%\.config` or
-   3. in local module directory of PSVirtualEnv.
-   
-4. Change the fields in file `psvirtual.ini` to existing locations:
+## Dependencies
+
+The following PowerShell modules have to be installed:
+
+- [PSIni](https://github.com/lipkau/PsIni)
+
+PSVirtualEnv needs a Python distribution (Version >= 3), which working directory is defined in environment variable `%PYTHONHOME%` or in the systems configuration file of PSVirtualEnv.
+
+## Settings
+
+PSVirtualEnv creates automatically a configuration file in folder `%USERPRFOFILE%\psvirtualenv`. In that configuration file the working directory of a python distribution and an user defined folder for virtual environment can be specified.
 
 ```ini
 [settings]
@@ -48,26 +53,9 @@ venv-config-dir =  "A:\VirtualEnv\.config"
 ; default download path for python packages
 venv-local-dir =  "A:\VirtualEnv\.temp"
 
-; default path for the requirements
-venv-requirement = "A:\VirtualEnv\.temp\%rplc.txt"
-
 ; default python distribution
 python = "C:\Python\Python37\python.exe"
 ```
-
-5. Finally add the subdirectory `PSVirtualEnv` with its subdirectories and files to one of the folders defined in environment variable `PSModulePath`.
-
-## Dependencies
-
-The following PowerShell modules have to be installed: 
-
- - [PSIni](https://github.com/wbrandenburger/PsIni)
-
-```PowerShell
-Intall-Module PSIni -Force
-```
-
-Additionally, a python distribution version 3.3 or higher has to be installed.
 
 ## Examples
 
@@ -76,4 +64,3 @@ Additionally, a python distribution version 3.3 or higher has to be installed.
 ### Author
 
 - [Wolfgang Brandenburger](https://github.com/wbrandenburger)
-
