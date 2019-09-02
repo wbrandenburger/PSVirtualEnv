@@ -9,16 +9,16 @@
     
     # get module name and directory
     $Script:moduleName = "PSVirtualEnv"
-    $Script:moduleDir = Split-Path -Path $MyInvocation.MyCommand.Path -Parent
+    $Script:Dir = Split-Path -Path $MyInvocation.MyCommand.Path -Parent
     
     # set test flag
     $Env:PSVirtualEnv = 1
 
     # execute file with the specific module settings
-    . (Join-Path -Path $Script:moduleDir -ChildPath ($Script:moduleName + ".Module.ps1"))
+    . (Join-Path -Path $Script:Dir -ChildPath ($Script:moduleName + ".Module.ps1"))
 
     # load essential functions
-    . $ModuleVar.FunctionsFile
+    . $Module.FunctionsFile
 
 #   test environment -----------------------------------------------------------
 # ---------------------------------------------------------------------------
@@ -29,42 +29,42 @@
     # test general settings of module
     Describe -Tags 'ModuleSettings' "$Script:moduleName manifest" {
         It "has a valid module name" {
-            Test-Path -Path $ModuleVar.Name | Should Not BeNullOrEmpty
+            Test-Path -Path $Module.Name | Should Not BeNullOrEmpty
         }
         
         It "has a valid directory" {
             {
-                Test-Path -Path $ModuleVar.ModuleDir 
+                Test-Path -Path $Module.Dir 
             } | Should Not Throw
         }
 
         It "has a valid function directory" {
             {
-                Test-Path -Path $ModuleVar.FunctionsDir
+                Test-Path -Path $Module.FunctionsDir
             } | Should Not Throw
         }
 
         It "has a valid test directory" {
             {
-                Test-Path -Path $ModuleVar.TestsDir
+                Test-Path -Path $Module.TestsDir
             } | Should Not Throw
         }
 
         It "has a valid configuration file" {
             {
-                Test-Path -Path $ModuleVar.ConfigFile 
+                Test-Path -Path $Module.Config 
             } | Should Not Throw
         }
 
         It "has a valid module scrip" {
             {
-                Test-Path -Path $ModuleVar.ModuleFile 
+                Test-Path -Path $Module.ModuleFile 
             } | Should Not Throw
         }
 
         It "has a valid functions script" {
             {
-                Test-Path -Path $ModuleVar.FunctionsFile 
+                Test-Path -Path $Module.FunctionsFile 
             } | Should Not Throw
         }
 
@@ -74,7 +74,7 @@
 # ---------------------------------------------------------------------------
 
     # invoke all scripts below listed with pester
-    Get-ChildItem -Path $ModuleVar.TestsDir -Filter "*.ps1" | ForEach-Object {
+    Get-ChildItem -Path $Module.TestsDir -Filter "*.ps1" | ForEach-Object {
         Invoke-Pester -Script  $_.FullName
     }
 

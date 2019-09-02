@@ -2,196 +2,124 @@
 #   PSVirtualEnv.psm1 -------------------------------------------------------
 # ===========================================================================
 
-#   settings ----------------------------------------------------------------
+#   modules -----------------------------------------------------------------
 # ---------------------------------------------------------------------------
-$default_config_string = "
-; ===========================================================================
-;   config.ini --------------------------------------------------------------
-; ===========================================================================
+Import-Module -Name $(Join-Path -Path $(Split-Path -Path $MyInvocation.MyCommand.Path -Parent) -ChildPath "Modules\PSUtils")
 
-; user settings -------------------------------------------------------------
-; ---------------------------------------------------------------------------
-[user]
-
-; default path where virtual environments are located
-venv-work-dir = 
-
-; default download path for python packages
-venv-local-dir =  
-
-; default path for the requirements
-venv-require-dir = 
-
-; default python distribution
-python = 
-
-; internal settings ---------------------------------------------------------
-; ---------------------------------------------------------------------------
-[psvirtualenv]
-
-; relative path of the virtual environement executable 
-venv = Scripts\python.exe
-
-; relative path of the virtual environement activation script 
-venv-activation = Scripts\activate.ps1
-
-; command of deactivation virtual environment
-venv-deactivation = deactivate
-
-"
-
-#   settings ----------------------------------------------------------------
+#   psvirtualenv ------------------------------------------------------------
 # ---------------------------------------------------------------------------
-    $ModuleVar = New-Object -TypeName PSObject -Property @{
-        Name = "PSVirtualEnv"
-        ModuleDir =  Split-Path -Path $MyInvocation.MyCommand.Path -Parent
-        ConfigFile = $(Join-Path -Path $(Get-ConfigProjectDir -Name "PSVirtualEnv") -ChildPath "config.ini")
-    }
+$Module = New-Object -TypeName PSObject -Property @{
+    Name = [System.IO.Path]::GetFileNameWithoutExtension($(Split-Path -Path $MyInvocation.MyCommand.Path -Leaf))
+    Dir =  Split-Path -Path $MyInvocation.MyCommand.Path -Parent
+    Config = $(Join-Path -Path $(Get-ConfigProjectDir -Name "PSVirtualEnv") -ChildPath "config.ini")
+}
 
-    New-ProjectConfigDirs -Name $ModuleVar.Name.toLower()
-
-    # search for the local configuration file
-    if (-not $(Test-Path $ModuleVar.ConfigFile)) {
-        $default_config_string | Out-File -FilePath $ModuleVar.ConfigFile -Force
+@(
+    @{  # manifest 
+        Name="Manifest"
+        Value=Join-Path -Path $Module.Dir -ChildPath "$($Module.Name).psd1"
     }
-
-    @(
-        @{  # manifest 
-            Name="Manifest"
-            Value=Join-Path -Path $ModuleVar.ModuleDir -ChildPath ($ModuleVar.Name + ".psd1")
-        }
-        @{  # directory of functions
-            Name="FunctionsDir"
-            Value=Join-Path -Path $ModuleVar.ModuleDir -ChildPath "Functions"
-        }
-        @{  # directory of functions
-            Name="TestsDir"
-            Value=Join-Path -Path $ModuleVar.ModuleDir -ChildPath "Tests"
-        }
-        @{  # configuration file and content of configuration file
-            Name="ConfigContent" 
-            Value=Get-IniContent -FilePath $ModuleVar.ConfigFile
-        }
-    ) | ForEach-Object {
-        $ModuleVar | Add-Member -MemberType NoteProperty -Name $_.Name -Value $_.Value
+    @{  # directory of functions
+        Name="FunctionsDir"
+        Value=Join-Path -Path $Module.Dir -ChildPath "Functions"
     }
+    @{  # directory of functions
+        Name="TestsDir"
+        Value=Join-Path -Path $Module.Dir -ChildPath "Tests"
+    }
+    @{  # configuration file and content of configuration file
+        Name="ConfigContent" 
+        Value=Get-IniContent -FilePath $Module.Config
+    }
+) | ForEach-Object {
+    $Module | Add-Member -MemberType NoteProperty -Name $_.Name -Value $_.Value
+}
 
 #   configuration -----------------------------------------------------------
 # ---------------------------------------------------------------------------
+New-ProjectConfigDirs -Name $Module.Name.toLower()
 
-    # set the default path where the virtual environments are located and their subdirectories defined in the configuration file
-    $PSVirtualEnv = New-Object -TypeName PSObject -Property @{
-        Name = $ModuleVar.Name
+# search for the local configuration file
+. $(Join-Path -Path $Module.Dir -ChildPath "$($Module.Name)_Ini.ps1")
+if (-not $(Test-Path $Module.Config)) {
+    $default_config_string | Out-File -FilePath $Module.Config -Force
+}
+
+# set the default path where the virtual environments are located and their subdirectories defined in the configuration file
+$PSVirtualEnv = New-Object -TypeName PSObject -Property @{
+    Name = $Module.Name
+}
+
+$work_dir = Get-ProjectDir -Name $Module.Name
+@( 
+    @{
+        Name="venv-work-dir"; Section="user"; Field="WorkDir"; 
+        Default=$work_dir
     }
-
-    $project_dir = Get-ProjectDir -Name $ModuleVar.Name
-    @( 
-        @{
-            Name="venv-work-dir"; 
-            Section="user"; 
-            Field="WorkDir"; 
-            Default=$project_dir
-        }
-        @{
-            Name="venv-require-dir"; 
-            Section="user"; 
-            Field="RequireDir"
-            Default=$(Join-Path -Path $project_dir -ChildPath ".require")
-        }
-        @{
-            Name="venv-local-dir"; 
-            Section="user"; 
-            Field="LocalDir"
-            Default=$(Join-Path -Path $project_dir -ChildPath ".temp")
-        }
-    ) | ForEach-Object {
-        $PSVirtualEnv  | Add-Member -MemberType NoteProperty -Name $_.Field -Value  $ModuleVar.ConfigContent[$_.Section][$_.Name]
-
-        if (-not $PSVirtualEnv.($_.Field) -or -not $(Test-Path $PSVirtualEnv.($_.Field))) {
-            
-            $path = $PSVirtualEnv.($_.Field)
-            if (-not $PSVirtualEnv.($_.Field)) {
-                $path = $_.Default
-                $ModuleVar.ConfigContent | Set-IniContent -Sections $_.Section -NameValuePairs @{
-                    $_.Name = $_.Default
-                }
-            }
-
-            Write-FormattedWarning -Message "The path $($PSVirtualEnv.($_.Field)) defined in field $($_.Name) of the module configuration file can not be found. Default directory $($path) will be created." -Module $ModuleVar.Name
-
-            If (-not $(Test-Path $path)) {
-                New-Item -Path $path -ItemType Directory
-            }
-        }
+    @{
+        Name="venv-require-dir"; Section="user"; Field="RequireDir"
+        Default=$(Join-Path -Path $work_dir -ChildPath ".require")
     }
+    @{
+        Name="venv-local-dir"; Section="user"; Field="LocalDir"
+        Default=$(Join-Path -Path $work_dir -ChildPath ".temp")
+    }
+) | ForEach-Object {
+    $PSVirtualEnv  | Add-Member -MemberType NoteProperty -Name $_.Field -Value  $Module.ConfigContent[$_.Section][$_.Name]
 
-    [System.Environment]::SetEnvironmentVariable("VENV_REQUIRE", $PSVirtualEnv.RequireDir, "process")
-
-    $ModuleVar.ConfigContent | Out-IniFile -FilePath $ModuleVar.ConfigFile -Force
-
-    # set the default python distribution, virtual environment executable and other settings defined in the configuration file
-    @( 
-        @{Name="python"; Section="user"; Field="Python"}
-        @{Name="venv"; Section="psvirtualenv"; Field="VirtualEnv"}
-        @{Name="venv-activation"; Section="psvirtualenv"; Field="Activation"}
-        @{Name="venv-deactivation"; Section="psvirtualenv"; Field="Deactivation"}
+    if (-not $PSVirtualEnv.($_.Field) -or -not $(Test-Path $PSVirtualEnv.($_.Field))) {
         
-    ) | ForEach-Object {
-        $PSVirtualEnv  | Add-Member -MemberType NoteProperty -Name $_.Field -Value  $ModuleVar.ConfigContent[$_.Section][$_.Name]
-        
+        $path = $PSVirtualEnv.($_.Field)
         if (-not $PSVirtualEnv.($_.Field)) {
-            Write-FormattedWarning -Message "Field $($_.Field) is not defined in configuration file and should be set for full module functionality." -Module $ModuleVar.Name
+            $path = $_.Default
+            $Module.ConfigContent | Set-IniContent -Sections $_.Section -NameValuePairs @{
+                $_.Name = $_.Default
+            }
         }
-    }
 
-#   variables ---------------------------------------------------------------
-# ---------------------------------------------------------------------------
-    @(
-        @{  #  pythonhome environment variable
-            Name="EnvPython"
-            Value="PYTHONHOME"
+        Write-FormattedWarning -Message "The path $($PSVirtualEnv.($_.Field)) defined in field $($_.Name) of the module configuration file can not be found. Default directory $($path) will be created." -Module $Module.Name
+
+        If (-not $(Test-Path $path)) {
+            New-Item -Path $path -ItemType Directory
         }
-        @{  #  backup of the pythonhome environment variable
-            Name="EnvBackup"
-            Value="VIRTUAL_ENV_PYTHONHOME"
-        }
-        @{  # python virtual environment variable
-            Name="EnvVenv"
-            Value="VIRTUAL_ENV"
-        }
-    ) | ForEach-Object {
-        $PSVirtualEnv | Add-Member -MemberType NoteProperty -Name $_.Name -Value $_.Value
     }
+}
+
+[System.Environment]::SetEnvironmentVariable("VENV_REQUIRE", $PSVirtualEnv.RequireDir, "process")
+
+$Module.ConfigContent | Out-IniFile -FilePath $Module.Config -Force
+
+# set the default python distribution, virtual environment executable and other settings defined in the configuration file
+@( 
+    @{Name="python"; Section="user"; Field="Python"}
+    @{Name="venv"; Section="psvirtualenv"; Field="VirtualEnv"}
+    @{Name="venv-activation"; Section="psvirtualenv"; Field="Activation"}
+    @{Name="venv-deactivation"; Section="psvirtualenv"; Field="Deactivation"}
+    
+) | ForEach-Object {
+    $PSVirtualEnv  | Add-Member -MemberType NoteProperty -Name $_.Field -Value  $Module.ConfigContent[$_.Section][$_.Name]
+    
+    if (-not $PSVirtualEnv.($_.Field)) {
+        Write-FormattedWarning -Message "Field $($_.Field) is not defined in configuration file and should be set for full module functionality." -Module $Module.Name
+    }
+}
 
 #   functions ---------------------------------------------------------------
 # ---------------------------------------------------------------------------
+Get-ChildItem -Path $Module.FunctionsDir -Filter "*.ps1" | ForEach-Object {
+    . $_.FullName
+}
 
-    # load all sets of public and private functions into the module scope
-    Get-ChildItem -Path $ModuleVar.FunctionsDir -Filter "*.ps1" | ForEach-Object {
-            . $_.FullName
-    }
+#   environment -------------------------------------------------------------
+# ---------------------------------------------------------------------------
+. $(Join-Path -Path $Module.Dir -ChildPath "$($Module.Name)_Environment.ps1")
 
 #   aliases -----------------------------------------------------------------
 # ---------------------------------------------------------------------------
-
-    # define aliases for specific function
-    @(
-        @{ Name = "cd-venv";     Value = "Set-VirtualEnvLocation"}
-        @{ Name = "in-venv";     Value = "Install-VirtualEnv"}
-        @{ Name = "ls-venv";     Value = "Get-VirtualEnv"}
-        @{ Name = "mk-venv";     Value = "New-VirtualEnv"}
-        @{ Name = "rm-venv";     Value = "Remove-VirtualEnv"}
-        @{ Name = "start-venv";  Value = "Start-VirtualEnv"}
-        @{ Name = "stop-venv";   Value = "Stop-VirtualEnv"}
-
-    ) | ForEach-Object {
-        Set-Alias -Name $_.Name -Value $_.Value
-    }
+. $(Join-Path -Path $Module.Dir -ChildPath "$($Module.Name)_Alias.ps1")
 
 #   validation --------------------------------------------------------------
 # ---------------------------------------------------------------------------
-
-    # try to locate default python distribution
-    $PSVirtualEnv.Python = Find-Python -Force -Verbose
+. $(Join-Path -Path $Module.Dir -ChildPath "$($Module.Name)_Validation.ps1")
 
 return 0

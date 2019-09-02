@@ -10,16 +10,16 @@
 #
 
 # Script module or binary module file associated with this manifest.
-RootModule = 'PSVirtualEnv.psm1'
+RootModule = 'PSUtils.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.3.3'
+ModuleVersion = '0.1.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
 
 # ID used to uniquely identify this module
-GUID = 'ca0b4a5a-af4a-416f-a478-e12d116f95b4'
+GUID = '6006e752-7e14-4dbc-a39c-5c3b983cadfa'
 
 # Author of this module
 Author = 'Wolfgang Brandenburger <wolfgang.brandenburger@outlook.com>'
@@ -31,7 +31,7 @@ CompanyName = ''
 Copyright = '(c) Wolfgang Brandenburger. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = ' The module PSVirtualEnv is a set of powershell extensions to Ian Bickings virtualenv tool in python. The module includes wrappers for creating and deleting virtual environments and otherwise managing your development workflow, making it easier to work on more than one project at a time without introducing conflicts in their dependencies.'
+Description = ' The module PSUtils contain useful functions for the development and publishing of powershell modules.'
 
 # Minimum version of the Windows PowerShell engine required by this module
 PowerShellVersion = '6.0'
@@ -52,12 +52,7 @@ PowerShellVersion = '6.0'
 # ProcessorArchitecture = ''= ''
 
 # Modules that must be imported into the global environment prior to importing this module
-RequiredModules = @(
-    @{
-        ModuleName = "PSIni"; 
-        ModuleVersion = "3.1.2"; 
-    }
-)
+# RequiredModules = @()
 
 # Assemblies that must be loaded prior to importing this module
 # RequiredAssemblies = @()
@@ -76,34 +71,31 @@ RequiredModules = @(
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = @(
-    'Get-VirtualEnv',
-    'Get-Requirement',
-    'Get-RequirementContent',
-    'Find-Python',
-    'Install-VirtualEnv',
-    'New-VirtualEnv',
-    'Remove-VirtualEnv',
-    'Set-VirtualEnvLocation',
-    'Start-VirtualEnv',
-    'Stop-VirtualEnv'
+    'Get-ConfigHome',
+    'Get-ConfigProjectDir',
+    'Get-ProjectDir',
+    'Get-ScriptProjectDir',
+    'New-ConfigHome',
+    'New-ProjectDir',
+    'New-ProjectConfigDirs',
+    'New-ScriptProjectDir',
+    'Write-FormattedProcess',
+    'Write-FormattedError',
+    'Write-FormattedSuccess',
+    'Write-FormattedWarning',
+    'Write-FormattedMessage',
+    'Import-PSFunctionDir',
+    'New-TemporaryDirectory'
 )
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
 
 # Variables to export from this module
-VariablesToExport = 'PSVirtualEnv'
+VariablesToExport = ''
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-AliasesToExport = @(
-    'cd-venv',
-    'in-venv'
-    'rm-venv',
-    'ls-venv',
-    'mk-venv',
-    'start-venv',
-    'stop-venv'
-)
+AliasesToExport = @()
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()
@@ -121,19 +113,17 @@ PrivateData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
         Tags = @(
-            'virtualenv',
-            'virtualenvwrapper',
-            'virtualenv-manager',
-            'python',
             'powershell',
-            'windows'
+            'windows',
+            'util',
+            'development'
         )
 
         # A URL to the license for this module.
-        LicenseUri = 'https://github.com/wbrandenburger/PSVirtualEnv'
+        # LicenseUri = ''
 
         # A URL to the main website for this project.
-        ProjectUri = 'https://github.com/wbrandenburger/PSVirtualEnv'
+        # ProjectUri = ''
 
         # A URL to an icon representing this module.
         # IconUri = ''

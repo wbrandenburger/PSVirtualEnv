@@ -1,5 +1,5 @@
 # ============================================================================
-#   PowerShell-Utils.ps1 ----------------------------------------------------
+#   PowerShell-Message.ps1 ---------------------------------------------------
 # ============================================================================
 
 #   function -----------------------------------------------------------------
@@ -21,6 +21,8 @@ function Write-FormattedProcess {
     .OUTPUTS
         None.
     #>
+
+    [CmdletBinding(PositionalBinding=$True)]
 
     [OutputType([Void])]
 
@@ -63,6 +65,8 @@ function Write-FormattedError {
     .OUTPUTS
         None.
     #>
+    
+    [CmdletBinding(PositionalBinding=$True)]
 
     [OutputType([Void])]
 
@@ -106,6 +110,8 @@ function Write-FormattedSuccess {
         None.
     #>
 
+    [CmdletBinding(PositionalBinding=$True)]
+
     [OutputType([Void])]
 
     Param(
@@ -147,6 +153,8 @@ function Write-FormattedWarning {
     .OUTPUTS
         None.
     #>
+
+    [CmdletBinding(PositionalBinding=$True)]
 
     [OutputType([Void])]
 
@@ -193,6 +201,8 @@ function Write-FormattedMessage {
         None.
     #>
 
+    [CmdletBinding(PositionalBinding=$True)]
+
     [OutputType([Void])]
 
     Param(
@@ -223,31 +233,4 @@ function Write-FormattedMessage {
     if ($Module) {Write-Host "[$Module]::" -ForegroundColor $Color -NoNewline}
     Write-Host "$($Type): $($Message)" -ForegroundColor $Color
     if ($Space) { Write-Host }
-}
-
-#   function -----------------------------------------------------------------
-# ----------------------------------------------------------------------------
-function New-TemporaryDirectory {
-
-    <#
-    .DESCRIPTION
-        Creates a folder with a random name in system's temp folder
-
-    .OUTPUTS
-        Systems.String. Absolute path of created temporary folder
-    #>
-
-    [OutputType([System.String])]
-
-    Param()
-
-    $path = Join-Path ([System.IO.Path]::GetTempPath()) ([System.IO.Path]::GetRandomFileName())
-
-    #if/while path already exists, generate a new path
-    While(Test-Path $path) {
-        $path = Join-Path ([System.IO.Path]::GetTempPath()) ([System.IO.Path]::GetRandomFileName())
-    }
-
-    #create directory with generated path
-    New-Item -Path $path -ItemType Directory 
 }

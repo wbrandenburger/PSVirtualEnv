@@ -6,19 +6,19 @@
 # ---------------------------------------------------------------------------
 Describe -Tags 'Module' "General module functionality" {
 
-    Context "Load module $($ModuleVar.Name)" {
+    Context "Load module $($Module.Name)" {
 
         # act
-        Import-Module $ModuleVar.ModuleDir -Force -ErrorAction Stop
+        Import-Module $Module.Dir -Force -ErrorAction Stop
 
         # assert
         It "loads the module" {
-            (Get-Module).name -contains $ModuleVar.Name | Should Be $true
+            (Get-Module).name -contains $Module.Name | Should Be $true
         }
 
     }
 
-    Context "Aliases of module $($ModuleVar.Name)" {
+    Context "Aliases of module $($Module.Name)" {
         # act
         It "Set-VirtualEnvLocation alias exists" {
             Get-Alias -Definition Set-VirtualEnvLocation | Where-Object {$_.name -eq "cdvenv"} | Measure-Object | Select-Object -ExpandProperty Count | Should Be 1
@@ -49,19 +49,19 @@ Describe -Tags 'Module' "General module functionality" {
         }
     }
 
-    Context  "$($ModuleVar.Name) manifest" {
+    Context  "$($Module.Name) manifest" {
         
         # act
         $Script:manifest = $Null
         It "has a valid manifest" {
             {
-                $Script:manifest = Test-ModuleManifest -Path $ModuleVar.Manifest -ErrorAction Stop -WarningAction SilentlyContinue
+                $Script:manifest = Test-ModuleManifest -Path $Module.Manifest -ErrorAction Stop -WarningAction SilentlyContinue
             } | Should Not Throw
         }
 
         # assert
         It "has a valid name in the manifest" {
-            $Script:manifest.Name | Should Be $ModuleVar.Name
+            $Script:manifest.Name | Should Be $Module.Name
         }
 
         # assert
