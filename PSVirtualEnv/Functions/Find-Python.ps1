@@ -79,18 +79,17 @@ function Find-Python {
             "$Path",
             "$($PSVirtualEnv.Python)",
             [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.EnvPython, "user"),
-           [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.EnvPython, "machine")
+            [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.EnvPython, "machine")
         )
 
-        for($i= 0; $i -lt $python_list.Length; $i++){
+        for($i = 0; $i -lt $python_list.Length; $i++){
 
             if ($python_list[$i] -and -not $python_list[$i].EndsWith('python.exe')){
                 $python_list[$i] = Join-Path -Path $python_list[$i] -ChildPath "python.exe"
             } 
 
             # check, whether the defined executbale does exist
-            if (Test-Path $python_list[$i]) 
-            {   
+            if ($python_list[$i] -and $(Test-Path $python_list[$i])) {   
                 $python_packages = Get-VirtualEnvPackage -Python $python_list[$i] -Unformatted
                 if (-not ($python_packages | Where-Object {$_.Name -eq "virtualenv"})) {
                     if (-not $Force) {

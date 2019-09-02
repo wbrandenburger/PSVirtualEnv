@@ -73,6 +73,7 @@ PowerShellVersion = '6.0'
 FunctionsToExport = @(
     'Get-ConfigHome',
     'Get-ConfigProjectDir',
+    'Get-ConfigProjectFile',
     'Get-ProjectDir',
     'Get-ScriptProjectDir',
     'New-ConfigHome',
