@@ -6,7 +6,7 @@
 # ---------------------------------------------------------------------------
 Class ValidateVirtualEnv : System.Management.Automation.IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
-        return [String[]] ((Get-VirtualEnv | Select-Object -ExpandProperty Name)  ,"python" ,"")
+        return [String[]] (Get-VirtualEnv | Select-Object -ExpandProperty Name)  + "" + "python"
     }
 }
 

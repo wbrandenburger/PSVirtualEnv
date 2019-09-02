@@ -4,7 +4,7 @@
 
 #   modules -----------------------------------------------------------------
 # ---------------------------------------------------------------------------
-Import-Module -Name $(Join-Path -Path $(Split-Path -Path $MyInvocation.MyCommand.Path -Parent) -ChildPath "Modules\PSUtils")
+Import-Module -Name $(Join-Path -Path $(Split-Path -Path $MyInvocation.MyCommand.Path -Parent) -ChildPath "Modules\PSUtils") -Scope Local
 
 #   psvirtualenv ------------------------------------------------------------
 # ---------------------------------------------------------------------------

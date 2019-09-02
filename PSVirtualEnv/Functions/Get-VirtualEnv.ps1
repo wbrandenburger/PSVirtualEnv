@@ -6,7 +6,7 @@
 # ---------------------------------------------------------------------------
 Class ValidateVirtualEnv : System.Management.Automation.IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
-        return [String[]] ((Get-VirtualEnv | Select-Object -ExpandProperty Name) + "" )
+        return [String[]] (Get-VirtualEnv | Select-Object -ExpandProperty Name)
     }
 }
 
@@ -37,7 +37,7 @@ function Get-VirtualEnv {
         Return all existing virtual environments in predefined directory. Flags 'Full' and 'Unformatted' does not have any implications if merely virtual environments are queried.
 
 
-        .EXAMPLE
+    .EXAMPLE
         PS C:\> ls-venv
 
         Name Version
