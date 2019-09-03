@@ -85,7 +85,7 @@ function Start-VirtualEnv {
         }
 
         # set environment variable
-        Set-VirtualEnvSystem -Name $Name
+        Set-VirtualEnv -Name $Name
 
         return $Null
     }

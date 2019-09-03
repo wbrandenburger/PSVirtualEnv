@@ -68,7 +68,7 @@ function Get-VirtualEnvLocal {
             }
 
             # set environment variable
-            Set-VirtualEnvSystem -Name $Name
+            Set-VirtualEnv -Name $Name
 
             # get absolute path of requirement file and download directoy
             $requirementFile = Get-RequirementFile -Name $_.Name
@@ -91,7 +91,7 @@ function Get-VirtualEnvLocal {
             Write-FormattedSuccess -Message "Packages of virtual environment '$($_.Name)' were downloaded to '$virtualEnvLocal'" -Module $PSVirtualEnv.Name
 
             # set the pythonhome variable in scope process to the stored backup variable
-            Restore-VirtualEnvSystem
+            Restore-VirtualEnv
 
             # create the local requirement file of the specified virtual environment
             $requirementFileLocal = Join-Path -Path $virtualEnvLocal -ChildPath ($_.Name + ".txt")

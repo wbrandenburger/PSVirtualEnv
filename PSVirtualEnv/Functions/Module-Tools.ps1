@@ -4,7 +4,7 @@
 
 #   function ----------------------------------------------------------------
 # ---------------------------------------------------------------------------
-function Set-VirtualEnvSystem {
+function Set-VirtualEnv {
 
     <#
     .DESCRIPTION
@@ -12,7 +12,7 @@ function Set-VirtualEnvSystem {
     
     .PARAMETER Name
 
-    .PARAMETER PYTHON
+    .PARAMETER Python
 
     .OUTPUTS 
         None.
@@ -43,7 +43,7 @@ function Set-VirtualEnvSystem {
     Return $Null
 }
 
-function Restore-VirtualEnvSystem {
+function Restore-VirtualEnv {
     <#
     .DESCRIPTION
         Restore environment variable

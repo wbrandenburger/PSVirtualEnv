@@ -131,13 +131,13 @@ function Get-VirtualEnv {
                 $virtualEnvs= $VirtualEnvSubDirs | ForEach-Object {
                     if (Test-VirtualEnv -Name $_) {
                          # set environment variable, get name of virtual environment and python version and set the pythonhome variable in scope process to the stored backup variable
-                        Set-VirtualEnvSystem -Name $_
+                        Set-VirtualEnv -Name $_
                         $python_venv = Get-VirtualPython -Name $_
                         [PSCustomObject]@{
                             Name = $_
                             Version = (((. $python_venv --version 2>&1) -replace "`r|`n","") -split " ")[1]
                         }
-                        Restore-VirtualEnvSystem
+                        Restore-VirtualEnv
                     }
                 }
 
@@ -180,7 +180,7 @@ function Get-VirtualEnvPackage {
         [Switch] $Unformatted
     )
 
-    Set-VirtualEnvSystem -Python $Python
+    Set-VirtualEnv -Python $Python
 
     # get all packages in the specified virtual environment,  get all outdated packages and get all independent packages
     $venv_package = . $Python -m pip list --format json | ConvertFrom-Json 
@@ -222,7 +222,7 @@ function Get-VirtualEnvPackage {
             }
         }
    
-    Restore-VirtualEnvSystem
+    Restore-VirtualEnv
    
     $result_required = $venv_package | Where-Object {$_.Required} 
     $result_required | ForEach-Object {

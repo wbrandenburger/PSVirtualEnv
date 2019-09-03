@@ -21,7 +21,6 @@ Class ValidateRequirements:
     }
 }
 
-
 #   function ----------------------------------------------------------------
 # ---------------------------------------------------------------------------
 
@@ -267,9 +266,9 @@ function Install-VirtualEnvPackage {
     # install packages from a requirement file
     Write-FormattedProcess -Message "Try to $($message) packages from requirement file '$Requirement'." -Module $PSVirtualEnv.Name
 
-    Set-VirtualEnvSystem -Python $Python
+    Set-VirtualEnv -Python $Python
     . $Python -m pip $install_cmd --requirement $Requirement $upgrade_cmd
-    Restore-VirtualEnvSystem
+    Restore-VirtualEnv
 
     Write-FormattedSuccess -Message "Packages from requirement file '$Requirement' were $($message)ed." -Module $PSVirtualEnv.Name -Space
 
