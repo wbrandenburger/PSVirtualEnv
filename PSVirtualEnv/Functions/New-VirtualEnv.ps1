@@ -2,17 +2,6 @@
 #   New-VirtualEnv.ps1 ------------------------------------------------------
 # ===========================================================================
 
-#   validation ---------------------------------------------------------------
-# ------------------------------------------------------------------------
-Class ValidateRequirements: 
-    System.Management.Automation.IValidateSetValuesGenerator {
-    [String[]] GetValidValues() {
-        $require_dir = [System.Environment]::GetEnvironmentVariable("VENV_REQUIRE", "process")
-        return [String[]] (((Get-ChildItem -Path $require_dir -Include "*requirements.txt" -Recurse).FullName | ForEach-Object {
-            $_ -replace ($require_dir -replace "\\", "\\")}) + "")
-    }
-}
-
 #   function ----------------------------------------------------------------
 # ---------------------------------------------------------------------------
 function New-VirtualEnv {
@@ -125,9 +114,7 @@ function New-VirtualEnv {
         }
         
         # deactivation of a running virtual environment
-        if (Get-ActiveVirtualEnv) {
-            Stop-VirtualEnv -Silent:$Silent
-        }
+        Restore-VirtualEnv
 
         # get existing requirement file 
         if ($Requirement) {   
@@ -163,10 +150,8 @@ function New-VirtualEnv {
 
         # install packages from the requirement file
         if ($Requirement) {
-            $python_venv = Get-VirtualPython -Name $Name
-            Install-VirtualEnvPackage -Python $python_venv -Requirement $requirement_file
-        
-            Get-VirtualEnvPackage -Python $python_venv
+            Install-VirtualEnvPackage -Name $Name -Requirement $requirement_file
+            Get-VirtualEnvPackage -Name $Name
         }
 
         # if ($Offline) {

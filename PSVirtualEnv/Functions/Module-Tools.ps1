@@ -22,25 +22,40 @@ function Set-VirtualEnv {
 
     Param(
         [Parameter(HelpMessage="Name of the virtual environment.")]
-        [System.String] $Name,
-
-        [Parameter(HelpMessage="Executable of a python distribution.")]
-        [System.String] $Python
+        [System.String] $Name
     )
 
+    $old_venv = Get-ActiveVirtualEnv
+    if($old_venv) {
+        [System.Environment]::SetEnvironmentVariable("VIRTUAL_ENV_OLD", $old_venv, "process")
+    }
+
     # set a backup of the pythonhome environment variable
-    [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.EnvBackup,  [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.EnvPython, "process"), "process")
+    $python_home = [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.PythonHome, "process")
+
+    # set a backup of the pythonhome environment variable
+    $backup =  [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.OldVenvPath, "process")
+    if (-not $backup) {
+        [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.OldVenvPath, $env:PATH, "process")
+    }
+
     # set the pythonhome variable in scope process to the path of the virtual environment
     if ($Name) {
-        $Python = Get-VirtualEnvPath -Name $Name
-    }
-    
-    [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.EnvPython, $python_path, "process")
+        if ($Name -eq "Python")
+        {
+            $python_path = $python_home
+            $env_path = "$($python_home);$($python_home)\Scripts;"+$env:PATH
 
-    #set the name of the virtual environment
-    [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.EnvVenv, $Name,"process")
-    
-    Return $Null
+        }
+        else{
+            $python_path = Get-VirtualEnvPath -Name $Name
+            $env_path = "$(Get-VirtualEnvPath -Name $Name)\Scripts;"+$env:PATH
+        }
+        #set environment path and the name of the virtual environment
+        [System.Environment]::SetEnvironmentVariable("PATH", $env_path, "process")
+        [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.VenvPath, $python_path,"process")
+        [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.PythonHome, $python_path,"process")
+    }
 }
 
 function Restore-VirtualEnv {
@@ -58,13 +73,22 @@ function Restore-VirtualEnv {
 
     Param ()
 
-    # set the pythonhome variable in scope process to the stored backup variable
-    [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.EnvPython,  [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.EnvBackup, "process"), "process")
+    # restore environment path
+    $env_path = [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.OldVenvPath, "process")
+    if ($env_path) {
+        [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.OldVenvPath, $Null,"process")
+        [System.Environment]::SetEnvironmentVariable("PATH", $env_path, "process")
+    }
+    [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.PythonHome, $PSVirtualEnv.Python,"process")
 
     # emtpy the name of the virtual environment
-    [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.EnvVenv, $Null ,"process")
+    [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.VenvPath, $Null ,"process")
 
-    Return $Null
+    $old_venv = [System.Environment]::GetEnvironmentVariable("VIRTUAL_ENV_OLD", "process")
+    if($old_venv) {
+        [System.Environment]::SetEnvironmentVariable("VIRTUAL_ENV_OLD", $Null, "process")
+        Set-VirtualEnv -Name $old_venv
+    }
 }
 
 #   function ----------------------------------------------------------------
@@ -212,8 +236,6 @@ function Get-ActiveVirtualEnv {
     <#
     .DESCRIPTION
         Detects activated virtual environments.
-    
-    .PARAMETER Name
 
     .OUTPUTS 
        Boolean. True if the specified virtual environment is running, respectivly false if it is not activated.
@@ -223,21 +245,13 @@ function Get-ActiveVirtualEnv {
 
     [OutputType([Boolean])]
 
-    Param(
-        [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment.")]
-        [System.String] $Name
-    )
+    Param()
     
-    $virtual_env = [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.EnvVenv, "process")
-    if ($virtual_env) {
-        if ($Name) {
-            if (([System.String]$virtual_env).EndsWith($Name)) {
-                return $True
-            }
-            return $False;
-        }
-        return $True
+    $virtual_env = [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.VenvPath, "process")
+
+    if ($virtual_env -and $(Test-Path -Path $virtual_env)) {
+        return Split-Path -Path $virtual_env -Leaf
     }
 
-    return $False
+    return $Null
 }

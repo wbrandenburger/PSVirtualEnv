@@ -2,17 +2,6 @@
 #   Get-RequirementContent.ps1 ----------------------------------------------
 # ===========================================================================
 
-#   validation --------------------------------------------------------------
-# ---------------------------------------------------------------------------
-Class ValidateRequirements: 
-    System.Management.Automation.IValidateSetValuesGenerator {
-    [String[]] GetValidValues() {
-        $require_dir = [System.Environment]::GetEnvironmentVariable("VENV_REQUIRE", "process")
-        return [String[]] (((Get-ChildItem -Path $require_dir -Include "*requirements.txt" -Recurse).FullName | ForEach-Object {
-            $_ -replace ($require_dir -replace "\\", "\\")}) + "")
-    }
-}
-
 #   function ----------------------------------------------------------------
 # ---------------------------------------------------------------------------
 function Get-RequirementContent {

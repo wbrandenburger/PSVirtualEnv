@@ -2,14 +2,6 @@
 #   Get-Requirement.ps1 -----------------------------------------------------
 # ===========================================================================
 
-#   validation --------------------------------------------------------------
-# ---------------------------------------------------------------------------
-Class ValidateVirtualEnv : System.Management.Automation.IValidateSetValuesGenerator {
-    [String[]] GetValidValues() {
-        return [String[]] (Get-VirtualEnv | Select-Object -ExpandProperty Name) + "" + "python"
-    }
-}
-
 #   function ----------------------------------------------------------------
 # ---------------------------------------------------------------------------
 function Get-Requirement {
@@ -22,8 +14,6 @@ function Get-Requirement {
         Create the requirement file of a specific virtual environment in predefined requirements folder.. All available virtual environments can be accessed by autocompletion. Flag 'All' enables the creation of requirments file for all existing virtual environments. Flag 'Upgrade' replaces in resulting requirement file '==' with '>=' for the use of upgrading packages.
     
     .PARAMETER Name
-
-    .PARAMETER Python
 
     .PARAMETER All
 
@@ -82,9 +72,6 @@ function Get-Requirement {
         [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment.")]
         [System.String] $Name="",
 
-        [Parameter(HelpMessage="If switch 'Python' is true, packages will be installed in default python distribution.")]
-        [Switch] $Python,
-
         [Parameter(HelpMessage="If switch 'All' is true, the requirement file for all existing virtual environments will be generated.")]
         [Switch] $All,
 
@@ -95,11 +82,7 @@ function Get-Requirement {
     Process {
 
         # check valide virtual environment 
-        if ($Name -and -not $Python) {
-            if ($Name -eq "python"){
-                $Python=$True
-            }
-
+        if ($Name) {
             if (-not(Test-VirtualEnv -Name $Name)){
                 Write-FormattedError -Message "The virtual environment '$($Name)' does not exist." -Module $PSVirtualEnv.Name -Space
                 Get-VirtualEnv
@@ -108,11 +91,6 @@ function Get-Requirement {
             }
 
             $virtualEnv = @{ Name = $Name }
-        }
-
-        # if default python distribution shall be modified set a placeholder
-        if ($Python) {
-            $virtualEnv = @{ Name = "python" }
         }
 
         # Get all existing virtual environments if 'Name' is not set
@@ -125,17 +103,11 @@ function Get-Requirement {
             # get full path of requirement file
             $requirement_file = Get-RequirementFile -Name $_.Name
 
-            # get python distribution
-            if ($Python) {
-                $python_exe = Find-Python -Force
-            }
-            else {
-                $python_exe = Get-VirtualPython -Name $_.Name
-            }
-
             # create the requirement file of the specified virtual environment
-            . $python_exe -m pip freeze > $requirement_file
-            
+            Set-VirtualEnv -Name $Name
+            . pip freeze > $requirement_file
+            Restore-VirtualEnv
+
             if ($Upgrade){
                 $(Get-Content $requirement_file) -replace "==", ">=" | Out-File -FilePath $requirement_file
             }

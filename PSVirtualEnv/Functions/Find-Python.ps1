@@ -78,35 +78,35 @@ function Find-Python {
         $python_list = @(
             "$Path",
             "$($PSVirtualEnv.Python)",
-            [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.EnvPython, "user"),
-            [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.EnvPython, "machine")
+            [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.PythonHome, "user"),
+            [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.PythonHome, "machine")
         )
 
         for($i = 0; $i -lt $python_list.Length; $i++){
 
-            if ($python_list[$i] -and -not $python_list[$i].EndsWith('python.exe')){
-                $python_list[$i] = Join-Path -Path $python_list[$i] -ChildPath "python.exe"
+            if ($python_list[$i] -and $python_list[$i].EndsWith('python.exe')){
+                $python_list[$i] = Split-Path -Path $python_list[$i] -Parent
             } 
 
             # check, whether the defined executbale does exist
             if ($python_list[$i] -and $(Test-Path $python_list[$i])) {   
-                $python_packages = Get-VirtualEnvPackage -Python $python_list[$i] -Unformatted
-                if (-not ($python_packages | Where-Object {$_.Name -eq "virtualenv"})) {
-                    if (-not $Force) {
-                        Write-FormattedError -Message "The python distribution does not provide the required package 'virtualenvwrapper'. Please install the package manually." -Module $PSVirtualEnv.Name -Space -Silent:(!$VerbosePreference)
-                            return
-                    }
-                    else {
-                        . $python_list[$i] -m pip install virtualenv 2>&1> $Null
-                        Write-FormattedWarning -Message "The python distribution does not provide the required package 'virtualenvwrapper'. Package will be installed automatically for full functionality." -Module $PSVirtualEnv.Name -Space -Silent:(!$VerbosePreference)
-                    }
-                }
+                # $python_packages = Get-VirtualEnvPackage -Python $python_list[$i] -Unformatted
+                # if (-not ($python_packages | Where-Object {$_.Name -eq "virtualenv"})) {
+                #     if (-not $Force) {
+                #         Write-FormattedError -Message "The python distribution does not provide the required package 'virtualenvwrapper'. Please install the package manually." -Module $PSVirtualEnv.Name -Space -Silent:(!$VerbosePreference)
+                #             return
+                #     }
+                #     else {
+                #         . $python_list[$i] -m pip install virtualenv 2>&1> $Null
+                #         Write-FormattedWarning -Message "The python distribution does not provide the required package 'virtualenvwrapper'. Package will be installed automatically for full functionality." -Module $PSVirtualEnv.Name -Space -Silent:(!$VerbosePreference)
+                #     }
+                # }
 
                 return  $python_list[$i]
             }
         }
 
-        Write-FormattedError -Message "The python distribution can not be located. Set an existing python distribution in configuration file or set the environment variable '$($PSVirtualEnv.EnvPython)'" -Module $PSVirtualEnv.Name -Space -Silent:(!$VerbosePreference)
+        Write-FormattedError -Message "The python distribution can not be located. Set an existing python distribution in configuration file or set the environment variable '$($PSVirtualEnv.PythonHome)'" -Module $PSVirtualEnv.Name -Space -Silent:(!$VerbosePreference)
         return
     }
 }

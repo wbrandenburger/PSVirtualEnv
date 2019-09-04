@@ -54,29 +54,23 @@ function Stop-VirtualEnv {
     )
 
     Process { 
-  
-        # deactivation of a running virtual environment
-        $virtual_env = [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.EnvVenv, "process")
-        if (Get-ActiveVirtualEnv -Name $virtual_env ) {            
-    
-            # deactivate the virtual environment
-            . $PSVirtualEnv.Deactivation
 
-            # set the pythonhome variable in scope process to the stored backup variable
-            Restore-VirtualEnv
-
-            # if the environment variable is not empty, deavtivation failed
-            if (-not [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.EnvVenv, "process")) {
-                if (-not $Silent) {
-                    Write-FormattedSuccess -Message "Virtual enviroment '$virtual_env' was stopped." -Module $PSVirtualEnv.Name -Space
-                }
-            }
-            else {
-                Write-FormattedError -Message "Virtual environment '$virtual_env' could not be stopped." -Module $PSVirtualEnv.Name -Space
+        # get a running environment
+        $old_venv = Get-ActiveVirtualEnv
+        if (-not $old_venv){
+            if (-not $Silent) {
+                Write-FormattedSuccess -Message "There is no running virtual enviroment ." -Module $PSVirtualEnv.Name -Space
             }
         }
-        else {
-            Write-FormattedError -Message "There is no running virtual environment." -Module $PSVirtualEnv.Name -Space
+
+        # deactivation of a running virtual environment
+        Restore-VirtualEnv
+
+        # if the environment variable is not empty, deavtivation failed
+        if ($old_venv -eq $(Get-ActiveVirtualEnv)) {
+            if (-not $Silent) {
+                Write-FormattedSuccess -Message "Virtual enviroment '$virtual_env' was stopped." -Module $PSVirtualEnv.Name -Space
+            }
         }
     }
 }

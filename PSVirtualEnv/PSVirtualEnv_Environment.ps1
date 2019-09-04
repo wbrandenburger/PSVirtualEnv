@@ -7,15 +7,15 @@
 
 @(
     @{  #  pythonhome environment variable
-        Name="EnvPython"
+        Name="PythonHome"
         Value="PYTHONHOME"
     }
     @{  #  backup of the pythonhome environment variable
-        Name="EnvBackup"
-        Value="VIRTUAL_ENV_PYTHONHOME"
+        Name="OldVenvPath"
+        Value="OLD_VIRTUAL_ENV_PATH"
     }
     @{  # python virtual environment variable
-        Name="EnvVenv"
+        Name="VenvPath"
         Value="VIRTUAL_ENV"
     }
 ) | ForEach-Object {

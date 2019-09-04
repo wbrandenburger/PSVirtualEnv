@@ -2,14 +2,6 @@
 #   Start-VirtualEnv.ps1 ----------------------------------------------------
 # ===========================================================================
 
-#   validation --------------------------------------------------------------
-# ---------------------------------------------------------------------------
-Class ValidateVirtualEnv : System.Management.Automation.IValidateSetValuesGenerator {
-    [String[]] GetValidValues() {
-        return [String[]] (Get-VirtualEnv | Select-Object -ExpandProperty Name)
-    }
-}
-
 #   function ----------------------------------------------------------------
 # ---------------------------------------------------------------------------
 function Start-VirtualEnv {
@@ -74,19 +66,13 @@ function Start-VirtualEnv {
         }
 
         # deactivation of a running virtual environment
-        if (Get-ActiveVirtualEnv) {
-            Stop-VirtualEnv -Silent:$Silent
-        }
+        Restore-VirtualEnv
 
-        # get the full path of the specified virtual environment, which is located in the predefined system path and activate the virtual environment
-        . $(Get-VirtualEnvActivationScript -Name $Name)
+        # activate the virtual environment
+        Set-VirtualEnv -Name $Name
+
         if (-not $Silent) {
             Write-FormattedSuccess -Message "Virtual enviroment '$Name' was started." -Module $PSVirtualEnv.Name -Space
         }
-
-        # set environment variable
-        Set-VirtualEnv -Name $Name
-
-        return $Null
     }
 }

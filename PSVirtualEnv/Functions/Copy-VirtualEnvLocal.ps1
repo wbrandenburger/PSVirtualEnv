@@ -2,14 +2,6 @@
 #   Copy-VirtualEnvLocal.ps1 ------------------------------------------------
 # ===========================================================================
 
-#   Class -------------------------------------------------------------------
-# ---------------------------------------------------------------------------
-Class ValidateVirtualEnv : System.Management.Automation.IValidateSetValuesGenerator {
-    [String[]] GetValidValues() {
-        return [String[]] (Get-VirtualEnv | Select-Object -ExpandProperty Name)
-    }
-}
-
 #   function ----------------------------------------------------------------
 # ---------------------------------------------------------------------------
 function Copy-VirtualEnvLocal {

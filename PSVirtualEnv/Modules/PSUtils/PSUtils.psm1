@@ -2,13 +2,17 @@
 #   PSUtils.psm1 ------------------------------------------------------------
 # ===========================================================================
 
-#   psutils -----------------------------------------------------------------
+#   settings ----------------------------------------------------------------
 # ---------------------------------------------------------------------------
+$path = $MyInvocation.MyCommand.Path
+$name = [System.IO.Path]::GetFileNameWithoutExtension($path)
 $Module = New-Object -TypeName PSObject -Property @{
-    Name = "PSUtils"
-    Dir =  Split-Path -Path $MyInvocation.MyCommand.Path -Parent
+    Name = $name
+    Dir =  Split-Path -Path $path -Parent
 }
 
+#   configuration -----------------------------------------------------------
+# ---------------------------------------------------------------------------
 @(
     @{  # manifest 
         Name="Manifest"

@@ -2,14 +2,6 @@
 #   Set-VirtualEnvLocation.ps1 ----------------------------------------------
 # ===========================================================================
 
-#   validation --------------------------------------------------------------
-# ---------------------------------------------------------------------------
-Class ValidateVirtualEnv : System.Management.Automation.IValidateSetValuesGenerator {
-    [String[]] GetValidValues() {
-        return [String[]] ((Get-VirtualEnv | Select-Object -ExpandProperty Name)+ "")
-    }
-}
-
 #   function ----------------------------------------------------------------
 # ---------------------------------------------------------------------------
 function Set-VirtualEnvLocation {
