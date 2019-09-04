@@ -1,6 +1,44 @@
 # ============================================================================
-#   PowerShell-Utils.ps1 -----------------------------------------------------
+#   Utils.ps1 ----------------------------------------------------------------
 # ============================================================================
+
+#   function -----------------------------------------------------------------
+# ----------------------------------------------------------------------------
+function Write-PromptModuleStatus {
+
+    [CmdletBinding(PositionalBinding=$True)]
+
+    [OutputType([Void])]
+
+    Param (
+
+        [Parameter(Position=1, Mandatory=$True)]
+        [System.String] $Module,
+
+        [Parameter(Position=2, Mandatory=$True)]
+        [System.String] $Value,
+
+        [Parameter(Mandatory=$False)]
+        [System.String] $ModuleColor = "DarkGray",
+
+        [Parameter(Mandatory=$False)]
+        [System.String] $ParenColor = "Yellow",
+
+        [Parameter(Mandatory=$False)]
+        [System.String] $ValueColor = "Cyan"
+
+    )
+    
+    Process{
+
+        If ($Value) {       
+            Write-Host $Module -NoNewline -ForegroundColor $ModuleColor
+            Write-Host "["  -NoNewline -ForegroundColor $ParenColor
+            Write-Host  $Value -NoNewline -ForegroundColor $ValueColor
+            Write-Host  "]" -NoNewline -ForegroundColor $ParenColor
+        }
+    }
+}
 
 #   function -----------------------------------------------------------------
 # ------------------------------------------------------------------------

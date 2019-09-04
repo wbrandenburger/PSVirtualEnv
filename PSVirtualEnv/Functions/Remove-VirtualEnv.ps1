@@ -42,7 +42,7 @@ function Remove-VirtualEnv  {
 
     [CmdletBinding(PositionalBinding=$True)]
 
-    [OutputType([PSCustomObject])]
+    [OutputType([System.Object])]
 
     Param(
         [ValidateSet([ValidateVirtualEnv])]

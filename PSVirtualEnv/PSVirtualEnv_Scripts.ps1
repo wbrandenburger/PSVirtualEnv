@@ -14,9 +14,7 @@ Get-Childitem -Path $path -Directory | Select-Object -ExpandProperty FullName | 
 Class ValidateRequirements: 
     System.Management.Automation.IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
-        $require_dir = [System.Environment]::GetEnvironmentVariable("VENV_REQUIRE", "process")
-        return [String[]] (((Get-ChildItem -Path $require_dir -Include "*requirements.txt" -Recurse).FullName | ForEach-Object {
-            $_ -replace ($require_dir -replace "\\", "\\")}) )
+        return [String[]] (Get-ValidateRequirementFiles)
     }
 }
 
@@ -24,6 +22,6 @@ Class ValidateRequirements:
 # ---------------------------------------------------------------------------
 Class ValidateVirtualEnv : System.Management.Automation.IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
-        return [String[]] (Get-VirtualEnv | Select-Object -ExpandProperty Name)
+        return [String[]] (Get-ValidateVirtualEnv)
     }
 }

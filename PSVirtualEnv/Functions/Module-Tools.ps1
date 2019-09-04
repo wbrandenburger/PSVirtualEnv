@@ -34,7 +34,7 @@ function Set-VirtualEnv {
     $python_home = [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.PythonHome, "process")
 
     # set a backup of the pythonhome environment variable
-    $backup =  [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.OldVenvPath, "process")
+    $backup = [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.OldVenvPath, "process")
     if (-not $backup) {
         [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.OldVenvPath, $env:PATH, "process")
     }

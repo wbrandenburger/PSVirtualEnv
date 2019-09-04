@@ -69,8 +69,6 @@ $work_dir = Get-ProjectDir -Name $Module.Name
     $PSVirtualEnv  | Add-Member -MemberType NoteProperty -Name $_.Field -Value  $content 
 }
 
-[System.Environment]::SetEnvironmentVariable("VENV_REQUIRE", $PSVirtualEnv.RequireDir, "process")
-
 $Module.ConfigContent | Out-IniFile -FilePath $Module.Config -Force
 
 # set the default python distribution, virtual environment executable and other settings defined in the configuration file
