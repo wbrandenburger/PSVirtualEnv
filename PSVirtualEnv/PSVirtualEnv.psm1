@@ -21,18 +21,16 @@ New-ProjectConfigDirs -Name $Module.Name.toLower()
 
 #   functions ---------------------------------------------------------------
 # ---------------------------------------------------------------------------
-. $(Join-Path -Path $Module.Dir -ChildPath "$($Module.Name)_Environment.ps1")
+. $(Join-Path -Path $Module.Dir -ChildPath "$($Module.Name)_Functions.ps1")
 
 #   environment -------------------------------------------------------------
 # ---------------------------------------------------------------------------
-. $(Join-Path -Path $Module.Dir -ChildPath "$($Module.Name)_Fcuntions.ps1")
+. $(Join-Path -Path $Module.Dir -ChildPath "$($Module.Name)_Environment.ps1")
 
 #   aliases -----------------------------------------------------------------
 # ---------------------------------------------------------------------------
 . $(Join-Path -Path $Module.Dir -ChildPath "$($Module.Name)_Alias.ps1")
 
-#   validation --------------------------------------------------------------
+#   settings ----------------------------------------------------------------
 # ---------------------------------------------------------------------------
-. $(Join-Path -Path $Module.Dir -ChildPath "$($Module.Name)_Validation.ps1")
-
-return 0
+. $(Join-Path -Path $Module.Dir -ChildPath "$($Module.Name)_Settings.ps1")

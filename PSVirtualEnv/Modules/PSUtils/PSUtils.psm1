@@ -28,8 +28,4 @@ $Module = New-Object -TypeName PSObject -Property @{
 
 #   functions ---------------------------------------------------------------
 # ---------------------------------------------------------------------------
-
-# load all sets of public and private functions into the module scope
-    Get-ChildItem -Path $Module.FunctionsDir -Filter "*.ps1" | ForEach-Object {
-        . $_.FullName
-}
+. $(Join-Path -Path $Module.Dir -ChildPath "$($Module.Name)_Functions.ps1")
