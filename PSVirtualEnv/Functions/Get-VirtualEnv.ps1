@@ -73,14 +73,14 @@ function Get-VirtualEnv {
         System.Strings. Name of existing virtual environment.
 
     .OUTPUTS
-        System.Object. Object with contain information about all virtual environments.
+        PSCustomObject. Object with contain information about all virtual environments.
 
     .NOTES
     #>
 
     [CmdletBinding(PositionalBinding=$True)]
 
-    [OutputType([System.Object])]
+    [OutputType([PSCustomObject])]
 
     Param (
         [ValidateSet([ValidateVirtualEnv])]
@@ -117,6 +117,7 @@ function Get-VirtualEnv {
             if (-not $virtual_env) { 
                 Write-FormattedError -Message "In predefined directory do not exist any virtual environments" -Module $PSVirtualEnv.Name -Space 
             }
+            return $virtual_env
         }
     }
 }
@@ -130,12 +131,12 @@ function Get-VirtualEnvWorkDir {
         Return all existing virtual environments.
     
     .OUTPUTS
-        System.Object. All existing virtual environments.
+        PSCustomObject. All existing virtual environments.
     #>
 
     [CmdletBinding(PositionalBinding=$True)]
 
-    [OutputType([System.Object])]
+    [OutputType([PSCustomObject])]
 
     Param ()
 
@@ -153,7 +154,7 @@ function Get-VirtualEnvWorkDir {
                 if (Test-VirtualEnv -Name $_) {
                     # get name of virtual environment and python version
                     Set-VirtualEnv -Name $_
-                    [System.Object]@{
+                    [PSCustomObject]@{
                         Name = $_
                         Version = (((. python --version 2>&1) -replace "`r|`n","") -split " ")[1]
                     }
@@ -181,15 +182,14 @@ function Get-VirtualEnvPackage {
     .PARAMETER Unformatted
     
     .OUTPUTS
-        System.Object. Properties of all packages in a python environment
+        PSCustomObject. Properties of all packages in a python environment
     #>
 
     [CmdletBinding(PositionalBinding=$True)]
 
-    [OutputType([System.Object])]
+    [OutputType([PSCustomObject])]
 
     Param (
-        [ValidateSet([ValidateVirtualEnv])]
         [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Information about all packages installed in the specified virtual environment will be returned.")]
         [System.String] $Name,
 
@@ -216,7 +216,7 @@ function Get-VirtualEnvPackage {
             #$package_outdated = $venv_outdated | Where-Object {$_.Name -eq $package.Name}
             $package_independent = $venv_independent | Where-Object {$_.Name -eq $Package.Name}
 
-            [System.Object]@{
+            [PSCustomObject]@{
                 Name = $package.Name
                 Version = $package.Version
                 #Latest = $package_outdated.Latest
@@ -257,7 +257,7 @@ function Get-VirtualEnvPackage {
         Restore-VirtualEnv
 
         if ($Unformatted){
-            return $result,  $result_required
+            return $result, $result_required
         }
         else {
             return  ($result | Format-Table -Property Name, Version), ($result_required | Format-Table -Property Name, Version, Required-by)

@@ -196,13 +196,13 @@ function Install-VirtualEnvPackage {
     .PARAMETER Upgrade
 
     .OUTPUTS
-        System.Object. Properties of all packages in a python environment
+        PSCustomObject. Properties of all packages in a python environment
     #>
 
     
     [CmdletBinding(PositionalBinding=$True)]
 
-    [OutputType([System.Object])]
+    [OutputType([PSCustomObject])]
 
     Param (
         [ValidateSet([ValidateVirtualEnv])]
