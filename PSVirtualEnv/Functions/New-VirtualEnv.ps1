@@ -136,7 +136,9 @@ function New-VirtualEnv {
         if ($VerbosePreference){
             $verbose_cmd = "--verbose"
         }
-        . $PSVirtualEnv.Python -m virtualenv  $virtualEnvDir $verbose_cmd
+        Set-VirtualEnv -Name "python"
+        virtualenv  $virtualEnvDir $verbose_cmd
+        Restore-VirtualEnv
 
         # check whether the virtual environment could be created
         if (Test-VirtualEnv -Name $Name) {

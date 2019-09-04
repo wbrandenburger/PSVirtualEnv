@@ -238,7 +238,7 @@ function Install-VirtualEnvPackage {
     Write-FormattedProcess -Message "Try to $($message) packages from requirement file '$Requirement'." -Module $PSVirtualEnv.Name
 
     Set-VirtualEnv -Name $Name
-    . pip $install_cmd --requirement $Requirement $upgrade_cmd
+    pip $install_cmd --requirement $Requirement $upgrade_cmd
     Restore-VirtualEnv
 
     Write-FormattedSuccess -Message "Packages from requirement file '$Requirement' were $($message)ed." -Module $PSVirtualEnv.Name -Space
