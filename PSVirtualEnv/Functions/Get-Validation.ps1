@@ -14,6 +14,10 @@ function Get-ValidateVirtualEnv {
         System.String[]. Virtual environments
     #>
 
+    [CmdletBinding(PositionalBinding=$True)]
+    
+    [OutputType([System.String[]])]
+
     Param()
 
     Process{
@@ -34,6 +38,10 @@ function Get-ValidateRequirementFiles {
     .OUTPUTS
         System.String[]. Requirement files
     #>
+
+    [CmdletBinding(PositionalBinding=$True)]
+    
+    [OutputType([System.String[]])]
 
     Param()
 

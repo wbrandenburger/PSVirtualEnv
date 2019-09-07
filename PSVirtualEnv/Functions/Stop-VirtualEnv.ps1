@@ -55,21 +55,25 @@ function Stop-VirtualEnv {
 
     Process { 
 
-        # get a running environment
+        # get a running virtual environment
         $old_venv = Get-ActiveVirtualEnv
         if (-not $old_venv){
             if (-not $Silent) {
-                Write-FormattedSuccess -Message "There is no running virtual enviroment ." -Module $PSVirtualEnv.Name -Space
+                Write-FormattedWarning -Message "There is no running virtual enviroment." -Module $PSVirtualEnv.Name -Space
             }
+            return
         }
 
         # deactivation of a running virtual environment
         Restore-VirtualEnv
 
-        # if the environment variable is not empty, deavtivation failed
-        if ($old_venv -eq $(Get-ActiveVirtualEnv)) {
-            if (-not $Silent) {
-                Write-FormattedSuccess -Message "Virtual enviroment '$virtual_env' was stopped." -Module $PSVirtualEnv.Name -Space
+        # if the environment variable is not empty, deactivation failed
+        if (-not $Silent) {
+            if ($old_venv -and  $oldvenv -eq $(Get-ActiveVirtualEnv)) {
+                Write-FormattedError -Message "Virtual enviroment '$old_venv' could not be stopped." -Module $PSVirtualEnv.Name -Space
+            }         
+            else{
+                Write-FormattedSuccess -Message "Virtual enviroment '$old_venv' was stopped." -Module $PSVirtualEnv.Name -Space
             }
         }
     }

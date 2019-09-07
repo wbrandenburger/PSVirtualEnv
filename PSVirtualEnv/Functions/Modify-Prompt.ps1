@@ -14,7 +14,7 @@ function Write-VirtualEnvStatus {
     
     Process{
 
-        $venv_path = [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.VenvPath, "process")
+        $venv_path = [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.ProjectEnv, "process")
         Write-PromptModuleStatus -Module "Venv" -Value $(Split-Path -Path $venv_path -leaf)
     }
 }

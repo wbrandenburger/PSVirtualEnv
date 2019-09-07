@@ -4,6 +4,8 @@
 
 #   import ------------------------------------------------------------------
 # ---------------------------------------------------------------------------
+using namespace System.Management.Automation
+
 $path = Join-Path -Path $(Split-Path -Path $MyInvocation.MyCommand.Path -Parent)  -ChildPath "Modules"
 Get-Childitem -Path $path -Directory | Select-Object -ExpandProperty FullName | ForEach-Object {
     Import-Module -Name $_ -Scope Local
@@ -11,8 +13,7 @@ Get-Childitem -Path $path -Directory | Select-Object -ExpandProperty FullName | 
 
 #   validation --------------------------------------------------------------
 # ---------------------------------------------------------------------------
-Class ValidateRequirements: 
-    System.Management.Automation.IValidateSetValuesGenerator {
+Class ValidateRequirements: IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
         return [String[]] (Get-ValidateRequirementFiles)
     }
@@ -20,7 +21,7 @@ Class ValidateRequirements:
 
 #   validation --------------------------------------------------------------
 # ---------------------------------------------------------------------------
-Class ValidateVirtualEnv : System.Management.Automation.IValidateSetValuesGenerator {
+Class ValidateVirtualEnv : IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
         return [String[]] (Get-ValidateVirtualEnv)
     }
