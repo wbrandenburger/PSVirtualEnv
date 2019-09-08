@@ -81,7 +81,7 @@ function Get-ConfigProjectDirList {
     )
 
     Process {
-        $dir_list = New-Object -TypeName System.Collections.Generic.List[PSCustomObject]
+        $dir_list = New-Object -TypeName System.Collections.Generic.List[System.Object]
         
         $xdg_dir_list = [System.Environment]::GetEnvironmentVariable("XDG_CONFIG_DIRS", "process")
         if ($xdg_dir_list) {
