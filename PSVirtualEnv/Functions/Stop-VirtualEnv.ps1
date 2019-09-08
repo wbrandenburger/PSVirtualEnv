@@ -69,7 +69,7 @@ function Stop-VirtualEnv {
 
         # if the environment variable is not empty, deactivation failed
         if (-not $Silent) {
-            if ($old_venv -and  $oldvenv -eq $(Get-ActiveVirtualEnv)) {
+            if ($old_venv -and  $old_venv -eq $(Get-ActiveVirtualEnv)) {
                 Write-FormattedError -Message "Virtual enviroment '$old_venv' could not be stopped." -Module $PSVirtualEnv.Name -Space
             }         
             else{
