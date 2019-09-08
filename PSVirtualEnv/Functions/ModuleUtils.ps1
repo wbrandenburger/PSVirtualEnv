@@ -239,12 +239,12 @@ function Get-ActiveVirtualEnv {
         Detects activated virtual environments.
 
     .OUTPUTS 
-       Boolean. True if the specified virtual environment is running, respectivly false if it is not activated.
+       System.String. Running virtual environments.
     #>
     
     [CmdletBinding(PositionalBinding=$True)]
 
-    [OutputType([Boolean])]
+    [OutputType([System.String])]
 
     Param()
     

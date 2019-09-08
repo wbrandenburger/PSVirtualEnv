@@ -77,6 +77,7 @@ ScriptsToProcess = @("PSVirtualEnv_Scripts.ps1")
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = @(
     "Get-VirtualEnv",
+    "Get-ActiveVirtualEnv",
     "Get-Requirement",
     "Get-RequirementContent",
     "Get-ValidateVirtualEnv",
