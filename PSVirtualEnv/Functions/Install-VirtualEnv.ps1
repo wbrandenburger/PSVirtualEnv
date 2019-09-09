@@ -100,13 +100,13 @@ function Install-VirtualEnv {
         None.
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
 
     [OutputType([Void])]
 
     Param (
         [ValidateSet([ValidateVirtualEnv])]
-        [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment to be changed.")]
+        [Parameter(Position=1, ValueFromPipeline, HelpMessage="Name of the virtual environment to be changed.")]
         [System.String] $Name="",
 
         [ValidateSet([ValidateRequirements])]
@@ -200,16 +200,16 @@ function Install-VirtualEnvPackage {
     #>
 
     
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
 
     [OutputType([PSCustomObject])]
 
     Param (
         [ValidateSet([ValidateVirtualEnv])]
-        [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment to be changed.")]
+        [Parameter(Position=1, ValueFromPipeline, HelpMessage="Name of the virtual environment to be changed.")]
         [System.String] $Name="",
 
-        [Parameter(Position=2, Mandatory=$True, HelpMessage="Path to a requirements file.")]
+        [Parameter(Position=2, Mandatory, HelpMessage="Path to a requirements file.")]
         [System.String] $Requirement,
 
         [Parameter(HelpMessage="If switch 'Uninstall' is true, specified packages will be uninstalled.")]

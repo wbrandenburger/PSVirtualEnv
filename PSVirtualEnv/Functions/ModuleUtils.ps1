@@ -109,7 +109,7 @@ function Get-VirtualEnvPath {
     [OutputType([System.String])]
 
     Param(
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment.")]
+        [Parameter(Position=1, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
         [System.String] $Name
     )
 
@@ -133,7 +133,7 @@ function Get-VirtualPython {
     [OutputType([System.String])]
 
     Param(
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment.")]
+        [Parameter(Position=1, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
         [System.String] $Name
     )
 
@@ -157,7 +157,7 @@ function Get-VirtualEnvActivationScript {
     [OutputType([System.String])]
 
     Param(
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment.")]
+        [Parameter(Position=1, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
         [System.String] $Name
     )
 
@@ -181,7 +181,7 @@ function Get-VirtualEnvLocalDir {
     [OutputType([System.String])]
 
     Param(
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment.")]
+        [Parameter(Position=1, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
         [System.String] $Name
     )
 
@@ -202,12 +202,12 @@ function Get-PythonVersion() {
         Int. The version of the detected python distribution.
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
 
     [OutputType([Int])]
 
     Param(
-        [Parameter(Position=1, Mandatory=$True, HelpMessage="Path to a folder or executable of a python distribution.")]
+        [Parameter(Position=1, Mandatory, HelpMessage="Path to a folder or executable of a python distribution.")]
         [System.String] $Path
     )
 
@@ -242,7 +242,7 @@ function Get-ActiveVirtualEnv {
        System.String. Running virtual environments.
     #>
     
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
 
     [OutputType([System.String])]
 

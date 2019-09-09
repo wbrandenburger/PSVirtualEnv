@@ -14,7 +14,7 @@ function Get-ConfigHome {
         System.String. Configuration base directory.
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
     
     [OutputType([System.String])]
 
@@ -44,7 +44,7 @@ function New-ConfigHome {
         None.
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
     
     [OutputType([Void])]
 
@@ -71,12 +71,12 @@ function Get-ConfigProjectDirList {
         System.String. Folder where configuration files might be stored.
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
     
     [OutputType([System.String])]
 
     Param(
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, ValueFromPipelineByPropertyName=$True, HelpMessage="Name of project.")]
+        [Parameter(Position=1, Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName=$True, HelpMessage="Name of project.")]
         [System.String] $Name
     )
 
@@ -114,12 +114,12 @@ function Get-ConfigProjectDir {
         System.String. Folder where the configuration files are stored
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
     
     [OutputType([System.String])]
 
     Param(
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, ValueFromPipelineByPropertyName=$True, HelpMessage="Name of project.")]
+        [Parameter(Position=1, Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName=$True, HelpMessage="Name of project.")]
         [System.String] $Name
     )
 
@@ -152,12 +152,12 @@ function Get-ConfigProjectFile {
         System.String. Path of configuration base file
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
     
     [OutputType([System.String])]
 
     Param(
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, ValueFromPipelineByPropertyName=$True, HelpMessage="Name of project.")]
+        [Parameter(Position=1, Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName=$True, HelpMessage="Name of project.")]
         [System.String] $Name
     )
 
@@ -181,12 +181,12 @@ function New-ConfigProjectDir  {
         None.
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
     
     [OutputType([Void])]
 
     Param(
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, ValueFromPipelineByPropertyName=$True, HelpMessage="Name of project.")]
+        [Parameter(Position=1, Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName=$True, HelpMessage="Name of project.")]
         [System.String] $Name
     )
 
@@ -214,12 +214,12 @@ function Get-ScriptProjectDir {
         System.String. Folder where the scripts are stored
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
     
     [OutputType([System.String])]
 
     Param(
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, ValueFromPipelineByPropertyName=$True, HelpMessage="Name of project.")]
+        [Parameter(Position=1, Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName=$True, HelpMessage="Name of project.")]
         [System.String] $Name
     )
 
@@ -258,12 +258,12 @@ function New-ScriptProjectDir  {
         None.
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
     
     [OutputType([Void])]
 
     Param(
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, ValueFromPipelineByPropertyName=$True, HelpMessage="Name of project.")]
+        [Parameter(Position=1, Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName=$True, HelpMessage="Name of project.")]
         [System.String] $Name
     )
 
@@ -291,12 +291,12 @@ function Get-ProjectDir {
         System.String. Folder where the project files are stored
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
     
     [OutputType([System.String])]
 
     Param(
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, ValueFromPipelineByPropertyName=$True, HelpMessage="Name of project.")]
+        [Parameter(Position=1, Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName=$True, HelpMessage="Name of project.")]
         [System.String] $Name,
 
         [Parameter(HelpMessage="If folder does not exist, it will be created.")]
@@ -324,12 +324,12 @@ function New-ProjectDir  {
         None.
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
     
     [OutputType([Void])]
 
     Param(
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, ValueFromPipelineByPropertyName=$True, HelpMessage="Name of project.")]
+        [Parameter(Position=1, Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName=$True, HelpMessage="Name of project.")]
         [System.String] $Name
     )
 
@@ -357,12 +357,12 @@ function New-ProjectConfigDirs  {
         None.
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
     
     [OutputType([Void])]
 
     Param(
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, ValueFromPipelineByPropertyName=$True, HelpMessage="Name of project.")]
+        [Parameter(Position=1, Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName=$True, HelpMessage="Name of project.")]
         [System.String] $Name
     )
 

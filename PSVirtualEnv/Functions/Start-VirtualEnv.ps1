@@ -44,13 +44,13 @@ function Start-VirtualEnv {
         None.
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
 
     [OutputType([Void])]
 
     Param(
         [ValidateSet([ValidateVirtualEnv])]     
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of virtual environment, which should be started.")]
+        [Parameter(Position=1, Mandatory, ValueFromPipeline, HelpMessage="Name of virtual environment, which should be started.")]
         [System.String] $Name,
 
         [Parameter(HelpMessage="If switch 'silent' is true no output will written to host.")]

@@ -40,13 +40,13 @@ function Remove-VirtualEnv  {
         None.
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
 
     [OutputType([PSCustomObject])]
 
     Param(
         [ValidateSet([ValidateVirtualEnv])]
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of virtual environment, which should be removed.")]
+        [Parameter(Position=1, Mandatory, ValueFromPipeline, HelpMessage="Name of virtual environment, which should be removed.")]
         [System.String] $Name
     )
 

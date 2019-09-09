@@ -28,19 +28,19 @@ function Copy-VirtualEnvLocal {
         None.
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
 
     [OutputType([Void])]
 
     Param (
         [ValidateSet([ValidateVirtualEnv])]
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment to be changed.")]
+        [Parameter(Position=1, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment to be changed.")]
         [System.String] $Name,
 
-        [Parameter(Position=2, Mandatory=$True, ValueFromPipeline=$True,HelpMessage="Specifies the path to the new location..")]
+        [Parameter(Position=2, Mandatory, ValueFromPipeline,HelpMessage="Specifies the path to the new location..")]
         [System.String] $Path,
 
-        [Parameter(Position=3, Mandatory=$False, ValueFromPipeline=$True,HelpMessage="Copies files from Dest to specified virtual envrionment.")]
+        [Parameter(Position=3, Mandatory=$False, ValueFromPipeline,HelpMessage="Copies files from Dest to specified virtual envrionment.")]
         [Switch] $Reverse
     )
     

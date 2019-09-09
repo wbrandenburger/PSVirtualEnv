@@ -6,7 +6,7 @@
 # ----------------------------------------------------------------------------
 function Write-VirtualEnvStatus {
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
 
     [OutputType([Void])]
 

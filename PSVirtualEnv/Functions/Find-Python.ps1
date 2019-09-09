@@ -60,12 +60,12 @@ function Find-Python {
         System.String. Path to an existing executable of a python distribution
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
 
     [OutputType([System.String])]
 
     Param(        
-        [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Path to a folder or executable of a python distribution.")]
+        [Parameter(Position=1, ValueFromPipeline, HelpMessage="Path to a folder or executable of a python distribution.")]
         [System.String] $Path,
 
         [Parameter(HelpMessage="Forces installation of package 'virtualenv' if not found.")]

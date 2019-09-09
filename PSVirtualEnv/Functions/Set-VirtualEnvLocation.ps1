@@ -49,13 +49,13 @@ function Set-VirtualEnvLocation {
         None.
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
 
     [OutputType([Void])]
 
     Param(
         [ValidateSet([ValidateVirtualEnv])]     
-        [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Name of virtual environment, which should be started.")]
+        [Parameter(Position=1, ValueFromPipeline, HelpMessage="Name of virtual environment, which should be started.")]
         [System.String] $Name
     )
 

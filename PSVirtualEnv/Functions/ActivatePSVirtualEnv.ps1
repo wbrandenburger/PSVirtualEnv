@@ -1,20 +1,45 @@
 # ===========================================================================
-#   Get-Validation.ps1 ------------------------------------------------------
+#   ActivateVirtualEnvAutocompletion.ps1 ------------------------------------
 # ===========================================================================
 
 #   function ----------------------------------------------------------------
 # ---------------------------------------------------------------------------
-function Get-ValidateVirtualEnv {
+function ActivateVirtualEnvAutocompletion {
 
     <#
     .DESCRIPTION
-        Return values for the use of validating existing
+        Import PSVirtualEnv activating autocompletion for validating input of module functions.
+
+    .OUTPUTS
+        ScriptBlock. Scriptblock with using command.
+    #>
+
+    [CmdletBinding(PositionalBinding)]
+
+    [OutputType([ScriptBlock])]
+
+    Param()
+
+    Process {
+
+        return $(Get-Command $(Join-Path -Path $Module.ClassDir -ChildPath "ModuleValidation.ps1") | Select-Object -ExpandProperty ScriptBlock)
+
+    }
+}
+
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
+function ValidateVirtualEnvDirectories {
+
+    <#
+    .DESCRIPTION
+        Return values for the use of validating existing virtual environments
     
     .OUTPUTS
         System.String[]. Virtual environments
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
     
     [OutputType([System.String[]])]
 
@@ -29,7 +54,7 @@ function Get-ValidateVirtualEnv {
 
 #   function ----------------------------------------------------------------
 # ---------------------------------------------------------------------------
-function Get-ValidateRequirementFiles {
+function ValidateVirtualEnvRequirement {
 
     <#
     .DESCRIPTION
@@ -39,7 +64,7 @@ function Get-ValidateRequirementFiles {
         System.String[]. Requirement files
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
     
     [OutputType([System.String[]])]
 
@@ -52,6 +77,3 @@ function Get-ValidateRequirementFiles {
     
     }
 }
-
-
-

@@ -63,13 +63,13 @@ function Get-Requirement {
         None.
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
 
     [OutputType([Void])]
 
     Param(
         [ValidateSet([ValidateVirtualEnv])]
-        [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment.")]
+        [Parameter(Position=1, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
         [System.String] $Name="",
 
         [Parameter(HelpMessage="If switch 'All' is true, the requirement file for all existing virtual environments will be generated.")]
@@ -131,12 +131,12 @@ function Get-RequirementFile {
         System.String. Full path of virtual environment requirements file.
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
 
     [OutputType([Void])]
 
     Param(
-        [Parameter(Position=1, ValueFromPipeline=$True, Mandatory=$True, HelpMessage="Name of the virtual environment.")]
+        [Parameter(Position=1, ValueFromPipeline, Mandatory, HelpMessage="Name of the virtual environment.")]
         [System.String] $Name
     )
 

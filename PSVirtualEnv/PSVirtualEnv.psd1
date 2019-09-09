@@ -13,7 +13,7 @@
 RootModule = "PSVirtualEnv.psm1"
 
 # Version number of this module.
-ModuleVersion = "0.4.3"
+ModuleVersion = "0.4.5"
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -63,7 +63,7 @@ RequiredModules = @(
 # RequiredAssemblies = @()
 
 # Script files (.ps1) that are run in the caller"s environment prior to importing this module.
-ScriptsToProcess = @("PSVirtualEnv_Scripts.ps1")
+ScriptsToProcess = @()
 
 # Type files (.ps1xml) to be loaded when importing this module
 # TypesToProcess = @()
@@ -76,12 +76,11 @@ ScriptsToProcess = @("PSVirtualEnv_Scripts.ps1")
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = @(
+    "ActivateVirtualEnvAutocompletion"
     "Get-VirtualEnv",
     "Get-ActiveVirtualEnv",
     "Get-Requirement",
     "Get-RequirementContent",
-    "Get-ValidateVirtualEnv",
-    "Get-ValidateRequirementFiles",
     "Find-Python",
     "Install-VirtualEnv",
     "New-VirtualEnv",
@@ -91,24 +90,26 @@ FunctionsToExport = @(
     "Stop-VirtualEnv",
     "Set-VirtualEnv",
     "Restore-VirtualEnv",
-    "Write-VirtualEnvStatus"
+    "Write-VirtualEnvStatus",
+    "ValidateVirtualEnvDirectories",
+    "ValidateVirtualEnvRequirement"
 )
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
 
 # Variables to export from this module
-VariablesToExport = "PSVirtualEnv"
+VariablesToExport = "*"
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
 AliasesToExport = @(
     "cd-venv",
-    "in-venv"
+    "is-venv"
     "rm-venv",
     "ls-venv",
     "mk-venv",
-    "start-venv",
-    "stop-venv"
+    "sa-venv",
+    "sp-venv"
 )
 
 # DSC resources to export from this module

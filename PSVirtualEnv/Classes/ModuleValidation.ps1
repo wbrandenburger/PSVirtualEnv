@@ -1,5 +1,5 @@
 # ===========================================================================
-#   PSVirtualEnv_Scripts.psm1 -----------------------------------------------
+#   ModuleValidation.ps1 ----------------------------------------------------
 # ===========================================================================
 
 #   import ------------------------------------------------------------------
@@ -10,7 +10,7 @@ using namespace System.Management.Automation
 # ---------------------------------------------------------------------------
 Class ValidateRequirements: IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
-        return [String[]] (Get-ValidateRequirementFiles)
+        return [String[]] (ValidateVirtualEnvRequirement)
     }
 }
 
@@ -18,6 +18,6 @@ Class ValidateRequirements: IValidateSetValuesGenerator {
 # ---------------------------------------------------------------------------
 Class ValidateVirtualEnv : IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
-        return [String[]] (Get-ValidateVirtualEnv)
+        return [String[]] (ValidateVirtualEnvDirectories)
     }
 }

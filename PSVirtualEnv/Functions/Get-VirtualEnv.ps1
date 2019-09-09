@@ -78,13 +78,13 @@ function Get-VirtualEnv {
     .NOTES
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
 
     [OutputType([PSCustomObject])]
 
     Param (
         [ValidateSet([ValidateVirtualEnv])]
-        [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Information about all packages installed in the specified virtual environment will be returned.")]
+        [Parameter(Position=1, ValueFromPipeline, HelpMessage="Information about all packages installed in the specified virtual environment will be returned.")]
         [System.String] $Name,
 
         [Parameter(HelpMessage="Return information about required packages.")]
@@ -134,7 +134,7 @@ function Get-VirtualEnvWorkDir {
         PSCustomObject. All existing virtual environments.
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
 
     [OutputType([PSCustomObject])]
 
@@ -185,12 +185,12 @@ function Get-VirtualEnvPackage {
         PSCustomObject. Properties of all packages in a python environment
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
 
     [OutputType([PSCustomObject])]
 
     Param (
-        [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Information about all packages installed in the specified virtual environment will be returned.")]
+        [Parameter(Position=1, ValueFromPipeline, HelpMessage="Information about all packages installed in the specified virtual environment will be returned.")]
         [System.String] $Name,
 
         [Parameter(HelpMessage="Return information about required packages.")]

@@ -31,12 +31,12 @@ function Test-VirtualEnv {
         Boolean. True if the specified virtual environment exists.
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
 
     [OutputType([Boolean])]
 
     Param(        
-        [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Name of virtual environment to be tested.")]
+        [Parameter(Position=1, ValueFromPipeline, HelpMessage="Name of virtual environment to be tested.")]
         [System.String] $Name
     )
 

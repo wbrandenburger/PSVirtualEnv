@@ -32,13 +32,13 @@ function Get-RequirementContent {
         System.String. Content of a existing requirement file
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
 
     [OutputType([Void])]
 
     Param(
         [ValidateSet([ValidateRequirements])]
-        [Parameter(Position=1, ValueFromPipeline=$True, HelpMessage="Relative  path to a requirements file, or name of a virtual environment.")]
+        [Parameter(Position=1, ValueFromPipeline, HelpMessage="Relative  path to a requirements file, or name of a virtual environment.")]
         [System.String] $Requirement=""
     )
 

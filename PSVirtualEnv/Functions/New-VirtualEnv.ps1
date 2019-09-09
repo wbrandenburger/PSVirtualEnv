@@ -84,12 +84,12 @@ function New-VirtualEnv {
         None.
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
 
     [OutputType([Void])]
 
     Param(
-        [Parameter(Position=1, Mandatory=$True, ValueFromPipeline=$True, HelpMessage="Name of the virtual environment to be created.")]
+        [Parameter(Position=1, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment to be created.")]
         [System.String] $Name,
 
         [Parameter(Position=2, HelpMessage="Relative path to a folder or executable of a python distribution.")]

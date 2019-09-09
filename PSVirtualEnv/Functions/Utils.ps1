@@ -24,16 +24,16 @@ function Write-PromptModuleStatus {
         Systems.String. Informartion text box with module status.
     #>
 
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
 
     [OutputType([Void])]
 
     Param (
 
-        [Parameter(Position=1, Mandatory=$True, HelpMessage="Name of module, which is the prefix when displaying module status.")]
+        [Parameter(Position=1, Mandatory, HelpMessage="Name of module, which is the prefix when displaying module status.")]
         [System.String] $Module,
 
-        [Parameter(Position=2, Mandatory=$True, HelpMessage="Current module status.")]
+        [Parameter(Position=2, Mandatory, HelpMessage="Current module status.")]
         [System.String] $Value,
 
         [Parameter(Mandatory=$False, HelpMessage="Color used when displaying module name.")]
@@ -73,7 +73,7 @@ function Get-TemporaryFile {
         Systems.String. Random file name.
     #>
     
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
     
     [OutputType([System.String])]
 
@@ -116,7 +116,7 @@ function New-TemporaryDirectory {
         Systems.String. Absolute path of created temporary folder.
     #>
     
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
     
     [OutputType([System.String])]
 
@@ -147,7 +147,7 @@ function New-TemporaryFile {
         Systems.String. Absolute path of created random file.
     #>
     
-    [CmdletBinding(PositionalBinding=$True)]
+    [CmdletBinding(PositionalBinding)]
     
     [OutputType([System.String])]
 
