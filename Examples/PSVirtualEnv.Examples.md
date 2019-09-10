@@ -115,7 +115,7 @@ test-offline 3.7.3   A:\VirtualEnv\.temp\test-offline A:\VirtualEnv\.temp\test-o
 test-online  3.7.3
 ```
 
-If the name of a existing virtual environment is specified, the installed packages of this environment will be shown.
+If the name of an existing virtual environment is specified, the installed packages of this environment will be shown.
 
 ```PowerShell
 Get-VirtualEnv "test-normal"           # or with

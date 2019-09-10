@@ -2,20 +2,8 @@
 #   Install-VirtualEnv.ps1 --------------------------------------------------
 # ===========================================================================
 
-#   validation --------------------------------------------------------------
-# ---------------------------------------------------------------------------
-Class ValidateRequirements: 
-    System.Management.Automation.IValidateSetValuesGenerator {
-    [String[]] GetValidValues() {
-        $require_dir = [System.Environment]::GetEnvironmentVariable("VENV_REQUIRE", "process")
-        return [String[]] (((Get-ChildItem -Path $require_dir -Include "*requirements.txt" -Recurse).FullName | ForEach-Object {
-            $_ -replace ($require_dir -replace "\\", "\\")}) + "")
-    }
-}
-
 #   function ----------------------------------------------------------------
 # ---------------------------------------------------------------------------
-
 function Install-VirtualEnv {
 
     <#
@@ -167,7 +155,7 @@ function Install-VirtualEnv {
                 if (-not $requirement_file){
                     $requirement_file = Get-RequirementFile -Name $_.Name
                 }
-                Get-Requirement -Name $_.Name -Upgrade -Python:$Python
+                New-Requirement -Name $_.Name -Upgrade -Python:$Python
             }
 
             # install packages from the requirement file

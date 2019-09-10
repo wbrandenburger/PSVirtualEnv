@@ -1,35 +1,33 @@
 # ===========================================================================
-#   Get-RequirementContent.ps1 ----------------------------------------------
+#   Edit-Requirement.ps1 -----------------------------------------------------
 # ===========================================================================
 
 #   function ----------------------------------------------------------------
 # ---------------------------------------------------------------------------
-function Get-RequirementContent {
+function Edit-Requirement {
 
     <#
     .SYNOPSIS
-        Get the content of a existing requirement file.
+        Edit the content of an existing requirement file.
 
     .DESCRIPTION
-        Get the content of a existing requirement file in predefined requirements folder. All available requirement files can be accessed by autocompletion.
+        Edit the content of an existing requirement file in predefined requirements folder. All available requirement files can be accessed by autocompletion.
     
     .PARAMETER Requirement
 
     .EXAMPLE
-        PS C:\>Get-Requirement -Name venv
-        PS C:\>Get-RequirementContent -Requirement \venv-requirements.txt
-        Click==7.0
+        PS C:\>Edit-Requirement -Name venv
         PS C:\>
 
         -----------
         Description
-        Get the content of a existing requirement file in predefined requirements folder. All available virtual environments can be accessed by autocompletion.
+        Open the requirement file of an existing virtual environment in predefined requirements folder. All available requirement files can be accessed by autocompletion.
 
     .INPUTS
         System.String. Relative path of existing requirement file
 
     .OUTPUTS
-        System.String. Content of a existing requirement file
+        System.String. Content of an existing requirement file
     #>
 
     [CmdletBinding(PositionalBinding)]
@@ -47,8 +45,10 @@ function Get-RequirementContent {
         # get existing requirement file 
         if ($Requirement) {   
             $requirement_file = Join-Path -Path $PSVirtualEnv.RequireDir -ChildPath $Requirement
-        }
 
-        return Get-Content $requirement_file
+        $editor_args = $($PSVirtualEnv.EditorArgs + " " + $requirement_file)
+        # open existing requirement file 
+        Start-Process -FilePath $PSVirtualEnv.Editor -NoNewWindow -ArgumentList $editor_args
+        }
     }
 }

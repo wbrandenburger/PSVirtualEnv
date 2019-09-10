@@ -2,92 +2,72 @@
 #   PSVirtualEnv_Config.ps1 -------------------------------------------------
 # ===========================================================================
 
-if (-not $(Test-Path $Module.Config)) {
-    $default_config_string | Out-File -FilePath $Module.Config -Force
-}
-
-@(
-    @{  # manifest 
-        Name="Manifest"
-        Value=Join-Path -Path $Module.Dir -ChildPath "$($Module.Name).psd1"
-    }
-    @{  # directory of functions
-        Name="ClassDir"
-        Value=Join-Path -Path $Module.Dir -ChildPath "Classes"
-    }    
-    @{  # directory of functions
-        Name="FunctionsDir"
-        Value=Join-Path -Path $Module.Dir -ChildPath "Functions"
-    }
-    @{  # directory of functions
-        Name="TestsDir"
-        Value=Join-Path -Path $Module.Dir -ChildPath "Tests"
-    }
-    @{  # configuration file and content of configuration file
-        Name="ConfigContent" 
-        Value=Get-IniContent -FilePath $Module.Config
-    }
-) | ForEach-Object {
-    $Module | Add-Member -MemberType NoteProperty -Name $_.Name -Value $_.Value
-}
-
 #   configuration -----------------------------------------------------------
 # ---------------------------------------------------------------------------
 
 # set the default path where the virtual environments are located and their subdirectories defined in the configuration file
 $PSVirtualEnv = New-Object -TypeName PSObject -Property @{
     Name = $Module.Name
+    DefaultWorkDir = Get-ProjectDir -Name $Module.Name
 }
 
-$work_dir = Get-ProjectDir -Name $Module.Name
-@( 
-    @{
-        Name="venv-work-dir"; Section="user"; Field="WorkDir"; 
-        Default=$work_dir
-    }
-    @{
-        Name="venv-require-dir"; Section="user"; Field="RequireDir"
-        Default=$(Join-Path -Path $work_dir -ChildPath ".require")
-    }
-    @{
-        Name="venv-local-dir"; Section="user"; Field="LocalDir"
-        Default=$(Join-Path -Path $work_dir -ChildPath ".temp")
-    }
-) | ForEach-Object {
-    $content = $Module.ConfigContent[$_.Section][$_.Name]
-    if (-not $content -or -not $(Test-Path $content)) {
-        
-        $path = $content
-        if (-not $content) {
-            $path = $_.Default
-            $Module.ConfigContent | Set-IniContent -Sections $_.Section -NameValuePairs @{ $_.Name = $_.Default }
-        }
-
-        Write-FormattedWarning -Message "The path $($content) defined in field $($_.Name) of the module configuration file can not be found. Default directory $($path) will be created." -Module $Module.Name
-
-        If (-not $(Test-Path $path)) {
-            New-Item -Path $path -ItemType Directory
-        }
-    }
-
-    $PSVirtualEnv  | Add-Member -MemberType NoteProperty -Name $_.Field -Value  $content 
+New-ProjectConfigDirs -Name $Module.Name.ToLower()
+if (-not $(Test-Path $Module.Config)) {
+    Get-Content -Path (Join-Path -Path $Module.Dir -ChildPath "default_config.ini") | Out-File -FilePath $Module.Config -Force
 }
+$config_content = Get-IniContent -FilePath $Module.Config -IgnoreComments
+$config_content = Format-IniContent -Content $config_content -Substitution $PSVirtualEnv 
 
-$Module.ConfigContent | Out-IniFile -FilePath $Module.Config -Force
+# read module settings from module format file
+$config_format = Get-Content -Path $Module.ConfigFormat | ConvertFrom-Json
 
-# set the default python distribution, virtual environment executable and other settings defined in the configuration file
-@( 
-    @{Name="python"; Section="user"; Field="Python"; Default=""}
-    @{Name="venv"; Section="psvirtualenv"; Field="VirtualEnv"; Default="Scripts\python.exe"}
-    @{Name="venv-activation"; Section="psvirtualenv"; Field="Activation"; Default="Scripts\activate.ps1"}
-    @{Name="venv-deactivation"; Section="psvirtualenv"; Field="Deactivation"; Default="deactivate"}
+Format-JsonContent -Content $config_format -Substitution $PSVirtualEnv | ForEach-Object{
     
-) | ForEach-Object {
-    $content = $Module.ConfigContent[$_.Section][$_.Name]
-    
-    if (-not $content) {
-        Write-FormattedWarning -Message "Field $($_.Field) is not defined in configuration file and should be set for full module functionality." -Module $Module.Name
+    # write-host $_.Field $_.Default $config_content[$_.Section][$_.Field]
+
+    $break = $False
+    if ($config_content.Keys -match $_.Section){
+        $sec_keys = $config_content[$_.Section].Keys
+        if ($sec_keys -match $_.Name){
+            
+            $value = $config_content[$_.Section][$_.Field]
+            if (-not $value) {
+                $value = $_.Default          
+            }
+
+            if ($_.Id -in $PSVirtualEnv.PSObject.Properties.Name) {
+                $PSVirtualEnv.($_.Id) = $value
+            } else{
+                $PSVirtualEnv | Add-Member -MemberType NoteProperty -Name $_.Id -Value $value
+            }
+            
+            # write-host $_.Id $value
+
+            if ($_.Required){
+                if ($_.Folder -and $value -and -not $(Test-Path $value)) {
+                    Write-FormattedWarning -Message "The path $($value) defined in field $($_.Field) of the module configuration file can not be found. Default directory $($value) will be created." -Module $Module.Name
+                    New-Item -Path $value -ItemType Directory
+                }
+                elseif (-not $_.Folder -and -not $value ) {
+                   Write-FormattedWarning -Message "Field $($_.Field) is not defined in configuration file and should be set for full module functionality." -Module $Module.Name
+                }
+            }
+        } else {
+            $break = $False
+        }
+    } else {
+        $break = $False
     }
 
-    $PSVirtualEnv  | Add-Member -MemberType NoteProperty -Name $_.Field -Value  $content 
+    if($break){
+        if ($_.Required){
+            Write-FormattedError -Message "Module could not be loaded due to configuration problems."
+
+            return
+        }
+    }
 }
+
+Write-FormattedMessage -Message "Module config file: $($Module.Config)" -Module $PSVirtualEnv.Name -Color DarkYellow
+
+Write-FormattedMessage -Message "Working directory: $($PSVirtualEnv.WorkDir)" -Module $PSVirtualEnv.Name -Color DarkYellow

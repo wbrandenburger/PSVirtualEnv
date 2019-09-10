@@ -69,18 +69,19 @@ python = "C:\Python\Python37\python.exe"
 
 ## Available Commands
 
-| Command                  | Alias     | Description                                                                                 |
-|--------------------------|-----------|---------------------------------------------------------------------------------------------|
-| `Set-VirtualEnvLocation` | `cd-venv` | Set the location of the predefined directory.                                               |
-| `Install-VirtualEnv`     | `is-venv` | Install or upgrade packages from command line or requirement files to virtual environments. |
-| `Find-Python`            |           | Find a path, where a python distribution might located.                                     |
-| `Get-Requirement`        |           | Create the requirement file of a specific virtual environment.                              |
-| `Get-RequirementContent` |           | Get the content of a existing requirement file.                                             |
-| `Get-VirtualEnv`         | `ls-venv` | List all existing virtual environments in predefined directory.                             |
-| `New-VirtualEnv`         | `mk-venv` | Creates a virtual environment.                                                              |
-| `Remove-VirtualEnv`      | `rm-venv` | Removes a specific virtual environment in the predefined directory.                         |
-| `Start-VirtualEnv`       | `sa-venv` | Starts a specific virtual environment in the predefined directory.                          |
-| `Stop-VirtualEnv`        | `sp-venv` | Stops current running virtual environment.                                                  |
+| Command                  | Alias         | Description                                                                                 |
+|--------------------------|---------------|---------------------------------------------------------------------------------------------|
+| `Set-VirtualEnvLocation` | `cd-venv`     | Set the location of the predefined directory.                                               |
+| `Install-VirtualEnv`     | `is-venv`     | Install or upgrade packages from command line or requirement files to virtual environments. |
+| `Find-Python`            |               | Find a path, where a python distribution might located.                                     |
+| `New-Requirement`        | `mk-venv-req` | Create the requirement file of a specific virtual environment.                              |
+| `Get-Requirement`        | `ls-venv-req` | Get the content of an existing requirement file.                                             |
+| `Edit-Requirement`       | `ed-venv-req` | Edit the content of an existing requirement file.                                            |
+| `Get-VirtualEnv`         | `ls-venv`     | List all existing virtual environments in predefined directory.                             |
+| `New-VirtualEnv`         | `mk-venv`     | Creates a virtual environment.                                                              |
+| `Remove-VirtualEnv`      | `rm-venv`     | Removes a specific virtual environment in the predefined directory.                         |
+| `Start-VirtualEnv`       | `sa-venv`     | Starts a specific virtual environment in the predefined directory.                          |
+| `Stop-VirtualEnv`        | `sp-venv`     | Stops current running virtual environment.                                                  |
 
 ## Examples
 
