@@ -114,11 +114,11 @@ AliasesToExport = @(
     "cd-venv"
     "ed-venv-req",
     "is-venv"
-    "rm-venv",
-    "ls-venv-req"
     "ls-venv",
+    "ls-venv-req"
     "mk-venv",
     "mk-venv-req"
+    "rm-venv",    
     "sa-venv",
     "sp-venv"
 )
