@@ -54,7 +54,7 @@ The following PowerShell module will be automatically installed:
 
 ## Settings
 
-PSVirtualEnv creates automatically a configuration file in folder `%USERPRFOFILE%\.config\psvirtualenv`. Additionally, PSVirtualEnv search for configuration directories in environment variable `%XDG_CONFIG_HOME%` and `%XDG_CONFIG_DIRS%`. It is recommended to use across several projects a predefined configuration folder.
+PSVirtualEnv creates automatically a configuration file in folder `%USERPRFOFILE%\.config\psvirtualenv`. Moreover, PSVirtualEnv searches for configuration directories in environment variable `%XDG_CONFIG_HOME%` and `%XDG_CONFIG_DIRS%`. It is recommended to use a predefined configuration folder  across several projects.
 
 In configuration file the working directory of a python distribution and an user defined folder for virtual environments can be specified. The default folder for the virtual environments is `%USERPRFOFILE%\PSVirtualEnv`.
 
@@ -80,7 +80,7 @@ default-editor = code
 editor-arguments = --new-window
 ```
 
-An extension of module `PSIni` enables the exploitation of a reference fields `reference-field` inside a section, which can be applied via `$(reference-field)s`. This pattern will be replaced with the value defined in `reference-field`. If the defined reference field exists not in section, system's environment variables will be evaluated and, if any, used for replacing the pattern.
+An module specific extension of `PSIni` enables the exploitation of a reference fields `reference-field` inside a section, which can be applied via `%(reference-field)s`. This pattern will be replaced with the value defined in `reference-field`. If the defined reference field exists not in section, system's environment variables will be evaluated and, if any, used for replacing the pattern.
 
 The other settings in section `psvirtualenv` are not relevant to standard user.
 
@@ -102,7 +102,7 @@ The other settings in section `psvirtualenv` are not relevant to standard user.
 | `Remove-VirtualEnv`      | `rm-venv`     | Remove a specific virtual environment in folder `venv-work-dir`. .                          |
 | `Start-VirtualEnv`       | `sa-venv`     | Start a specific virtual environment in folder `venv-work-dir`.                             |
 | `Stop-VirtualEnv`        | `sp-venv`     | Stop current running virtual environment.                                                   |
-| `Write-VirtualEnvStatus` | `sp-venv`     | Function to use in extensions for prompt, writing status of current virtual environment.    |
+| `Write-VirtualEnvStatus` |               | Function to use in extensions for prompt, writing status of current virtual environment.    |
 
 ## Examples
 
