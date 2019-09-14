@@ -20,7 +20,7 @@
 
 ## General
 
-The module PSVirtualEnv is in an experimental status and will be developed to achieve a stable version as fast as possible.
+The module PSVirtualEnv is in an experimental status and will be developed to achieve a stable version as fast as possible. The documentation of several functions has to be customized, due to the last changes.
 
 ## Description
 
@@ -41,7 +41,7 @@ Install-Module PSVirtualEnv
 To activate PSVirtualEnv and its autocompletion there is the need to dotsource in shell or in the local profile the output of `ActivateVirtualEnvAutocompletion`:
 
 ```powershell
-. (ActivateVirtualEnvAutocompletion) # or in short . (activate-env)
+. (ActivateVirtualEnvAutocompletion) # or in short '. (activate-venv)'
 ```
 
 ## Dependencies
@@ -106,12 +106,27 @@ The other settings in section `psvirtualenv` are not relevant to standard user.
 
 ## Examples
 
+Get an overview of all functions and aliases with powershell built-in command `Get-Command`:
+
+```log
+Get-Command -Module PSVirtualEnv
+
+CommandType     Name                                               Version    Source
+-----------     ----                                               -------    ------
+Alias           activate-venv                                      0.5.0      PSVirtualEnv
+...
+Function        ActivateVirtualEnvAutocompletion                   0.5.0      PSVirtualEnv
+...
+```
+
+Get detailed information about module function with powershell built-in command `Get-Help`.
+
 ### Creating virtual environments
 
 Creates a virtual environment in the predefined directory and install via a requirements file project related packages. All available requirement files can be accessed by autocompletion.
 
 ```log
-  PS C:\> New-VirtualEnv -Name venv -Requirement \requirements.txt
+  PS C:\> New-VirtualEnv -Name venv -Requirement \requirements.txt # or in short 'mk-venv venv \requirements.txt'
 
   [PSVirtualEnv]::PROCESS: Creating new virtual environment 'venv'.
   New python executable in C:\Users\User\PSVirtualEnv\venv\Scripts\python.exe
@@ -138,11 +153,11 @@ Creates a virtual environment in the predefined directory and install via a requ
 Starts and stops a specific virtual environment in the predefined directory. All available virtual environments can be accessed by autocompletion.
 
 ```log
-  PS C:\> Start-VirtualEnv -Name venv
+  PS C:\> Start-VirtualEnv -Name venv # or in short 'sa-venv venv'
 
   [PSVirtualEnv]::SUCCESS: Virtual enviroment 'venv' was started.
 
-  [venv] PS C:\>Stop-VirtualEnv
+  [venv] PS C:\>Stop-VirtualEnv # or in short 'sp-venv venv'
 
   [PSVirtualEnv]::SUCCESS: Virtual enviroment 'venv' was stopped.
 
@@ -154,7 +169,7 @@ Starts and stops a specific virtual environment in the predefined directory. All
 Return information about all independent packages installed in the specified virtual environment and shows potentially newer versions. All available virtual environments can be accessed by autocompletion.
 
 ```log
-  PS C:\> Get-VirtualEnv -Name venv
+  PS C:\> Get-VirtualEnv -Name venv # or in short ls-venv venv
 
   Name       Version Latest
   ----       ------- ------
