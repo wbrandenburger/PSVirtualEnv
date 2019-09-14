@@ -4,6 +4,7 @@
 
 - [PSVirtualEnv](#psvirtualenv)
   - [Table of Contents](#table-of-contents)
+  - [General](#general)
   - [Description](#description)
     - [Origin](#origin)
   - [Installation](#installation)
@@ -16,6 +17,10 @@
     - [Manage virtual environments](#manage-virtual-environments)
   - [Authors/Contributors](#authorscontributors)
     - [Author](#author)
+
+## General
+
+The module PSVirtualEnv is in an experimental status and will be developed to achieve a stable version as fast as possible.
 
 ## Description
 
@@ -33,13 +38,11 @@ PSVirtualEnv is published to the Powershell Gallery and can be installed as foll
 Install-Module PSVirtualEnv
 ```
 
-To activate PSVirtualEnv and its autocompletion there is the need to dotsource in shell the output of `ActivateVirtualEnvAutocompletion`:
+To activate PSVirtualEnv and its autocompletion there is the need to dotsource in shell or in the local profile the output of `ActivateVirtualEnvAutocompletion`:
 
 ```powershell
-. (activate-venv)
+. (ActivateVirtualEnvAutocompletion) # or in short . (activate-env)
 ```
-
-In future versions this behavior will be removed. 
 
 ## Dependencies
 
@@ -78,6 +81,8 @@ editor-arguments = --new-window
 ```
 
 An extension of module `PSIni` enables the exploitation of a reference fields `reference-field` inside a section, which can be applied via `$(reference-field)s`. This pattern will be replaced with the value defined in `reference-field`. If the defined reference field exists not in section, system's environment variables will be evaluated and, if any, used for replacing the pattern.
+
+The other settings in section `psvirtualenv` are not relevant to standard user.
 
 ## Available Commands
 
