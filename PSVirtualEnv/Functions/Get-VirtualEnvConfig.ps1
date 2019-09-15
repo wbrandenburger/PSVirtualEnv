@@ -8,18 +8,47 @@ function Get-VirtualEnvConfig {
 
     <#
     .SYNOPSIS
+        Get the content of module's configuration file.
 
     .DESCRIPTION
+        Displays the content of module's configuration file in powershell.
+    
+    .PARAMETER Requirement
+
+    .EXAMPLE
+        PS C:\> Get-VirtualEnvConfig 
+
+        Name                           Value
+        ----                           -----
+        venv-work-dir                  A:\VirtualEnv
+        venv-local-dir                 A:\VirtualEnv\.temp
+        venv-require-dir               A:\VirtualEnv\.require
+        python                         PYTHONHOME
+        default-editor                 code
+        editor-arguments               --new-window --disable-gpu
+        venv                           Scripts\python.exe
+        venv-activation                Scripts\activate.ps1
+        venv-deactivation              deactivate
+
+        -----------
+        Description
+        Displays the content of module's configuration file in powershell.
+
+    .INPUTS
+        None.
 
     .OUTPUTS
-
+        System.Object. Content of module's configuration file.
     #>
 
     [CmdletBinding(PositionalBinding)]
 
-    [OutputType([System.String])]
+    [OutputType([System.Object])]
 
-    Param()
+    Param(
+        [Parameter(HelpMessage="Return information not as readable table with additional details.")]
+        [Switch] $Unformatted
+    )
 
     Process {
 
@@ -31,8 +60,10 @@ function Get-VirtualEnvConfig {
             $result += $config_content[$_] 
         }
 
+        if ($Unformattes) {
+            return $result
+        }
         return $result | Format-Table
-
     }
 
 }

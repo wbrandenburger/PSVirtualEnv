@@ -83,7 +83,6 @@ NestedModules = @("PSModuleUtils\PSModuleUtils.psm1")
 FunctionsToExport = @(
     "ActivateVirtualEnvAutocompletion"
     "Get-VirtualEnv",
-    "Get-VirtualEnvConfig",
     "Get-ActiveVirtualEnv",
     "Install-VirtualEnv",
     "New-VirtualEnv",
@@ -99,7 +98,9 @@ FunctionsToExport = @(
     "Find-Python",
     "Get-Requirement",
     "Edit-Requirement",
-    "New-Requirement"
+    "New-Requirement",
+    "Get-VirtualEnvConfig",
+    "Edit-VirtualEnvConfig"
 )
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
