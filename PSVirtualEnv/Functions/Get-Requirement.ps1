@@ -38,8 +38,8 @@ function Get-Requirement {
 
     Param(
         [ValidateSet([ValidateRequirements])]
-        [Parameter(Position=1, ValueFromPipeline, HelpMessage="Relative  path to a requirements file, or name of a virtual environment.")]
-        [System.String] $Requirement=""
+        [Parameter(Position=1, ValueFromPipeline, HelpMessage="Relative path to a requirements file, or name of a virtual environment.")]
+        [System.String] $Requirement
     )
 
     Process {
