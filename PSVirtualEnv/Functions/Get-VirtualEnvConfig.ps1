@@ -60,7 +60,7 @@ function Get-VirtualEnvConfig {
             $result += $config_content[$_] 
         }
 
-        if ($Unformattes) {
+        if ($Unformatted) {
             return $result
         }
         return $result | Format-Table
