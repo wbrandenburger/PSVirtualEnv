@@ -14,7 +14,7 @@ function Edit-VirtualEnvConfig {
         Edit the content of module's configuration file in defined editor.
 
     .EXAMPLE
-        PS C:\> Get-VirtualEnvConfig 
+        PS C:\> Edit-VirtualEnvConfig 
 
         -----------
         Description
