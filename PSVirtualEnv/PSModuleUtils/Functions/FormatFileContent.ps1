@@ -121,45 +121,110 @@ function Format-FileContent  {
    
     Process {
 
-        # define regex string for the search of pattern '%(x)s'
-        $pattern = "\%\(([a-z-_]+)\)s"
-        $matches = @()
-
         # loop over all fields in a specific config section
-        $keys_subst = ($Substitution  | Get-Member | Where-Object {$_.MemberType -eq "NoteProperty" -or $_.MemberType -eq "Property"} | Select-Object -ExpandProperty Name) -split " "
+        $default_keys = ($Substitution  | Get-Member | Where-Object {$_.MemberType -eq "NoteProperty" -or $_.MemberType -eq "Property"} | Select-Object -ExpandProperty Name) -split " "
+        $default = $False 
+        if ($default_keys) {
+            $default = $True
+        }
+
         $keys_sec = $Content.Keys -split " "
+
         for($j=0; $j -lt $keys_sec.Count; $j++ ) {
-            $field = $keys_sec[$j]
-            $field_content = $Content.($field)
-            
-            # get multiple matches of defined pattern in a field
-            $match = [Regex]::Matches($field_content, $pattern, "IgnoreCase").Groups | Where-Object { $_.Name -eq 1} | Select-Object -ExpandProperty Value
-
-            if ($match){
-                # if there are matches each result will be stored and replaced with referenced field or corresponding environment variable
-                $match | ForEach-Object{
-                    $value = $Null
-                    
-                    # search for reference field and corresponding environment variable
-                    if ($keys_sec -contains $_){
-                        $value = $Content.($_)
-                    }
-                    elseif ($keys_subst -contains $_){
-                        $value = $Substitution.($_)
-                    } else {
-                        $value = [System.Environment]::GetEnvironmentVariable($_)
-                    }
-
-                    # # store section, field and value of reference field
-                    # $matches += [PSCustomObject] @{Section = $sec; Field = $_; Value = $value }
-
-                    # replace the pattern in given field and store it in input content object
-                    if ($value){
-                        $Content.($field) = [Regex]::Replace($field_content, $pattern, $value, "IgnoreCase")
-                    }
-                }
-            }
+            # if there are matches each result will be stored and replaced with referenced field or corresponding environment variable
+            $Content.($keys_sec[$j]) = Get-FormattedString -String $Content.($keys_sec[$j]) -Keys $keys_sec -Object $Content -Default:$default -DefaultKeys $default_keys -DefaultObject $Substitution
         }
         return $Content
     }
+}
+
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
+function Get-FormattedString  {
+    <#
+
+    .DESCRIPTION
+
+    .PARAMETER String
+
+    .OUTPUTS
+        System.Object. Object which contains all values inside ini pattern.
+    #>
+
+    [CmdletBinding(PositionalBinding)]
+    
+    [OutputType([System.Object])]
+    
+    Param (
+
+        [Parameter(HelpMessage="Search string.")]
+        [System.String] $String,
+
+        [Parameter(HelpMessage="Keys for substitution.")]
+        [System.Object] $Keys,
+
+        [Parameter(HelpMessage="Object with elements for substitution.")]
+        [System.Object] $Object,
+
+        [Parameter(HelpMessage="Use default object for substitution.")]
+        [Switch] $Default,
+
+        [Parameter(HelpMessage="Default keys for substitution.")]
+        [System.Object] $DefaultKeys,
+
+        [Parameter(HelpMessage=
+            "Default object with elements for substitution.")]
+        [System.Object] $DefaultObject
+
+    )
+
+    Process{ 
+        $string_backup = $String
+        $pattern = "\%\(([a-z-_]+)\)s"
+        
+        # if there are matches each result will be stored and replaced with referenced field or corresponding environment variable
+        Get-RegexMatchResultList -String $String -Pattern $pattern | ForEach-Object {
+            # search for reference field and corresponding environment variable
+            $value = $Null
+            if ($Keys -contains $_){
+                $value = $Object.($_)
+            }
+            elseif ($Default) {
+                if ($DefaultKeys -contains $_){
+                    $value = $DefaultObject.($_)
+                }
+            } 
+            
+            if (-not $value) {
+                $value = [System.Environment]::GetEnvironmentVariable($_)
+            }
+            
+            if ($value) {
+                # replace the pattern in given field as well as return formatted string
+                $String = [Regex]::Replace( $String, "\%\(($_)\)s", $value, "IgnoreCase")
+            }
+        }
+        
+        # if the search pattern was found and string was modified, perform a recursive proceeding, else return the string
+        if ($string_backup -eq $String){
+            return $String
+        } else {
+            return Get-FormattedString -String $String -Keys $Keys -Object $Object -Default:$Default -DefaultKeys $DefaultKeys -DefaultObject $DefaultObject
+        }
+    }
+}
+
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
+function Get-RegexMatchResultList {
+
+    Param(
+        [Parameter(HelpMessage="Search string.")]
+        [System.String] $String,
+
+        [Parameter(HelpMessage="Search patterm.")]
+        [System.String] $Pattern
+    )
+
+    return [Regex]::Matches($String, $Pattern, "IgnoreCase").Groups | Where-Object { $_.Name -eq 1} | Select-Object -ExpandProperty Value
 }
