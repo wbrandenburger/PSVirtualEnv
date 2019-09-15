@@ -12,8 +12,6 @@ function Edit-VirtualEnvConfig {
 
     .DESCRIPTION
         Edit the content of module's configuration file in defined editor.
-    
-    .PARAMETER Requirement
 
     .EXAMPLE
         PS C:\> Get-VirtualEnvConfig 

@@ -13,7 +13,7 @@ function Get-VirtualEnvConfig {
     .DESCRIPTION
         Displays the content of module's configuration file in powershell.
     
-    .PARAMETER Requirement
+    .PARAMETER Unformatted
 
     .EXAMPLE
         PS C:\> Get-VirtualEnvConfig 
