@@ -91,10 +91,6 @@ The other settings in section `psvirtualenv` are not relevant to standard user.
 | `Set-VirtualEnvLocation` | `cd-venv`     | Set the location of a virtual environment in folder `venv-work-dir`.                        |
 | `Install-VirtualEnv`     | `is-venv`     | Install or upgrade packages from command line or requirement files to virtual environments. |
 | `Find-Python`            |               | Find a path, where a python distribution might located.                                     |
-| `New-Requirement`        | `mk-venv-req` | Create the requirement file of a specific virtual environment in folder `require-work-dir`. |
-| `Get-Requirement`        | `ls-venv-req` | Get the content of an existing requirement file in folder `require-work-dir`.               |
-| `Get-VirtualEnvConfig`   |               | Get the content of current module config file.                                              |
-| `Edit-Requirement`       | `ed-venv-req` | Edit the content of an existing requirement file in folder `require-work-dir`.              |
 | `Get-VirtualEnv`         | `ls-venv`     | List all existing virtual environments in folder `venv-work-dir`.                           |
 | `Get-Requirement`        | `ls-venv-req` | Get the content of an existing requirement file in folder `require-work-dir`.               |
 | `New-VirtualEnv`         | `mk-venv`     | Create a virtual environment in folder `venv-work-dir`. .                                   |
@@ -103,6 +99,11 @@ The other settings in section `psvirtualenv` are not relevant to standard user.
 | `Start-VirtualEnv`       | `sa-venv`     | Start a specific virtual environment in folder `venv-work-dir`.                             |
 | `Stop-VirtualEnv`        | `sp-venv`     | Stop current running virtual environment.                                                   |
 | `Write-VirtualEnvStatus` |               | Function to use in extensions for prompt, writing status of current virtual environment.    |
+| `New-Requirement`        | `mk-venv-req` | Create the requirement file of a specific virtual environment in folder `require-work-dir`. |
+| `Get-Requirement`        | `ls-venv-req` | Get the content of an existing requirement file in folder `require-work-dir`.               |
+| `Edit-Requirement`       | `ed-venv-req` | Edit the content of an existing requirement file in folder `require-work-dir`.              |
+| `Get-VirtualEnvConfig`   |               | Get the content of current module config file.                                              |
+| `Edit-VirtualEnvConfig`  |               | Edit the content of current module config file.                                             |
 
 ## Examples
 

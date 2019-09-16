@@ -11,23 +11,22 @@ function Edit-Requirement {
         Edit the content of an existing requirement file.
 
     .DESCRIPTION
-        Edit the content of an existing requirement file in predefined requirements folder. All available requirement files can be accessed by autocompletion.
+        Edit the content of an existing requirement file iin defined editor. All available requirement files can be accessed by autocompletion.
     
     .PARAMETER Requirement
 
     .EXAMPLE
-        PS C:\>Edit-Requirement -Name venv
-        PS C:\>
+        PS C:\> Edit-Requirement -Name venv
 
         -----------
         Description
-        Open the requirement file of an existing virtual environment in predefined requirements folder. All available requirement files can be accessed by autocompletion.
+        Open the requirement file of an existing virtual environment in defined editor. All available requirement files can be accessed by autocompletion.
 
     .INPUTS
         System.String. Relative path of existing requirement file
 
     .OUTPUTS
-        System.String. Content of an existing requirement file
+        None.
     #>
 
     [CmdletBinding(PositionalBinding)]
@@ -36,8 +35,8 @@ function Edit-Requirement {
 
     Param(
         [ValidateSet([ValidateRequirements])]
-        [Parameter(Position=1, ValueFromPipeline, HelpMessage="Relative  path to a requirements file, or name of a virtual environment.")]
-        [System.String] $Requirement=""
+        [Parameter(Position=1, Mandatory, ValueFromPipeline, HelpMessage="Relative  path to a requirements file, or name of a virtual environment.")]
+        [System.String] $Requirement
     )
 
     Process {
@@ -48,7 +47,8 @@ function Edit-Requirement {
 
         $editor_args = $($PSVirtualEnv.EditorArgs + " " + $requirement_file)
         # open existing requirement file 
-        Start-Process -FilePath $PSVirtualEnv.Editor -NoNewWindow -ArgumentList $editor_args
+        Start-Process -Path $PSVirtualEnv.Editor -NoNewWindow -Args $editor_args
+        
         }
     }
 }

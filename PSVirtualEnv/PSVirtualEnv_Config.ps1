@@ -8,13 +8,15 @@
 # set the default path where the virtual environments are located and their subdirectories defined in the configuration file
 $PSVirtualEnv = New-Object -TypeName PSObject -Property @{
     Name = $Module.Name
-    DefaultWorkDir = Get-ProjectDir -Name $Module.Name
+    WorkDir = Get-ProjectDir -Name $Module.Name
 }
 
 New-ProjectConfigDirs -Name $Module.Name.ToLower()
 if (-not $(Test-Path $Module.Config)) {
     Get-Content -Path (Join-Path -Path $Module.Dir -ChildPath "default_config.ini") | Out-File -FilePath $Module.Config -Force
 }
+
+# read module configuration file and replace possible default pattern
 $config_content = Get-IniContent -FilePath $Module.Config -IgnoreComments
 $config_content = Format-IniContent -Content $config_content -Substitution $PSVirtualEnv 
 

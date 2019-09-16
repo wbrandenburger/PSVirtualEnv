@@ -13,7 +13,7 @@
 RootModule = "PSVirtualEnv.psm1"
 
 # Version number of this module.
-ModuleVersion = "0.5.0"
+ModuleVersion = "0.5.2"
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -56,12 +56,7 @@ RequiredModules = @(
     @{
         ModuleName = "PSIni"; 
         ModuleVersion = "3.1.2"; 
-    }
-    # @{
-    #     ModuleName = "PSModuleUtils"; 
-    #     ModuleVersion = "1.0.0"; 
-    #     GUID = "08a1d5c7-0d9c-4cd2-b8e0-90ee1318a1a7";
-    # }    
+    } 
 )
 
 # Assemblies that must be loaded prior to importing this module
@@ -83,7 +78,6 @@ NestedModules = @("PSModuleUtils\PSModuleUtils.psm1")
 FunctionsToExport = @(
     "ActivateVirtualEnvAutocompletion"
     "Get-VirtualEnv",
-    "Get-VirtualEnvConfig",
     "Get-ActiveVirtualEnv",
     "Install-VirtualEnv",
     "New-VirtualEnv",
@@ -99,7 +93,9 @@ FunctionsToExport = @(
     "Find-Python",
     "Get-Requirement",
     "Edit-Requirement",
-    "New-Requirement"
+    "New-Requirement",
+    "Get-VirtualEnvConfig",
+    "Edit-VirtualEnvConfig"
 )
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
