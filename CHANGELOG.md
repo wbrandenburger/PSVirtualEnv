@@ -1,6 +1,6 @@
 # Change Log
 
-## [0.5.2](https://github.com/wbrandenburger/PSVirtualEnv/tree/0.5.2) (2019-09-15)
+## [0.5.2](https://github.com/wbrandenburger/PSVirtualEnv/tree/0.5.2) (2019-09-16)
 
 **Fixed bugs:**
 
