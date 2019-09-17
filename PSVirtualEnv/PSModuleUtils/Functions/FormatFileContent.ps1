@@ -122,7 +122,9 @@ function Format-FileContent  {
     Process {
 
         # loop over all fields in a specific config section
-        $default_keys = ($Substitution  | Get-Member | Where-Object {$_.MemberType -eq "NoteProperty" -or $_.MemberType -eq "Property"} | Select-Object -ExpandProperty Name) -split " "
+        if ($Substitution){
+            $default_keys = ($Substitution  | Get-Member | Where-Object {$_.MemberType -eq "NoteProperty" -or $_.MemberType -eq "Property"} | Select-Object -ExpandProperty Name) -split " "
+        }
         $default = $False 
         if ($default_keys) {
             $default = $True

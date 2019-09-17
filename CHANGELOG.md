@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.5.3](https://github.com/wbrandenburger/PSVirtualEnv/tree/0.5.3) (2019-09-17)
+
+**Fixed bugs:**
+
+- Fixed problems when installing automatically virtualenv as well as troubles with `Get-TemporaryFile`, when installing packages.
+
 ## [0.5.2](https://github.com/wbrandenburger/PSVirtualEnv/tree/0.5.2) (2019-09-16)
 
 **Fixed bugs:**

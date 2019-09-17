@@ -70,6 +70,6 @@ Format-JsonContent -Content $config_format -Substitution $PSVirtualEnv | ForEach
     }
 }
 
-Write-FormattedMessage -Message "Module config file: $($Module.Config)" -Module $PSVirtualEnv.Name -Color DarkYellow
+Write-FormattedMessage -Message "Module config file: $($Module.Config)" -Module $PSVirtualEnv.Name -Color "White"
 
-Write-FormattedMessage -Message "Working directory: $($PSVirtualEnv.WorkDir)" -Module $PSVirtualEnv.Name -Color DarkYellow
+Write-FormattedMessage -Message "Working directory: $($PSVirtualEnv.WorkDir)" -Module $PSVirtualEnv.Name -Color "White"

@@ -34,7 +34,7 @@ function Get-TemporaryFile {
         
         $temp_folder = [System.IO.Path]::GetTempPath()
         
-        $temp_file_path = [System.IO.Path]::GetTempFileName()
+        $temp_file_path = [Guid]::NewGuid().ToString() + ".tmp"
         $temp_file_name = [System.IO.Path]::GetFileNameWithoutExtension($temp_file_path)
         if ($Directory) {
             return Join-Path -Path $temp_folder -ChildPath $temp_file_name
@@ -69,7 +69,7 @@ function New-TemporaryDirectory {
     $path = Get-TemporaryFile -Directory
 
     #if/while path already exists, generate a new path
-    While(Test-Path $path) {
+    While(Test-Path -Path $path) {
         $path = Get-TemporaryFile -Directory
     }
 
@@ -103,7 +103,7 @@ function New-TemporaryFile {
     $path = Get-TemporaryFile -Extension $Extension
 
     #if/while path already exists, generate a new path
-    While(Test-Path $path) {
+    While(Test-Path -Path $path) {
         $path = Get-TemporaryFile -Extension $Extension
     }
 

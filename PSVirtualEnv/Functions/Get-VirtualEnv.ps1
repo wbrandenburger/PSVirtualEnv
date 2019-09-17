@@ -80,7 +80,7 @@ function Get-VirtualEnv {
 
     [CmdletBinding(PositionalBinding)]
 
-    [OutputType([PSCustomObject])]
+    [OutputType([System.Object])]
 
     Param (
         [ValidateSet([ValidateVirtualEnv])]
@@ -103,11 +103,10 @@ function Get-VirtualEnv {
         if ($Name) {                     
             # check whether the specified virtual environment exists
             if (-not $(Test-VirtualEnv -Name $Name -Verbose)){
-                Get-VirtualEnv
-                return $Null
+                return Get-VirtualEnv
             }
 
-            return $(Get-VirtualEnvPackage -Name $Name -Full:$Full -Unformatted:$Unformatted)
+            return Get-VirtualEnvPackage -Name $Name -Full:$Full -Unformatted:$Unformatted
         }
 
         #  return information about all virtual environments in the predefined directory are gathered
@@ -136,7 +135,7 @@ function Get-VirtualEnvWorkDir {
 
     [CmdletBinding(PositionalBinding)]
 
-    [OutputType([PSCustomObject])]
+    [OutputType([System.Object])]
 
     Param ()
 
@@ -187,7 +186,7 @@ function Get-VirtualEnvPackage {
 
     [CmdletBinding(PositionalBinding)]
 
-    [OutputType([PSCustomObject])]
+    [OutputType([System.Object])]
 
     Param (
         [Parameter(Position=1, ValueFromPipeline, HelpMessage="Information about all packages installed in the specified virtual environment will be returned.")]
@@ -256,11 +255,17 @@ function Get-VirtualEnvPackage {
 
         Restore-VirtualEnv
 
-        if ($Unformatted){
+        if ($Unformatted -and -not $Full){
+            return $result
+        }
+        elseif ($Unformatted -and $Full) {
             return $result, $result_required
         }
-        else {
-            return  ($result | Format-Table -Property Name, Version), ($result_required | Format-Table -Property Name, Version, Required-by)
+        elseif (-not $Unformatted -and -not $Full) {
+            return ($result | Format-Table -Property Name, Version)
+        }
+        else{
+            return ($result | Format-Table -Property Name, Version), ($result_required | Format-Table -Property Name, Version, Required-by)
         }
     }
 }

@@ -15,7 +15,7 @@ function Find-Python {
 
     .PARAMETER Python
 
-    .PARAMETER FORCE
+    .PARAMETER NoVirtualEnv
 
     .EXAMPLE
         PS C:\> Find-Python
@@ -68,19 +68,18 @@ function Find-Python {
         [Parameter(Position=1, ValueFromPipeline, HelpMessage="Path to a folder or executable of a python distribution.")]
         [System.String] $Path,
 
-        [Parameter(HelpMessage="Forces installation of package 'virtualenv' if not found.")]
-        [Switch] $Force
+        [Parameter(HelpMessage="Avoid installation of package 'virtualenv' if it does not exist in python distribution")]
+        [Switch] $NoVirtualEnv
     )
 
     Process{
 
         # if the specified path does not contain an executable, try to detect the standard python distribution in system path
         $python_list = @(
-            "$Path",
-            "$($PSVirtualEnv.Python)",
-            [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.PythonHome, "user"),
-            [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.PythonHome, "machine")
-        )
+            $Path,
+            $($PSVirtualEnv.Python),
+            [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.PythonHome)
+        ) | Where-Object { $_ }
 
         for($i = 0; $i -lt $python_list.Length; $i++){
 
@@ -88,25 +87,17 @@ function Find-Python {
                 $python_list[$i] = Split-Path -Path $python_list[$i] -Parent
             } 
 
-            # check, whether the defined executbale does exist
+            $python_exe = $(Join-Path -Path $python_list[$i] -ChildPath "python.exe")
+            # check, whether the defined executable does exist
             if ($python_list[$i] -and $(Test-Path $python_list[$i])) {   
-                # $python_packages = Get-VirtualEnvPackage -Python $python_list[$i] -Unformatted
-                # if (-not ($python_packages | Where-Object {$_.Name -eq "virtualenv"})) {
-                #     if (-not $Force) {
-                #         Write-FormattedError -Message "The python distribution does not provide the required package 'virtualenvwrapper'. Please install the package manually." -Module $PSVirtualEnv.Name -Space -Silent:(!$VerbosePreference)
-                #             return
-                #     }
-                #     else {
-                #         . $python_list[$i] -m pip install virtualenv 2>&1> $Null
-                #         Write-FormattedWarning -Message "The python distribution does not provide the required package 'virtualenvwrapper'. Package will be installed automatically for full functionality." -Module $PSVirtualEnv.Name -Space -Silent:(!$VerbosePreference)
-                #     }
-                # }
-
+                if (-not $( $(. $python_exe -m pip list) -match "virtualenv") -and -not $NoVirtualEnv ){
+                    Write-FormattedWarning -Message "The python distribution does not provide the required package 'virtualenv'. Package will be installed automatically for full functionality." -Module $PSVirtualEnv.Name -Space -Silent:(!$VerbosePreference)
+                    . $python_exe -m pip install virtualenv 2>&1> $Null
+                }
                 return  $python_list[$i]
             }
         }
 
         Write-FormattedError -Message "The python distribution can not be located. Set an existing python distribution in configuration file or set the environment variable '$($PSVirtualEnv.PythonHome)'" -Module $PSVirtualEnv.Name -Space -Silent:(!$VerbosePreference)
-        return
     }
 }

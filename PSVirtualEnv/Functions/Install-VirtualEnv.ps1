@@ -144,7 +144,7 @@ function Install-VirtualEnv {
         # create a valide requirement file for a specified package
         if ($Package){
             $Upgrade = $False                
-            $requirement_file =  New-TemporaryFile
+            $requirement_file =  New-TemporaryFile -Extension ".txt"
             $package | Out-File -FilePath $requirement_file
         }
 
@@ -161,8 +161,6 @@ function Install-VirtualEnv {
             # install packages from the requirement file
             Install-VirtualEnvPackage -Name $Name -Requirement  $requirement_file -Uninstall:$Uninstall -Upgrade:$Upgrade
         }
-
-        return $Null
     }
 }
 
