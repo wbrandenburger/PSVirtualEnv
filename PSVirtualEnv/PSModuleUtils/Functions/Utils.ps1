@@ -32,19 +32,18 @@ function Get-TemporaryFile {
 
     Process{
         
-        $temp_folder = [System.IO.Path]::GetTempPath()
-        
-        $temp_file_path = [Guid]::NewGuid().ToString() + ".tmp"
-        $temp_file_name = [System.IO.Path]::GetFileNameWithoutExtension($temp_file_path)
+        $temp_path = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath ([Guid]::NewGuid()).ToString()
+        $temp_ext = ".tmp"
+
         if ($Directory) {
-            return Join-Path -Path $temp_folder -ChildPath $temp_file_name
+            return $temp_path
         }
         
         if ($Extension){
-            return Join-Path -Path $temp_folder -ChildPath "$($temp_file_name)$($Extension)"
+            return $temp_path + $Extension
+        } else {
+            return $temp_path + $temp_ext
         }
-
-        return $temp_file_path
    }
 }
 

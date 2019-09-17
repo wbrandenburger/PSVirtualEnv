@@ -13,7 +13,7 @@
 RootModule = "PSVirtualEnv.psm1"
 
 # Version number of this module.
-ModuleVersion = "0.5.3"
+ModuleVersion = "0.5.4"
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
