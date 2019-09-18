@@ -111,10 +111,10 @@ function Install-VirtualEnv {
         [Switch] $Upgrade,
 
         [Parameter(HelpMessage="If switch 'All' is true, all existing virtual environments will be changed.")]
-        [Switch] $All
+        [Switch] $All,
 
-        # [Parameter(HelpMessage="If switch 'Offline' is true, the virtual environment will be created without download packages.")]
-        # [Switch] $Offline
+        [Parameter(HelpMessage="If switch 'Offline' is true, a folder with local packages will be installed.")]
+        [Switch] $Offline
     )
     
     Process {
@@ -146,6 +146,10 @@ function Install-VirtualEnv {
             $Upgrade = $False                
             $requirement_file =  New-TemporaryFile -Extension ".txt"
             $package | Out-File -FilePath $requirement_file
+        }
+
+        if ($Offline) {
+            
         }
 
         $virtualEnv | ForEach-Object {
