@@ -98,9 +98,6 @@ function New-VirtualEnv {
         [ValidateSet([ValidateRequirements])]
         [Parameter(HelpMessage="Path to a requirement file, or name of a virtual environment.")]
         [System.String] $Requirement
-
-        # [Parameter(HelpMessage="If switch 'Offline' is true, the virtual environment will be created without download packages.")]
-        # [Switch] $Offline
     )
 
     Process{
@@ -124,11 +121,6 @@ function New-VirtualEnv {
         # generate the full path of the specified virtual environment, which shall be located in the predefined system path
         $virtualEnvDir = Get-VirtualEnvPath -Name $Name
    
-        # # set the offline flag, which will prevent the virtual environment to download packages to be installed
-        # if ($Offline) {
-        #     $offlineCreation = "--never-download"
-        # }
-
         # create the specified virtual environment
         Write-FormattedProcess "Creating new virtual environment '$Name'." -Module $PSVirtualEnv.Name
 
