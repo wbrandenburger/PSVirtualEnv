@@ -181,6 +181,8 @@ function Install-VirtualEnvPackage {
 
     .PARAMETER Upgrade
 
+    .P
+
     .OUTPUTS
         PSCustomObject. Properties of all packages in a python environment
     #>

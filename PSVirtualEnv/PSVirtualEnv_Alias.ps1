@@ -15,6 +15,7 @@
     @{ Name = "ls-venv-req";    Value = "Get-Requirement"}
     @{ Name = "mk-venv";        Value = "New-VirtualEnv"}
     @{ Name = "mk-venv-req";    Value = "New-Requirement"}
+    @{ Name = "mk-venv-local";  Value = "New-VirtualEnvLocal"}
     @{ Name = "rm-venv";        Value = "Remove-VirtualEnv"}
     @{ Name = "sa-venv";        Value = "Start-VirtualEnv"}
     @{ Name = "sp-venv";        Value = "Stop-VirtualEnv"}

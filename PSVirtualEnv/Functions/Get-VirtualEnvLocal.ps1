@@ -1,10 +1,10 @@
 # ===========================================================================
-#   Get-VirtualEnvLocal.ps1 -------------------------------------------------
+#   New-VirtualEnvLocal.ps1 -------------------------------------------------
 # ===========================================================================
 
 #   function ----------------------------------------------------------------
 # ---------------------------------------------------------------------------
-function Get-VirtualEnvLocal {
+function New-VirtualEnvLocal {
 
     <#
     .SYNOPSIS
@@ -34,7 +34,7 @@ function Get-VirtualEnvLocal {
         Download all packages of each existing virtual environment to a predefined download directory.       
 
     .INPUTS
-        System.String. Name of the virtual environment, which packages shall be downloaded.
+        System.String. Name of the virtual environment.
 
     .OUTPUTS
         None.
@@ -45,30 +45,34 @@ function Get-VirtualEnvLocal {
     [OutputType([Void])]
 
     Param (
-        # [ValidateSet([ValidateVirtualEnvOptional])]
-        [Parameter(HelpMessage="Name of the virtual environment, which packages shall be downloaded.")]
-        [System.String] $Name,
+        [ValidateSet([ValidateVirtualEnv])]
+        [Parameter(Position=1, ValueFromPipeline, HelpMessage="Name of the virtual environment to be changed.")]
+        [System.String] $Name="",
 
-        [Parameter(HelpMessage="If switch 'All' is true, the packages of all existing virtual environments will be generated.")]
+        [Parameter(HelpMessage="If switch 'All' is true, all existing virtual environments will be changed.")]
         [Switch] $All
     )
     
     Process {
-        # Get all existing virtual environments if 'Name' is not set
-        $virtualEnv = @{ Name = $Name }
-        if ($All -or -not $virtualEnv) {
-            $virtualEnv = Get-VirtualEnv
-        }
+        # check valide virtual environment 
+        if ($Name)  {
+            if (-not(Test-VirtualEnv -Name $Name)){
+                Write-FormattedError -Message "The virtual environment '$($Name)' does not exist." -Module $PSVirtualEnv.Name -Space
+                Get-VirtualEnv
 
-        $virtualEnvIdx = 1
-        $virtualEnv | ForEach-Object {
-            #  check if there exists a specific virtual environment
-            if (-not (Test-VirtualEnv -Name $_.Name -Verbose)) {
                 return
             }
 
-            # set environment variable
-            Set-VirtualEnv -Name $Name
+            $virtualEnv = @{ Name = $Name }
+        }
+
+        # get all existing virtual environments if 'Name' is not set
+        if ($All) {
+            $virtualEnv = Get-VirtualEnv
+        }
+
+        $virtualEnv | ForEach-Object {
+
 
             # get absolute path of requirement file and download directoy
             $requirementFile = Get-RequirementFile -Name $_.Name
@@ -86,25 +90,14 @@ function Get-VirtualEnvLocal {
             }
 
             # download the packages defined in the requirement file to the specified download directory
-            Write-FormattedProcess -Message "Download packages of virtual environment '$($_.Name)' to '$virtualEnvLocal' - $virtualEnvIdx of $($virtualEnv.length) packages " -Module $PSVirtualEnv.Name
-            . (Get-VirtualPython -Name $_.Name) -m pip download --requirement   $requirementFile --dest  $virtualEnvLocal 
-            Write-FormattedSuccess -Message "Packages of virtual environment '$($_.Name)' were downloaded to '$virtualEnvLocal'" -Module $PSVirtualEnv.Name
+            Write-FormattedProcess -Message "[DL] Virtual environment '$($_.Name)' to '$virtualEnvLocal'" -Module $PSVirtualEnv.Name
 
-            # set the pythonhome variable in scope process to the stored backup variable
+            # set environment variable
+            Set-VirtualEnv -Name $Name
+            pip download --requirement   $requirementFile --dest  $virtualEnvLocal
             Restore-VirtualEnv
 
-            # create the local requirement file of the specified virtual environment
-            $requirementFileLocal = Join-Path -Path $virtualEnvLocal -ChildPath ($_.Name + ".txt")
-            Write-FormattedProcess -Message "Write local requirement file for virtual environment '$($_.Name)' to '$requirementFileLocal' - $virtualEnvIdx of $($virtualEnv.length) packages" -Module $PSVirtualEnv.Name
-            Out-File -FilePath  $requirementFileLocal -InputObject (Get-ChildItem -Path $virtualEnvLocal | Select-Object -ExpandProperty Name )
-            Write-FormattedSuccess -Message "Local requirement file '$requirementFileLocal' for virtual environment '$($_.Name)' was created." -Module $PSVirtualEnv.Name
-            
-            # write content of local requirement file to host
-            Write-Host
-            Write-Host "Content of '$requirementFileLocal':" -ForeGroundColor DarkGray
-            Get-Content $requirementFileLocal 
-
-            $virtualEnvIdx += 1
+            Write-FormattedSuccess -Message "Packages of virtual environment '$($_.Name)' were downloaded to '$virtualEnvLocal'" -Module $PSVirtualEnv.Name
         }
     }
 }
