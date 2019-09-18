@@ -113,8 +113,9 @@ function Install-VirtualEnv {
         [Parameter(HelpMessage="If switch 'All' is true, all existing virtual environments will be changed.")]
         [Switch] $All,
 
-        [Parameter(HelpMessage="If switch 'Offline' is true, a folder with local packages will be installed.")]
-        [Switch] $Offline
+        [ValidateSet([ValidateVirtualEnvLocalDirectories])]
+        [Parameter(HelpMessage="Path to a folder with local packages.")]
+        [System.String] $Offline=""
     )
     
     Process {
@@ -149,7 +150,13 @@ function Install-VirtualEnv {
         }
 
         if ($Offline) {
-            
+            $requirement_file = Join-Path -Path $PSVirtualEnv.RequireDir -ChildPath $Requirement
+            write-host $requirement_file 
+            return
+            # $requirementFile = Join-Path -Path $virtualEnvLocal -ChildPath ($_.Name + ".txt")
+            # Write-FormattedProcess -Message "Write local requirement file for virtual environment '$($_.Name)' to '$requirementFileLocal' - $virtualEnvIdx of $($virtualEnv.length) packages" -Module $PSVirtualEnv.Name
+            # Out-File -FilePath  $requirementFileLocal -InputObject (Get-ChildItem -Path $virtualEnvLocal | Select-Object -ExpandProperty Name )
+            # Write-FormattedSuccess -Message "Local requirement file '$requirementFileLocal' for virtual environment '$($_.Name)' was created." -Module $PSVirtualEnv.Name           
         }
 
         $virtualEnv | ForEach-Object {

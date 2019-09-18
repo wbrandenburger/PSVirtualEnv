@@ -8,6 +8,14 @@ using namespace System.Management.Automation
 
 #   validation --------------------------------------------------------------
 # ---------------------------------------------------------------------------
+Class ValidateVirtualEnv : IValidateSetValuesGenerator {
+    [String[]] GetValidValues() {
+        return [String[]] (ValidateVirtualEnvDirectories)
+    }
+}
+
+#   validation --------------------------------------------------------------
+# ---------------------------------------------------------------------------
 Class ValidateRequirements: IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
         return [String[]] (ValidateVirtualEnvRequirement)
@@ -16,8 +24,10 @@ Class ValidateRequirements: IValidateSetValuesGenerator {
 
 #   validation --------------------------------------------------------------
 # ---------------------------------------------------------------------------
-Class ValidateVirtualEnv : IValidateSetValuesGenerator {
+Class ValidateVirtualEnvLocal: IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
-        return [String[]] (ValidateVirtualEnvDirectories)
+        return [String[]] (ValidateVirtualEnvLocalDirectories)
     }
 }
+
+

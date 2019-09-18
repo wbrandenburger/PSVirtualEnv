@@ -71,9 +71,37 @@ function ValidateVirtualEnvRequirement {
     Param()
 
     Process{
+
         $file_list = (Get-ChildItem -Path $PSVirtualEnv.RequireDir -Include "*requirements.txt" -Recurse).FullName
         return ($file_list | ForEach-Object {
             $_ -replace ($PSVirtualEnv.RequireDir -replace "\\", "\\")})
+
+    }
+}
+
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
+function ValidateVirtualEnvLocalDirectories {
+
+    <#
+    .DESCRIPTION
+        Return values for the use of validating existing local package folders.
     
+    .OUTPUTS
+        System.String[]. Local package folder.
+    #>
+
+    [CmdletBinding(PositionalBinding)]
+    
+    [OutputType([System.String[]])]
+
+    Param()
+
+    Process{
+
+        $file_list = (Get-ChildItem -Path $PSVirtualEnv.LocalDir -Directory)
+        return ($file_list | ForEach-Object {
+            $_ -replace ($PSVirtualEnv.RequireDir -replace "\\", "\\")})
+
     }
 }
