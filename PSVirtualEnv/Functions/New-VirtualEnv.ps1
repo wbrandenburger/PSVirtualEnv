@@ -19,6 +19,8 @@ function New-VirtualEnv {
 
     .PARAMETER Requirement
 
+    .PARAMETER OFFLINE
+
     .EXAMPLE
         PS C:\> New-VirtualEnv -Name venv
 
@@ -97,7 +99,11 @@ function New-VirtualEnv {
 
         [ValidateSet([ValidateRequirements])]
         [Parameter(HelpMessage="Path to a requirement file, or name of a virtual environment.")]
-        [System.String] $Requirement
+        [System.String] $Requirement,
+
+        # [ValidateSet([ValidateVirtualEnvLocalDirectories])]
+        [Parameter(HelpMessage="Path to a folder with local packages.")]
+        [System.String] $Offline=""
     )
 
     Process{
@@ -116,6 +122,23 @@ function New-VirtualEnv {
         # get existing requirement file 
         if ($Requirement) {   
             $requirement_file = Join-Path -Path $PSVirtualEnv.RequireDir -ChildPath $Requirement
+        }
+
+        if ($Offline) {
+            if (-not $(Test-Path -Path $Offline)){
+                Write-FormattedError -Message "File $($Offline) does not exist. Abort operation." -Module $PSVirtualEnv.
+                return
+            }
+
+            $packages = Get-ChildItem -Path $Offline  
+
+            $packages_bin = $packages | Where-Object {-not ($_.Name -match ".zip")} |  Select-Object -ExpandProperty FullName
+            $packages_rep = $packages | Where-Object {$_.Name -match ".zip"} |  Select-Object -ExpandProperty FullName
+
+            $packages =  $packages_bin + $packages_rep
+
+            $requirement_file = New-TemporaryFile -Extension ".txt"
+            Out-File -FilePath $requirement_file -InputObject $packages
         }
 
         # generate the full path of the specified virtual environment, which shall be located in the predefined system path
@@ -143,13 +166,9 @@ function New-VirtualEnv {
         }
 
         # install packages from the requirement file
-        if ($Requirement) {
+        if ($Requirement -or $Offline) {
             Install-VirtualEnvPackage -Name $Name -Requirement $requirement_file
             Get-VirtualEnvPackage -Name $Name
         }
-
-        # if ($Offline) {
-        #     Set-Location -Path $hostPath
-        # }
     }
 }

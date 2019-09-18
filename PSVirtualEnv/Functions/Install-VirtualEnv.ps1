@@ -113,7 +113,7 @@ function Install-VirtualEnv {
         [Parameter(HelpMessage="If switch 'All' is true, all existing virtual environments will be changed.")]
         [Switch] $All,
 
-        [ValidateSet([ValidateVirtualEnvLocalDirectories])]
+        # [ValidateSet([ValidateVirtualEnvLocalDirectories])]
         [Parameter(HelpMessage="Path to a folder with local packages.")]
         [System.String] $Offline=""
     )
@@ -145,24 +145,31 @@ function Install-VirtualEnv {
         # create a valide requirement file for a specified package
         if ($Package){
             $Upgrade = $False                
-            $requirement_file =  New-TemporaryFile -Extension ".txt"
+            $requirement_file = New-TemporaryFile -Extension ".txt"
             $package | Out-File -FilePath $requirement_file
         }
 
         if ($Offline) {
-            $requirement_file = Join-Path -Path $PSVirtualEnv.RequireDir -ChildPath $Requirement
-            write-host $requirement_file 
-            return
-            # $requirementFile = Join-Path -Path $virtualEnvLocal -ChildPath ($_.Name + ".txt")
-            # Write-FormattedProcess -Message "Write local requirement file for virtual environment '$($_.Name)' to '$requirementFileLocal' - $virtualEnvIdx of $($virtualEnv.length) packages" -Module $PSVirtualEnv.Name
-            # Out-File -FilePath  $requirementFileLocal -InputObject (Get-ChildItem -Path $virtualEnvLocal | Select-Object -ExpandProperty Name )
-            # Write-FormattedSuccess -Message "Local requirement file '$requirementFileLocal' for virtual environment '$($_.Name)' was created." -Module $PSVirtualEnv.Name           
+            if (-not $(Test-Path -Path $Offline)){
+                Write-FormattedError -Message "File $($Offline) does not exist. Abort operation." -Module $PSVirtualEnv.
+                return
+            }
+
+            $packages = Get-ChildItem -Path $Offline  
+
+            $packages_bin = $packages | Where-Object {-not ($_.Name -match ".zip")} |  Select-Object -ExpandProperty FullName
+            $packages_rep = $packages | Where-Object {$_.Name -match ".zip"} |  Select-Object -ExpandProperty FullName
+
+            $packages =  $packages_bin + $packages_rep
+
+            $requirement_file = New-TemporaryFile -Extension ".txt"
+            Out-File -FilePath $requirement_file -InputObject $packages
         }
 
         $virtualEnv | ForEach-Object {
 
             # get existing requirement file 
-            if ($Upgrade) {
+            if ($Upgrade -and -not $Offline) {
                 if (-not $requirement_file){
                     $requirement_file = Get-RequirementFile -Name $_.Name
                 }
@@ -171,6 +178,7 @@ function Install-VirtualEnv {
 
             # install packages from the requirement file
             Install-VirtualEnvPackage -Name $Name -Requirement  $requirement_file -Uninstall:$Uninstall -Upgrade:$Upgrade
+            # --find-links /path/to/download/dir/ 
         }
     }
 }

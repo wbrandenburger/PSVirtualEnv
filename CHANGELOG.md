@@ -6,6 +6,7 @@
 
 - Activated function `New-VirtualEnvLocal` for downloading packages of virtual environment, e.g. for offline installation.
 - Added opportunity for offline installation of a folder with local packages.
+- Added opportunity for offline installation of a folder with local packages, when creating a virtual environment.
 
 ## [0.5.3](https://github.com/wbrandenburger/PSVirtualEnv/tree/0.5.3) (2019-09-17)
 
