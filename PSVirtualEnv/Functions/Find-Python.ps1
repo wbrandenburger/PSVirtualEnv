@@ -82,13 +82,15 @@ function Find-Python {
         ) | Where-Object { $_ }
 
         for($i = 0; $i -lt $python_list.Length; $i++){
-
             if ($python_list[$i] -and $python_list[$i].EndsWith('python.exe')){
                 $python_list[$i] = Split-Path -Path $python_list[$i] -Parent
             } 
 
-            $python_exe = $(Join-Path -Path $python_list[$i] -ChildPath "python.exe")
-            # check, whether the defined executable does exist
+            $python_exe = Get-ChildItem -Path $python_list[$i] -Filter "*python.exe" -Recurse | Select-Object -ExpandProperty FullName
+            if ($python_exe.Count -gt 1 ){
+                $python_exe = $python_exe[0]
+            }
+
             if ($python_list[$i] -and $(Test-Path $python_list[$i])) {   
                 if (-not $( $(. $python_exe -m pip list) -match "virtualenv") -and -not $NoVirtualEnv ){
                     Write-FormattedWarning -Message "The python distribution does not provide the required package 'virtualenv'. Package will be installed automatically for full functionality." -Module $PSVirtualEnv.Name -Space -Silent:(!$VerbosePreference)

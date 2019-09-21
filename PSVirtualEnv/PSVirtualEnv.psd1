@@ -13,7 +13,7 @@
 RootModule = "PSVirtualEnv.psm1"
 
 # Version number of this module.
-ModuleVersion = "0.5.5"
+ModuleVersion = "0.5.6"
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -79,6 +79,7 @@ FunctionsToExport = @(
     "ActivateVirtualEnvAutocompletion"
     "Get-VirtualEnv",
     "Get-ActiveVirtualEnv",
+    "Invoke-VirtualEnv"
     "Install-VirtualEnv",
     "New-VirtualEnv",
     "Remove-VirtualEnv",
@@ -90,6 +91,7 @@ FunctionsToExport = @(
     "Write-VirtualEnvStatus",
     "ValidateVirtualEnvDirectories",
     "ValidateVirtualEnvRequirement",
+    "ValidateVirtualEnvLocalDirectories",
     "Find-Python",
     "New-VirtualEnvLocal",
     "Get-Requirement",
@@ -111,6 +113,7 @@ AliasesToExport = @(
     "cd-venv"
     "ed-venv-req",
     "is-venv"
+    "i-venv"
     "ls-venv",
     "ls-venv-req"
     "mk-venv",

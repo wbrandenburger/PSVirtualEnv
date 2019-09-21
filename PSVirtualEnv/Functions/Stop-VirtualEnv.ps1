@@ -20,8 +20,6 @@ function Stop-VirtualEnv {
 
         [PSVirtualEnv]::SUCCESS: Virtual enviroment 'venv' was stopped.
 
-        PS C:\>
-
         -----------
         Description
         Stops current virtual environment. 
@@ -29,10 +27,8 @@ function Stop-VirtualEnv {
     .EXAMPLE
         [venv] PS C:\> Stop-venv
 
-        SUCCESS: Virtual enviroment 'venv' was stopped.
+        [PSVirtualEnv]::SUCCESS: Virtual enviroment 'venv' was stopped.
 
-        PS C:\>
-        
         -----------
         Description
         Stops current virtual environment with predefined alias of command.

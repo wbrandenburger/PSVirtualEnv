@@ -101,7 +101,6 @@ function ValidateVirtualEnvLocalDirectories {
 
         $file_list = (Get-ChildItem -Path $PSVirtualEnv.LocalDir -Directory)
         return ($file_list | ForEach-Object {
-            $_ -replace ($PSVirtualEnv.RequireDir -replace "\\", "\\")})
-
+            $_ -replace ($PSVirtualEnv.LocalDir -replace "\\", "\\")})
     }
 }

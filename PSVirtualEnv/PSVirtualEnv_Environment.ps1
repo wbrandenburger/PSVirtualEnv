@@ -1,10 +1,9 @@
 # ===========================================================================
-#   PSVirtualEnv_Environment.ps1 -----------------------------------------------
+#   PSVirtualEnv_Environment.ps1 --------------------------------------------
 # ===========================================================================
 
 #   environment -------------------------------------------------------------
 # ---------------------------------------------------------------------------
-
 @(
     @{  # document and bibliography management environment variable
         Name="ProjectEnv"
@@ -25,3 +24,9 @@
 ) | ForEach-Object {
     $PSVirtualEnv | Add-Member -MemberType NoteProperty -Name $_.Name -Value $_.Value
 }
+
+#   environment -------------------------------------------------------------
+# ---------------------------------------------------------------------------
+[System.Environment]::SetEnvironmentVariable("$($PSVirtualEnv.WORK)_WORK", $PSVirtualEnv.WorkDir)
+[System.Environment]::SetEnvironmentVariable("$($PSVirtualEnv.Name)_LOCAL", $PSVirtualEnv.LocalDir)
+[System.Environment]::SetEnvironmentVariable("$($PSVirtualEnv.Name)_REQUIRE", $PSVirtualEnv.RequireDir)

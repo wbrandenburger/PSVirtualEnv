@@ -4,6 +4,28 @@
 
 #   function ----------------------------------------------------------------
 # ---------------------------------------------------------------------------
+function Get-ArgumentList {
+
+    [CmdletBinding(PositionalBinding)]
+
+    [OutputType([Void])]
+
+    Param(        
+        [Parameter(HelpMessage="Specifies parameters or parameter values to use when this cmdlet starts the process. If parameters or parameter values contain a space, they need surrounded with escaped double quotes.")]
+        [System.String[]] $ArgumentList
+    )
+
+    Process{
+        if ($ArgumentList.Count -eq 1) {
+            return $ArgumentList -split " " | Where-Object {$_}
+        }
+
+        return $ArgumentList
+    }
+}
+
+#   function ----------------------------------------------------------------
+# ---------------------------------------------------------------------------
 function Join-ScriptBlock {
     
     <#

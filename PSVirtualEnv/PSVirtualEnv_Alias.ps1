@@ -11,6 +11,7 @@
     @{ Name = "cd-venv";        Value = "Set-VirtualEnvLocation"}
     @{ Name = "ed-venv-req";    Value = "Edit-Requirement"}
     @{ Name = "is-venv";        Value = "Install-VirtualEnv"}
+    @{ Name = "i-venv";         Value = "Invoke-VirtualEnv"}
     @{ Name = "ls-venv";        Value = "Get-VirtualEnv"}
     @{ Name = "ls-venv-req";    Value = "Get-Requirement"}
     @{ Name = "mk-venv";        Value = "New-VirtualEnv"}

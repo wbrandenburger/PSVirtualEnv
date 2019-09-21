@@ -23,6 +23,8 @@ function Install-VirtualEnv {
 
     .PARAMETER Offline
 
+    .PARAMATER SILENT
+
     .EXAMPLE
         PS C:\> Install-VirtualEnvPckg -Name venv -Package package
         [PSVirtualEnv]::PROCESS: Try to install packages from requirement file 'C:\Users\User\PSVirtualEnv\.require\package-requirements.txt'.
@@ -94,7 +96,7 @@ function Install-VirtualEnv {
 
     Param (
         [ValidateSet([ValidateVirtualEnv])]
-        [Parameter(Position=1, ValueFromPipeline, HelpMessage="Name of the virtual environment to be changed.")]
+        [Parameter(Position=1, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
         [System.String] $Name="",
 
         [ValidateSet([ValidateRequirements])]
@@ -102,7 +104,7 @@ function Install-VirtualEnv {
         [System.String] $Requirement="",
 
         [Parameter(HelpMessage="Package to be installed.")]
-        [System.String] $Package,
+        [System.String[]] $Package,
 
         [Parameter(HelpMessage="If switch 'Uninstall' is true, specified packages will be uninstalled.")]
         [Switch] $Uninstall,
@@ -113,9 +115,12 @@ function Install-VirtualEnv {
         [Parameter(HelpMessage="If switch 'All' is true, all existing virtual environments will be changed.")]
         [Switch] $All,
 
-        # [ValidateSet([ValidateVirtualEnvLocalDirectories])]
+        [ValidateSet([ValidateVirtualEnvLocal])]
         [Parameter(HelpMessage="Path to a folder with local packages.")]
-        [System.String] $Offline=""
+        [System.String] $Offline="",
+
+        [Parameter(HelpMessage="If switch 'silent' is true no output will written to host.")]
+        [Switch] $Silent
     )
     
     Process {
@@ -123,9 +128,8 @@ function Install-VirtualEnv {
         # check valide virtual environment 
         if ($Name)  {
             if (-not(Test-VirtualEnv -Name $Name)){
-                Write-FormattedError -Message "The virtual environment '$($Name)' does not exist." -Module $PSVirtualEnv.Name -Space
+                Write-FormattedError -Message "The virtual environment '$($Name)' does not exist." -Module $PSVirtualEnv.Name -Space -Silent:$Silent -Space 
                 Get-VirtualEnv
-
                 return
             }
 
@@ -146,6 +150,10 @@ function Install-VirtualEnv {
         if ($Package){
             $Upgrade = $False                
             $requirement_file = New-TemporaryFile -Extension ".txt"
+
+            if ($package.Count -eq 1) {
+                $package = $package -split "," | Where-Object { $_}
+            }
             $package | Out-File -FilePath $requirement_file
         }
 
@@ -199,7 +207,7 @@ function Install-VirtualEnvPackage {
 
     .PARAMETER Upgrade
 
-    .P
+    .PARAMETER Silent
 
     .OUTPUTS
         PSCustomObject. Properties of all packages in a python environment
@@ -222,7 +230,10 @@ function Install-VirtualEnvPackage {
         [Switch] $Uninstall,
 
         [Parameter(HelpMessage="If switch 'Upgrade' is true, specified packages will be upgraded.")]
-        [Switch] $Upgrade
+        [Switch] $Upgrade,
+
+        [Parameter(HelpMessage="If switch 'silent' is true no output will written to host.")]
+        [Switch] $Silent
     )
 
     # specify the command to install or uninstall
@@ -240,13 +251,19 @@ function Install-VirtualEnvPackage {
         $message = "upgrade"
     }
 
-    # install packages from a requirement file
-    Write-FormattedProcess -Message "Try to $($message) packages from requirement file '$Requirement'." -Module $PSVirtualEnv.Name
+    Write-FormattedProcess -Message "Try to $($message) packages from requirement file '$Requirement'." -Module $PSVirtualEnv.Name -Silent:$Silent
 
     Set-VirtualEnv -Name $Name
-    pip $install_cmd --requirement $Requirement $upgrade_cmd
+
+        # install packages from a requirement file
+    if ($Silent) {
+        pip $install_cmd --requirement $Requirement $upgrade_cmd 2>&1> $Null
+    } else {
+        pip $install_cmd --requirement $Requirement $upgrade_cmd
+    }
+
     Restore-VirtualEnv
 
-    Write-FormattedSuccess -Message "Packages from requirement file '$Requirement' were $($message)ed." -Module $PSVirtualEnv.Name -Space
+    Write-FormattedSuccess -Message "Packages from requirement file '$Requirement' were $($message)ed." -Module $PSVirtualEnv.Name -Silent:$Silent -Space 
 
 }

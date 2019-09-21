@@ -29,5 +29,3 @@ Class ValidateVirtualEnvLocal: IValidateSetValuesGenerator {
         return [String[]] (ValidateVirtualEnvLocalDirectories)
     }
 }
-
-
