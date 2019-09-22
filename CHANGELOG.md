@@ -1,5 +1,18 @@
 # Change Log
 
+## [0.5.7](https://github.com/wbrandenburger/PSVirtualEnv/tree/0.5.7) (2019-09-22)
+
+**Implemented enhancements:**
+
+- Moved installation of package `virtualenv` from function `Find-Python` to `Repair-Python` due to possible loops when calling other module functions.
+- Added function `Repair-Python` for online and offline installation of `pip`, `setuptools` and `virtualenv`.
+
+**Fixed bugs:**
+
+- Deprecated parameter in function `Install-VirtualEnv` when calling function `New-Requirement` was removed.
+- Parameter `-All` showed wrong behavior when calling `Install-VirtualEnv`.
+- `Get-VirtualEnvLocal` set wrong environment variables, if parameter `-All` was used.
+
 ## [0.5.6](https://github.com/wbrandenburger/PSVirtualEnv/tree/0.5.6) (2019-09-21)
 
 **Implemented enhancements:**

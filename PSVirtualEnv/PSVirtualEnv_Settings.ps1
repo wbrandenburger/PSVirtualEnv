@@ -4,4 +4,9 @@
 
 #   settings ----------------------------------------------------------------
 # ---------------------------------------------------------------------------
-$PSVirtualEnv.Python = Find-Python -NoVirtualEnv -Verbose 
+
+# check installation of python distribution
+$PSVirtualEnv.Python = Find-Python -Verbose
+
+# repair python distribution for full functionality of module
+Repair-Python -Silent

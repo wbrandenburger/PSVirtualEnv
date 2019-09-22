@@ -11,7 +11,7 @@ function Find-Python {
         Find a path, where a python distribution might located.
 
     .DESCRIPTION
-        Find a path, where a python distribution might located. 'Find-Python' searches for a python distribution in configuration file and environment variable '%PYTHONHOME%'. Via flag 'Force' the python package 'virtualenv' can be installed in valide distribution.
+        Find a path, where a python distribution might located. 'Find-Python' searches for a python distribution in configuration file and environment variable '%PYTHONHOME%'.
 
     .PARAMETER Python
 
@@ -66,10 +66,7 @@ function Find-Python {
 
     Param(        
         [Parameter(Position=1, ValueFromPipeline, HelpMessage="Path to a folder or executable of a python distribution.")]
-        [System.String] $Path,
-
-        [Parameter(HelpMessage="Avoid installation of package 'virtualenv' if it does not exist in python distribution")]
-        [Switch] $NoVirtualEnv
+        [System.String] $Path
     )
 
     Process{
@@ -86,17 +83,16 @@ function Find-Python {
                 $python_list[$i] = Split-Path -Path $python_list[$i] -Parent
             } 
 
-            $python_exe = Get-ChildItem -Path $python_list[$i] -Filter "*python.exe" -Recurse | Select-Object -ExpandProperty FullName
-            if ($python_exe.Count -gt 1 ){
-                $python_exe = $python_exe[0]
-            }
+            if ($python_list[$i] -and $(Test-Path -Path $python_list[$i])) {  
 
-            if ($python_list[$i] -and $(Test-Path $python_list[$i])) {   
-                if (-not $( $(. $python_exe -m pip list) -match "virtualenv") -and -not $NoVirtualEnv ){
-                    Write-FormattedWarning -Message "The python distribution does not provide the required package 'virtualenv'. Package will be installed automatically for full functionality." -Module $PSVirtualEnv.Name -Space -Silent:(!$VerbosePreference)
-                    . $python_exe -m pip install virtualenv 2>&1> $Null
+                $python_exe = Get-ChildItem -Path $python_list[$i] -Filter "*python.exe" -Recurse | Select-Object -ExpandProperty FullName
+                if ($python_exe.Count -gt 1 ){
+                    $python_exe = $python_exe[0]
+                }   
+
+                if ($python_exe -and $(Test-Path -Path $python_exe)){
+                    return  $python_list[$i]
                 }
-                return  $python_list[$i]
             }
         }
 

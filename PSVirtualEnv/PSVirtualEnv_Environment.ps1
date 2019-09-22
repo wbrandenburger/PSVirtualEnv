@@ -5,21 +5,25 @@
 #   environment -------------------------------------------------------------
 # ---------------------------------------------------------------------------
 @(
-    @{  # document and bibliography management environment variable
+    @{  # virtual environment variable
         Name="ProjectEnv"
-        Value="$($PSVirtualEnv.Name)_PROJECT"
+        Value="$($PSVirtualEnv.Name.ToUpper())_PROJECT"
     }
-    @{  # backup of document and bibliography management environment variable
+    @{  # backup of virtual environment variable
         Name="ProjectEnvOld"
-        Value="$($PSVirtualEnv.Name)_PROJECT_OLD"
+        Value="$($PSVirtualEnv.Name.ToUpper())_PROJECT_OLD"
     }
     @{  # backup of systems path environment variable
         Name="PathEnvOld"
-        Value="$($PSVirtualEnv.Name)_PATH_OLD"
+        Value="$($PSVirtualEnv.Name.ToUpper())_PATH_OLD"
     }
     @{  #  pythonhome environment variable
         Name="PythonHome"
         Value="PYTHONHOME"
+    }
+    @{  # offline use of module
+        Name="ProjectOffline"
+        Value="$($PSVirtualEnv.Name.ToUpper())_OFFLINE"
     }
 ) | ForEach-Object {
     $PSVirtualEnv | Add-Member -MemberType NoteProperty -Name $_.Name -Value $_.Value
@@ -27,6 +31,6 @@
 
 #   environment -------------------------------------------------------------
 # ---------------------------------------------------------------------------
-[System.Environment]::SetEnvironmentVariable("$($PSVirtualEnv.WORK)_WORK", $PSVirtualEnv.WorkDir)
-[System.Environment]::SetEnvironmentVariable("$($PSVirtualEnv.Name)_LOCAL", $PSVirtualEnv.LocalDir)
-[System.Environment]::SetEnvironmentVariable("$($PSVirtualEnv.Name)_REQUIRE", $PSVirtualEnv.RequireDir)
+[System.Environment]::SetEnvironmentVariable("$($PSVirtualEnv.Name.ToUpper())_WORK", $PSVirtualEnv.WorkDir)
+[System.Environment]::SetEnvironmentVariable("$($PSVirtualEnv.Name.ToUpper())_LOCAL", $PSVirtualEnv.LocalDir)
+[System.Environment]::SetEnvironmentVariable("$($PSVirtualEnv.Name.ToUpper())_REQUIRE", $PSVirtualEnv.RequireDir)

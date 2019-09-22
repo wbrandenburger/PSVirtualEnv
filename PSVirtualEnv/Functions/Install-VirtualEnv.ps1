@@ -11,6 +11,7 @@ function Install-VirtualEnv {
         Install or upgrade packages from command line or requirement files to virtual environments.
     .DESCRIPTION
         Install or upgrade packages from command line or requirement files to virtual environments. All available requirement files can be accessed by autocompletion.
+
     .PARAMETER Name
 
     .PARAMETER Requirement
@@ -23,7 +24,7 @@ function Install-VirtualEnv {
 
     .PARAMETER Offline
 
-    .PARAMATER SILENT
+    .PARAMETER SILENT
 
     .EXAMPLE
         PS C:\> Install-VirtualEnvPckg -Name venv -Package package
@@ -127,7 +128,7 @@ function Install-VirtualEnv {
 
         # check valide virtual environment 
         if ($Name)  {
-            if (-not(Test-VirtualEnv -Name $Name)){
+            if (-not (Test-VirtualEnv -Name $Name)){
                 Write-FormattedError -Message "The virtual environment '$($Name)' does not exist." -Module $PSVirtualEnv.Name -Space -Silent:$Silent -Space 
                 Get-VirtualEnv
                 return
@@ -158,12 +159,14 @@ function Install-VirtualEnv {
         }
 
         if ($Offline) {
-            if (-not $(Test-Path -Path $Offline)){
-                Write-FormattedError -Message "File $($Offline) does not exist. Abort operation." -Module $PSVirtualEnv.
+            $local_path = Join-Path -Path $PSVirtualEnv.LocalDir -ChildPath $Offline
+
+            if (-not $(Test-Path -Path $local_path)){
+                Write-FormattedError -Message "File $($local_path) does not exist. Abort operation." -Module $PSVirtualEnv.Name
                 return
             }
 
-            $packages = Get-ChildItem -Path $Offline  
+            $packages = Get-ChildItem -Path $local_path  
 
             $packages_bin = $packages | Where-Object {-not ($_.Name -match ".zip")} |  Select-Object -ExpandProperty FullName
             $packages_rep = $packages | Where-Object {$_.Name -match ".zip"} |  Select-Object -ExpandProperty FullName
@@ -181,11 +184,11 @@ function Install-VirtualEnv {
                 if (-not $requirement_file){
                     $requirement_file = Get-RequirementFile -Name $_.Name
                 }
-                New-Requirement -Name $_.Name -Upgrade -Python:$Python
+                New-Requirement -Name $_.Name -Upgrade
             }
 
             # install packages from the requirement file
-            Install-VirtualEnvPackage -Name $Name -Requirement  $requirement_file -Uninstall:$Uninstall -Upgrade:$Upgrade
+            Install-VirtualEnvPackage -Name $_.Name -Requirement  $requirement_file -Uninstall:$Uninstall -Upgrade:$Upgrade -Silent:$Silent
             # --find-links /path/to/download/dir/ 
         }
     }
@@ -219,7 +222,6 @@ function Install-VirtualEnvPackage {
     [OutputType([PSCustomObject])]
 
     Param (
-        [ValidateSet([ValidateVirtualEnv])]
         [Parameter(Position=1, ValueFromPipeline, HelpMessage="Name of the virtual environment to be changed.")]
         [System.String] $Name="",
 
@@ -254,8 +256,8 @@ function Install-VirtualEnvPackage {
     Write-FormattedProcess -Message "Try to $($message) packages from requirement file '$Requirement'." -Module $PSVirtualEnv.Name -Silent:$Silent
 
     Set-VirtualEnv -Name $Name
-
-        # install packages from a requirement file
+    
+    # install packages from a requirement file
     if ($Silent) {
         pip $install_cmd --requirement $Requirement $upgrade_cmd 2>&1> $Null
     } else {

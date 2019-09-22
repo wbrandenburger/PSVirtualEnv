@@ -93,8 +93,8 @@ function New-VirtualEnvLocal {
             Write-FormattedProcess -Message "[DL] Virtual environment '$($_.Name)' to '$virtualEnvLocal'" -Module $PSVirtualEnv.Name
 
             # set environment variable
-            Set-VirtualEnv -Name $Name
-            pip download --requirement   $requirementFile --dest  $virtualEnvLocal
+            Set-VirtualEnv -Name $_.Name
+            pip download --requirement $requirementFile --dest  $virtualEnvLocal
             Restore-VirtualEnv
 
             Write-FormattedSuccess -Message "Packages of virtual environment '$($_.Name)' were downloaded to '$virtualEnvLocal'" -Module $PSVirtualEnv.Name
