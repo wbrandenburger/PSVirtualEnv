@@ -13,7 +13,7 @@
 RootModule = "PSVirtualEnv.psm1"
 
 # Version number of this module.
-ModuleVersion = "0.5.7"
+ModuleVersion = "0.6.0"
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -79,7 +79,7 @@ FunctionsToExport = @(
     "ActivateVirtualEnvAutocompletion"
     "Get-VirtualEnv",
     "Get-ActiveVirtualEnv",
-    "Invoke-VirtualEnv"
+    "Invoke-VirtualEnv",
     "Install-VirtualEnv",
     "New-VirtualEnv",
     "Remove-VirtualEnv",
@@ -90,15 +90,17 @@ FunctionsToExport = @(
     "Restore-VirtualEnv",
     "Write-VirtualEnvStatus",
     "ValidateVirtualEnvDirectories",
-    "ValidateVirtualEnvRequirement",
-    "ValidateVirtualEnvLocalDirectories",
+    "ValidateVirtualEnvFiles",
+    "ValidateVirtualEnvSearchDirs",
+    "ValidateVenvLocalDirs",
+    "ValidateVirtualEnvTemplates",
     "Find-Python",
     "New-VirtualEnvLocal",
-    "Get-Requirement",
-    "Edit-Requirement",
-    "New-Requirement",
-    "Get-VirtualEnvConfig",
-    "Edit-VirtualEnvConfig"
+    "Get-VirtualEnvFile",
+    "Edit-VirtualEnvFile",
+    "Remove-VirtualEnvFile",
+    "New-VirtualEnvFile",
+    "Set-VirtualEnvSearchDirs"
 )
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
@@ -111,15 +113,16 @@ VariablesToExport = "*"
 AliasesToExport = @(
     "activate-venv",
     "cd-venv"
-    "ed-venv-req",
+    "ed-venv-file",
     "is-venv"
     "i-venv"
     "ls-venv",
-    "ls-venv-req"
+    "ls-venv-file",
     "mk-venv",
-    "mk-venv-req"
+    "mk-venv-file",
     "mk-venv-local"
-    "rm-venv",    
+    "rm-venv",
+    "rm-venv-file",    
     "sa-venv",
     "sp-venv"
 )

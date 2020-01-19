@@ -82,7 +82,7 @@ function New-VirtualEnvLocal {
             if (Test-Path $requirementFile){
                 Remove-Item -Path $requirementFile -Force
             }
-            New-Requirement -Name $_.Name
+            New-Requirement -VirtualEnv $_.Name
 
             # remove a previous folder, which contains download file of packages related to a older state of the virtual environment
             if (Test-Path $virtualEnvLocal){

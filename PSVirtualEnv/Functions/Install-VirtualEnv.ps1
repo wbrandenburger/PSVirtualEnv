@@ -100,7 +100,7 @@ function Install-VirtualEnv {
         [Parameter(Position=1, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
         [System.String] $Name="",
 
-        [ValidateSet([ValidateRequirements])]
+        [ValidateSet([ValidateVenvRequirements])]
         [Parameter(Position=2, HelpMessage="Relative path to a requirements file, or name of a virtual environment.")]
         [System.String] $Requirement="",
 
@@ -116,7 +116,7 @@ function Install-VirtualEnv {
         [Parameter(HelpMessage="If switch 'All' is true, all existing virtual environments will be changed.")]
         [Switch] $All,
 
-        [ValidateSet([ValidateVirtualEnvLocal])]
+        [ValidateSet([ValidateVenvLocalDirs])]
         [Parameter(HelpMessage="Path to a folder with local packages.")]
         [System.String] $Offline="",
 
@@ -184,7 +184,7 @@ function Install-VirtualEnv {
                 if (-not $requirement_file){
                     $requirement_file = Get-RequirementFile -Name $_.Name
                 }
-                New-Requirement -Name $_.Name -Upgrade
+                New-Requirement -VirtualEnv $_.Name -Upgrade
             }
 
             # install packages from the requirement file

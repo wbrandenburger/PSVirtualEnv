@@ -44,20 +44,27 @@ function Start-VirtualEnv {
         None.
     #>
 
-    [CmdletBinding(PositionalBinding)]
+    [CmdletBinding(PositionalBinding, DefaultParameterSetName="Public")]
 
     [OutputType([Void])]
 
     Param(
         [ValidateSet([ValidateVirtualEnv])]     
-        [Parameter(Position=1, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
+        [Parameter(ParameterSetname="Public", Position=1, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
         [System.String] $Name,
+
+        [Parameter(ParameterSetname="Private", Position=1, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
+        [System.String] $PrivateName,
 
         [Parameter(HelpMessage="If switch 'silent' is true no output will written to host.")]
         [Switch] $Silent
     )
 
     Process {
+
+        if($PSCmdlet.ParameterSetName -eq "Private"){
+            $Name = $PrivateName
+        }
 
         # check whether the specified virtual environment exists
         if (-not $(Test-VirtualEnv -Name $Name -Verbose)){
@@ -70,6 +77,7 @@ function Start-VirtualEnv {
 
         # activate the virtual environment
         Set-VirtualEnv -Name $Name
+        Set-VirtualEnvSearchDirs -PrivateName $Name
 
         if (-not $Silent) {
             Write-FormattedSuccess -Message "Virtual enviroment '$Name' was started." -Module $PSVirtualEnv.Name -Space

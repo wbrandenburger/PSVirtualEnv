@@ -34,3 +34,4 @@
 [System.Environment]::SetEnvironmentVariable("$($PSVirtualEnv.Name.ToUpper())_WORK", $PSVirtualEnv.WorkDir)
 [System.Environment]::SetEnvironmentVariable("$($PSVirtualEnv.Name.ToUpper())_LOCAL", $PSVirtualEnv.LocalDir)
 [System.Environment]::SetEnvironmentVariable("$($PSVirtualEnv.Name.ToUpper())_REQUIRE", $PSVirtualEnv.RequireDir)
+[System.Environment]::SetEnvironmentVariable("$($PSVirtualEnv.Name.ToUpper())_SEARCH", $PSVirtualEnv.SearchDir)

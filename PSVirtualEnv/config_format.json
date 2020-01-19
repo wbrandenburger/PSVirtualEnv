@@ -16,12 +16,35 @@
         "Folder" : true
     },
     {
+        "Id" : "SearchDir",
+        "Field" : "venv-search-dir", 
+        "Section" : "user",
+        "Default" : "%(WorkDir)s\\.search",
+        "Required" : true,
+        "Folder" : true
+    },
+    {
         "Id" : "LocalDir",
         "Field" : "venv-local-dir", 
         "Section" : "user", 
         "Default" : "%(WorkDir)s\\.temp",
         "Required" : true,
         "Folder" :  true
+    },
+    {
+        "Id" : "ScriptDir",
+        "Field" : "venv-script-dir", 
+        "Section" : "user", 
+        "Default" : "%(WorkDir)s\\.scripts",
+        "Required" : true,
+        "Folder" :  true
+    },
+    {
+        "Id" : "VenvSettings",
+        "Field" : "venv-setting-file", 
+        "Section" : "user", 
+        "Default" : "%(LocalDir)s\\setting.json",
+        "Required" : true
     },
     {
         "Id" : "Editor",

@@ -16,16 +16,56 @@ Class ValidateVirtualEnv : IValidateSetValuesGenerator {
 
 #   validation --------------------------------------------------------------
 # ---------------------------------------------------------------------------
-Class ValidateRequirements: IValidateSetValuesGenerator {
+Class ValidateVenvLocalDirs: IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
-        return [String[]] (ValidateVirtualEnvRequirement)
+        return [String[]] (ValidateVenvLocalDirs)
     }
 }
 
 #   validation --------------------------------------------------------------
 # ---------------------------------------------------------------------------
-Class ValidateVirtualEnvLocal: IValidateSetValuesGenerator {
+Class ValidateVenvSearchDirs: IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
-        return [String[]] (ValidateVirtualEnvLocalDirectories)
+        return [String[]] (ValidateVirtualEnvSearchDirs)
+    }
+}
+
+#   validation --------------------------------------------------------------
+# ---------------------------------------------------------------------------
+Class ValidateVenvTemplates: IValidateSetValuesGenerator {
+    [String[]] GetValidValues() {
+        return [String[]] (ValidateVirtualEnvTemplates)
+    }
+}
+
+#   validation --------------------------------------------------------------
+# ---------------------------------------------------------------------------
+Class ValidateVenvRequirements: IValidateSetValuesGenerator {
+    [String[]] GetValidValues() {
+        return [String[]] (ValidateVirtualEnvFiles -Type "Requirement")
+    }
+}
+
+#   validation --------------------------------------------------------------
+# ---------------------------------------------------------------------------
+Class ValidateVenvRequirementsFolder: IValidateSetValuesGenerator {
+    [String[]] GetValidValues() {
+        return [String[]] (ValidateVirtualEnvFiles -Type "Requirement" -Folder)
+    }
+}
+
+#   validation --------------------------------------------------------------
+# ---------------------------------------------------------------------------
+Class ValidateVenvScripts: IValidateSetValuesGenerator {
+    [String[]] GetValidValues() {
+        return [String[]] (ValidateVirtualEnvFiles -Type "Script")
+    }
+}
+
+#   validation --------------------------------------------------------------
+# ---------------------------------------------------------------------------
+Class ValidateVenvScriptsFolder: IValidateSetValuesGenerator {
+    [String[]] GetValidValues() {
+        return [String[]] (ValidateVirtualEnvFiles -Type "Script" -Folder)
     }
 }

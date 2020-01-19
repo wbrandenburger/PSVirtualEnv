@@ -86,28 +86,36 @@ function New-VirtualEnv {
         None.
     #>
 
-    [CmdletBinding(PositionalBinding)]
+    [CmdletBinding(PositionalBinding, DefaultParameterSetName="Default")]
 
     [OutputType([Void])]
 
     Param(
-        [Parameter(Position=1, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment to be created.")]
+        [Parameter(ParameterSetName="Default", Position=1, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment to be created.")]
         [System.String] $Name,
+
+        [ValidateSet([ValidateVenvTemplates])]
+        [Parameter(ParameterSetName="Template", Position=1,HelpMessage="Predefined template linked with requirement files.")]
+        [System.String] $Template,
 
         [Parameter(Position=2, HelpMessage="Relative path to a folder or executable of a python distribution.")]
         [System.String] $Path,
 
-        [ValidateSet([ValidateRequirements])]
-        [Parameter(HelpMessage="Path to a requirement file, or name of a virtual environment.")]
+        [ValidateSet([ValidateVenvRequirements])]
+        [Parameter(ParameterSetName="Default", HelpMessage="Path to a requirement file, or name of a virtual environment.")]
         [System.String] $Requirement,
 
-        # [ValidateSet([ValidateVirtualEnvLocalDirectories])]
+        # [ValidateSet([ValidateVenvLocalDirs])]
         [Parameter(HelpMessage="Path to a folder with local packages.")]
         [System.String] $Offline=""
     )
 
     Process{
-    
+
+        if ($Template) {
+            $Name = $Template
+        }
+
         # check whether the specified virtual environment exists
         if (Test-VirtualEnv -Name $Name){
             Write-FormattedError -Message "The virtual environment '$Name' already exists." -Module $PSVirtualEnv.Name -Space
@@ -115,14 +123,29 @@ function New-VirtualEnv {
 
             return
         }
-        
+
+        if ($PSCmdlet.ParameterSetName -eq "Default" ){
+   
+            # get existing requirement file 
+            if ($Requirement) {   
+                $requirement_file = Join-Path -Path $PSVirtualEnv.RequireDir -ChildPath $Requirement
+            }
+        }
+        else{
+            $settings = Get-VirtualEnvFile -Settings -Unformatted  | Where-Object{$_.Name -eq $Name}
+            if ($settings -and ("Requirements" -in $settings.PSobject.Properties.Name)){
+
+                $requirement_file = New-TemporaryFile -Extension ".txt"
+                Out-File -FilePath $requirement_file
+
+                $settings | Select-Object -ExpandProperty "Requirements" | ForEach-Object {
+                    Out-File -FilePath $requirement_file -Append -InputObject ( Get-Content ( Join-Path -Path $PSVirtualEnv.RequireDir -ChildPath $_ ))
+                }
+            }
+        }
+
         # deactivation of a running virtual environment
         Restore-VirtualEnv
-
-        # get existing requirement file 
-        if ($Requirement) {   
-            $requirement_file = Join-Path -Path $PSVirtualEnv.RequireDir -ChildPath $Requirement
-        }
 
         if ($Offline) {
             if (-not $(Test-Path -Path $Offline)){
@@ -166,7 +189,7 @@ function New-VirtualEnv {
         }
 
         # install packages from the requirement file
-        if ($Requirement -or $Offline) {
+        if ($requirement_file) {
             Install-VirtualEnvPackage -Name $Name -Requirement $requirement_file
             Get-VirtualEnvPackage -Name $Name
         }

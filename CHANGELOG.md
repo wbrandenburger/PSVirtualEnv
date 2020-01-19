@@ -1,5 +1,21 @@
 # Change Log
 
+## [0.6.0](https://github.com/wbrandenburger/PSVirtualEnv/tree/0.6.0) (2020-01-14)
+
+**Implemented enhancements:**
+
+- `New-VirtualEnv` (Parameter `Templates`)
+- `Start-VirtualEnv` (`Set-VirtualEnvSearchDirs`)
+- Configuration file
+- Environment Variable `[...]_SEARCH`
+- `ValidateVirtualEnvSearchDirs`
+- `ValidateVirtualEnvTemplates`
+- `New-Requirement`
+- `Get-VirtualEnvFile`
+- `Edit-VirtualEnvFile`
+- `Remove-VirtualEnvFile`
+- `New-VirtualEnvFile`
+
 ## [0.5.7](https://github.com/wbrandenburger/PSVirtualEnv/tree/0.5.7) (2019-09-22)
 
 **Implemented enhancements:**
