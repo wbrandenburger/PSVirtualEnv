@@ -16,6 +16,14 @@
         "Folder" : true
     },
     {
+        "Id" : "LocalRequireDir",
+        "Field" : "venv-local-require-dir", 
+        "Section" : "user",
+        "Default" : "%(WorkDir)s\\.require\\local",
+        "Required" : true,
+        "Folder" : true
+    },
+    {
         "Id" : "SearchDir",
         "Field" : "venv-search-dir", 
         "Section" : "user",

@@ -77,7 +77,7 @@ function Edit-VirtualEnvFile {
         [System.String] $Script,
 
         [ValidateSet([ValidateVenvSearchDirs])]
-        [Parameter(ParameterSetName="SearchDirs", Position=1,  HelpMessage="Relative path to existing file with additional search directories.")]
+        [Parameter(ParameterSetName="SearchDirs", Position=1,  HelpMessage="Relative path to existing file with additional search directories in predefined folder.")]
         [System.String] $SearchDirs,
 
         [Parameter(ParameterSetName="Settings", Position=1, HelpMessage="Opens the file with the settings of each virtual environment..")]

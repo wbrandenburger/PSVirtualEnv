@@ -88,6 +88,7 @@ FunctionsToExport = @(
     "Stop-VirtualEnv",
     "Set-VirtualEnv",
     "Restore-VirtualEnv",
+    "Update-VirtualEnv",
     "Write-VirtualEnvStatus",
     "ValidateVirtualEnvDirectories",
     "ValidateVirtualEnvFiles",
@@ -124,7 +125,8 @@ AliasesToExport = @(
     "rm-venv",
     "rm-venv-file",    
     "sa-venv",
-    "sp-venv"
+    "sp-venv",
+    "ud-venv"
 )
 
 # DSC resources to export from this module

@@ -116,15 +116,15 @@ function New-VirtualEnvFile {
                     return
                 }
 
-                $virtualEnv = @{ Name = $VirtualEnv }
+                $virtual_env = @{ Name = $VirtualEnv }
             }
 
             # Get all existing virtual environments if 'Name' is not set
             if ($All) {
-                $virtualEnv = Get-VirtualEnv
+                $virtual_env = Get-VirtualEnv
             }
 
-            $virtualEnv | ForEach-Object {
+            $virtual_env | ForEach-Object {
 
                 # get full path of requirement file
                 $requirement_file = Get-RequirementFile -Name $_.Name
@@ -138,7 +138,7 @@ function New-VirtualEnvFile {
                     $(Get-Content $requirement_file) -replace "==", ">=" | Out-File -FilePath $requirement_file
                 }
 
-                Write-FormattedSuccess -Message "Requirement file for virtual enviroment '$($_.Name)' created." -Module $PSVirtualEnv.Name
+                Write-FormattedSuccess -Message "Requirement file for virtual enviroment '$($_.Name)' created." -Module $PSVirtualEnv.Name -Space
             }
         }
         else {
@@ -200,7 +200,7 @@ function Get-RequirementFile {
 
     Process {
 
-        return Join-Path -Path $PSVirtualEnv.RequireDir -ChildPath "$($Name)-requirements.txt" 
+        return Join-Path -Path $PSVirtualEnv.LocalRequireDir -ChildPath "$($Name)-requirements.txt" 
         
     }
 }

@@ -35,7 +35,8 @@ function Repair-Python {
 
         if (-not [System.Environment]::GetEnvironmentVariable($PSVirtualEnv.ProjectOffline)) {
 
-            Install-VirtualEnv -Name "python" -Upgrade -Package "pip", "setuptools",  "virtualenv" -Silent:$Silent
+            Update-VirtualEnv -Name "python" -Pip -Silent:$Silent
+            Update-VirtualEnv -Name "python" -Package "setuptools",  "virtualenv" -Silent:$Silent
 
             # if (-not $( $(. $python_exe -m pip list) -match "virtualenv")){  
             # Write-FormattedWarning -Message "The python distribution does not provide the required package 'virtualenv'. Package will be installed automatically for full functionality." -Module $PSVirtualEnv.Name -Space

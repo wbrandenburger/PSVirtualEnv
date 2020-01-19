@@ -21,6 +21,7 @@
     @{ Name = "rm-venv-file";   Value = "Remove-VirtualEnvFile"}
     @{ Name = "sa-venv";        Value = "Start-VirtualEnv"}
     @{ Name = "sp-venv";        Value = "Stop-VirtualEnv"}
+    @{ Name = "ud-venv";        Value = "Update-VirtualEnv"}
 
 ) | ForEach-Object {
     Set-Alias -Name $_.Name -Value $_.Value
