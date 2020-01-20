@@ -100,6 +100,7 @@ FunctionsToExport = @(
     "Get-VirtualEnvFile",
     "Edit-VirtualEnvFile",
     "Remove-VirtualEnvFile",
+    "Rename-VirtualEnvFile",
     "New-VirtualEnvFile",
     "Set-VirtualEnvSearchDirs"
 )
