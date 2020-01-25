@@ -77,7 +77,7 @@ function Start-VirtualEnv {
 
         # activate the virtual environment
         Set-VirtualEnv -Name $Name
-        Set-VirtualEnvSearchDirs -PrivateName $Name
+        Set-VirtualEnvSystem -PrivateName $Name
 
         if (-not $Silent) {
             Write-FormattedSuccess -Message "Virtual enviroment '$Name' was started." -Module $PSVirtualEnv.Name -Space

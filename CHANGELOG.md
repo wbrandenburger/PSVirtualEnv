@@ -5,7 +5,7 @@
 **Implemented enhancements:**
 
 - `New-VirtualEnv` (Parameter `Templates`)
-- `Start-VirtualEnv` (`Set-VirtualEnvSearchDirs`)
+- `Start-VirtualEnv` (`Set-VirtualEnvSystem`)
 - Configuration file
 - Environment Variable `[...]_SEARCH`
 - `ValidateVirtualEnvSearchDirs`

@@ -62,7 +62,7 @@ function Stop-VirtualEnv {
 
         # deactivation of a running virtual environment
         Restore-VirtualEnv
-        Set-VirtualEnvSearchDirs -PrivateName $old_venv -Restore
+        Set-VirtualEnvSystem -PrivateName $old_venv -Restore
 
         # if the environment variable is not empty, deactivation failed
         if (-not $Silent) {
