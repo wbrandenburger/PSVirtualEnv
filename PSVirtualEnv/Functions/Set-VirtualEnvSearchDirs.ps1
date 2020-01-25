@@ -43,11 +43,14 @@ function Set-VirtualEnvSearchDirs {
         [System.String] $Path,
 
         [ValidateSet([ValidateVirtualEnv])]     
-        [Parameter(ParameterSetName="Public", Position=1, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
+        [Parameter(ParameterSetName="Public", Position=1, Mandatory, HelpMessage="Name of the virtual environment.")]
         [System.String] $Name,
   
-        [Parameter(ParameterSetName="Private", Position=1, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
-        [System.String] $PrivateName
+        [Parameter(ParameterSetName="Private", Position=1, Mandatory, HelpMessage="Name of the virtual environment.")]
+        [System.String] $PrivateName,
+
+        [Parameter(HelpMessage="Remove defined systems' environment variables.")]
+        [Switch] $Restore
     )
 
     Process {
@@ -67,13 +70,23 @@ function Set-VirtualEnvSearchDirs {
                 }
                 $value = $value +  $env:PATH  
             }
+
+            if ($settings -and ("EnvVars" -in $settings.PSobject.Properties.Name)){
+                $settings | Select-Object -ExpandProperty "EnvVars" | ForEach-Object {
+                    if ($Restore){
+                        [System.Environment]::SetEnvironmentVariable($_.Name, $Null, "process" )
+                    }
+                    else {
+                        [System.Environment]::SetEnvironmentVariable($_.Name, $_.Value, "process" )
+                    }
+                } 
+            }
         }
         else{
             $value = (Get-VirtualEnvFile -SearchDirs ("\" + $_) -Unformatted) + ";" +  $env:PATH
         }
 
         if ($value) {
-
             [System.Environment]::SetEnvironmentVariable("PATH", $value, "process")
         }
     }

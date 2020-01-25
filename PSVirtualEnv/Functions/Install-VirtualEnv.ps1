@@ -106,9 +106,6 @@ function Install-VirtualEnv {
         [Parameter(ParameterSetName="Requirement", Position=2, HelpMessage="Relative path to a requirements file in predefined requirements folder.")]
         [System.String] $Requirement,
 
-        [Parameter(HelpMessage="If switch 'All' is true, all existing virtual environments will be changed.")]
-        [Switch] $All,
-
         [ValidateSet([ValidateVenvLocalDirs])]
         [Parameter(ParameterSetName="Offline", Position=2, HelpMessage="Path to a folder with local packages.")]
         [System.String] $Offline="",
@@ -129,12 +126,7 @@ function Install-VirtualEnv {
 
             $virtual_env = @{ Name = $Name }
         }
-
-        # get all existing virtual environments if 'Name' is not set
-        if ($All) {
-            $virtual_env = Get-VirtualEnv
-        }
-
+        
         switch ($PSCmdlet.ParameterSetName) {
             "Package" { 
                 # create a valide requirement file for a specified package
@@ -146,12 +138,12 @@ function Install-VirtualEnv {
                 $package | Out-File -FilePath $requirement_file
                 
 
-                break;
+                break
             }
             "Requirement" {
                 # get existing requirement file 
                 $requirement_file = Join-Path -Path $PSVirtualEnv.RequireDir -ChildPath $Requirement
-                break;
+                break
             }
             "Offline" {
                 $local_path = Join-Path -Path $PSVirtualEnv.LocalDir -ChildPath $Offline
@@ -170,7 +162,7 @@ function Install-VirtualEnv {
     
                 $requirement_file = New-TemporaryFile -Extension ".txt"
                 Out-File -FilePath $requirement_file -InputObject $packages                
-                break;
+                break
             }
         }
         
@@ -221,6 +213,9 @@ function Install-VirtualEnvPackage {
         [Parameter(HelpMessage="If switch 'Upgrade' is true, specified packages will be upgraded.")]
         [Switch] $Upgrade,
 
+        [Parameter(HelpMessage="If switch 'Dev' is true, specified packages will be reinstalled.")]
+        [Switch] $Dev,
+
         [Parameter(HelpMessage="If switch 'silent' is true no output will written to host.")]
         [Switch] $Silent
     )
@@ -235,9 +230,15 @@ function Install-VirtualEnvPackage {
 
     # if packages mmight be upgraded, consider upgrading in installation command
     $upgrade_cmd = ""
-    if ($Upgrade) {
+    if ($Upgrade -or $Dev) {
         $upgrade_cmd = "--upgrade"
         $message = "upgrade"
+    }
+
+    $dev_cmd = ""
+    if ($Dev) {
+        $dev_cmd = "--force-reinstall", "--no-deps"
+        $message = "reinstall"
     }
 
     Write-FormattedProcess -Message "Try to $($message) packages from requirement file '$Requirement'." -Module $PSVirtualEnv.Name -Silent:$Silent
@@ -246,9 +247,9 @@ function Install-VirtualEnvPackage {
     
     # install packages from a requirement file
     if ($Silent) {
-        pip $install_cmd --requirement $Requirement $upgrade_cmd 2>&1> $Null
+        pip $install_cmd --requirement $Requirement $upgrade_cmd $dev_cmd 2>&1> $Null
     } else {
-        pip $install_cmd --requirement $Requirement $upgrade_cmd
+        pip $install_cmd --requirement $Requirement $upgrade_cmd $dev_cmd
     }
 
     Restore-VirtualEnv

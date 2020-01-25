@@ -15,6 +15,8 @@ function Update-VirtualEnv {
 
     .PARAMETER Name
 
+    .PARAMETER Requirement
+
     .PARAMETER Package
 
     .PARAMETER Pip
@@ -39,11 +41,18 @@ function Update-VirtualEnv {
         [Parameter(Position=1, ValueFromPipeline, Mandatory, HelpMessage="Name of the virtual environment.")]
         [System.String] $Name,
 
+        [ValidateSet([ValidateVenvRequirements])]
+        [Parameter(ParameterSetName="Requirement", Position=2, HelpMessage="Relative path to a requirements file in predefined requirements folder.")]
+        [System.String] $Requirement,
+
         [Parameter(ParameterSetName="Package", Position=2, Mandatory, HelpMessage="Specified packages will be upgraded.")]
         [System.String[]] $Package,
 
         [Parameter(ParameterSetName="Pip", HelpMessage="If switch 'silent' is true package pip will be upgraded in specified virtual environment.")]
         [Switch] $Pip,
+
+        [Parameter(HelpMessage="If switch 'Dev' is true, specified packages will be reinstalled.")]
+        [Switch] $Dev,
 
         [Parameter(HelpMessage="If switch 'All' is true, the defined packages in all existing virtual environments will be changed.")]
         [Switch] $All,
@@ -81,19 +90,26 @@ function Update-VirtualEnv {
                 }
                 $package | Out-File -FilePath $requirement_file
                 
-                # update packages from the requirement file in all defined virtual environments
-                $virtual_env | ForEach-Object {
-                    Install-VirtualEnvPackage -Name $_.Name -Requirement  $requirement_file -Upgrade:$Upgrade -Silent:$Silent
-                }
-                break;
+                break
+            }
+            "Requirement" {
+                # get existing requirement file 
+                $requirement_file = Join-Path -Path $PSVirtualEnv.RequireDir -ChildPath $Requirement
+                break
             }
             "Pip" {
                 # update pip in all defined virtual environments
                 $virtual_env | ForEach-Object {       
-                    Update-VirtualEnvPip -Name $Name -Silent:$Silent
+                    Update-VirtualEnvPip -Name $_.Name -Silent:$Silent
                 }
-                break;
+                return
             }
+        }  
+
+        # update packages from the requirement file in all defined virtual environments
+        $virtual_env | ForEach-Object {
+            Install-VirtualEnvPackage -Name $_.Name -Requirement  $requirement_file -Upgrade:$True -Dev:$Dev -Silent:$Silent
+          
         }
     }
 }
