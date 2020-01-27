@@ -63,7 +63,7 @@ function Set-VirtualEnvSystem {
                 $Name = $PrivateName
             }
 
-            $settings = Get-VirtualEnvFile -Settings -Unformatted  | Where-Object{$_.Name -eq $Name}
+            $settings = Get-VirtualEnvFile -TemplateList -Unformatted  | Where-Object{$_.Name -eq $Name}
             if ($settings -and ("SearchDirs" -in $settings.PSobject.Properties.Name)){
                 $settings | Select-Object -ExpandProperty "SearchDirs" | ForEach-Object {
                     $value = $value + (Get-VirtualEnvFile -SearchDirs ("\" + $_) -Unformatted) + ";" 

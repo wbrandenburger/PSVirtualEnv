@@ -19,7 +19,7 @@ function Edit-VirtualEnvFile {
 
     .PARAMETER SearchDirs
 
-    .PARAMETER Settings
+    .PARAMETER Template
 
     .EXAMPLE
         PS C:\> Edit-VirtualEnvFile
@@ -29,7 +29,7 @@ function Edit-VirtualEnvFile {
         Open the content of module's configuration file in predefined editor.
 
     .EXAMPLE
-        PS C:\> Edit-VirtualEnvFile -Settings
+        PS C:\> Edit-VirtualEnvFile -Template
 
         -----------
         Description
@@ -80,8 +80,8 @@ function Edit-VirtualEnvFile {
         [Parameter(ParameterSetName="SearchDirs", Position=1,  HelpMessage="Relative path to existing file with additional search directories in predefined folder.")]
         [System.String] $SearchDirs,
 
-        [Parameter(ParameterSetName="Settings", Position=1, HelpMessage="Opens the file with the settings of each virtual environment..")]
-        [Switch] $Settings
+        [Parameter(ParameterSetName="Template", Position=1, HelpMessage="how all templates for special virtual environments.")]
+        [Switch] $Template
     )
 
     Process {
@@ -109,8 +109,8 @@ function Edit-VirtualEnvFile {
                 break;
             }
 
-            "Settings" {
-                $file_path = $PSVirtualEnv.VenvSettings
+            "Template" {
+                $file_path = $PSVirtualEnv.TemplateFile
                 break;
             }
         }

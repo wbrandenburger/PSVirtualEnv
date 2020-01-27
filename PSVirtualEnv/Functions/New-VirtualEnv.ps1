@@ -132,7 +132,7 @@ function New-VirtualEnv {
             }
         }
         else{
-            $settings = Get-VirtualEnvFile -Settings -Unformatted  | Where-Object{$_.Name -eq $Name}
+            $settings = Get-VirtualEnvFile -Template $Name -Unformatted
             if ($settings -and ("Requirements" -in $settings.PSobject.Properties.Name)){
 
                 $requirement_file = New-TemporaryFile -Extension ".txt"

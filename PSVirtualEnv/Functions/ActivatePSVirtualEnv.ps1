@@ -124,7 +124,7 @@ function ValidateVirtualEnvTemplates {
 
     Process{
 
-        return (Get-VirtualEnvFile -Settings -Unformatted | Select-Object -ExpandProperty Name)
+        return ( Get-Content -Path $PSVirtualEnv.TemplateFile | ConvertFrom-Json | ForEach-Object { $_.Name})
 
     }
 }
@@ -169,7 +169,7 @@ function ValidateVirtualEnvFiles {
             }
         }
 
-        if (-not $Folder) {1
+        if (-not $Folder) {
             $file_list = (Get-ChildItem -Path $file_path -Include $file_include -Recurse).FullName
             
             $result = $file_list | ForEach-Object {

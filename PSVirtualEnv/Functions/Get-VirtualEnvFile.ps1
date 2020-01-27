@@ -14,12 +14,20 @@ function Get-VirtualEnvFile {
         Get the content of an existing requirement, script file or (default setting) the module's configuration file in predefined editor. All available requirement and script files can be accessed by autocompletion.
     
     .PARAMETER Requirement
+    
+    .PARAMETER RequirementList
 
     .PARAMETER Script
 
+    .PARAMETER ScriptList
+
     .PARAMETER SearchDirs
 
-    .PARAMETER Settings
+    .PARAMETER SearchDirsList
+
+    .PARAMETER Template
+
+    .PARAMETER TemplateList
 
     .EXAMPLE
         PS C:\> Get-VirtualEnvFile
@@ -41,16 +49,15 @@ function Get-VirtualEnvFile {
         Get the content of module's configuration file in predefined editor.
 
     .EXAMPLE
-        PS C:\> Get-VirtualEnvFile -Settings
+        PS C:\> Get-VirtualEnvFile -Template
 
         Name    Requirement                       SearchDir
         ----    -----------                       ---------
         hello-1 {shared\hello-1-requirements.txt} {cuda-v10.0-path.txt}
-        hello-2 {shared\hello-2-requirements.txt} {cuda-v10.1-path.txt}
 
         -----------
         Description
-        Get the content of module's settings file in predefined editor.
+        "Show a template for special virtual environments.
 
     .EXAMPLE
         PS C:\>Get-VirtualEnvFile -Requirement \general\venv-requirements.txt
@@ -90,23 +97,38 @@ function Get-VirtualEnvFile {
         [ValidateSet([ValidateVenvRequirements])]
         [Parameter(ParameterSetName="Requirement", Position=1,  HelpMessage="Relative path to a requirements file in predefined requirements folder.")]
         [System.String] $Requirement,
-
+        
+        [Parameter(ParameterSetName="Requirement", Position=1,  HelpMessage="Show all requirements files provided in predefined requirements folder.")]
+        [Switch] $RequirementList,
+        
         [ValidateSet([ValidateVenvScripts])]
         [Parameter(ParameterSetName="Script", Position=1, HelpMessage="Relative path to a script file in predefined scripts folder.")]
         [System.String] $Script,
+
+        [Parameter(ParameterSetName="Script", Position=1,  HelpMessage="Show all script files provided in predefined script folder.")]
+        [Switch] $ScriptList,
 
         [ValidateSet([ValidateVenvSearchDirs])]
         [Parameter(ParameterSetName="SearchDirs", Position=1,  HelpMessage="Relative path to existing file with additional search directories in predefined folder.")]
         [System.String] $SearchDirs,
 
-        [Parameter(ParameterSetName="Settings", Position=1, HelpMessage="Opens the file with the settings of each virtual environment..")]
-        [Switch] $Settings,
+        [Parameter(ParameterSetName="SearchDirs", Position=1,  HelpMessage="Show all existing files with additional search directories provided in predefined folder.")]
+        [Switch] $SearchDirsList,
+
+        [ValidateSet([ValidateVenvTemplates])]
+        [Parameter(ParameterSetName="Template", Position=1, HelpMessage="Show a template for special virtual environments.")]
+        [System.String] $Template,
+
+        [Parameter(ParameterSetName="Template", HelpMessage="Show all templates for special virtual environments.")]
+        [Switch] $TemplateList,
 
         [Parameter(ParameterSetName="Config")]
-        [Parameter(ParameterSetName="Settings")]
+        [Parameter(ParameterSetName="Template")]
         [Parameter(ParameterSetName="SearchDirs")]
         [Parameter(HelpMessage="Return information not as readable table with additional details.")]
         [Switch] $Unformatted
+
+        
     )
 
     Process {
@@ -131,36 +153,56 @@ function Get-VirtualEnvFile {
             }
 
             "Requirement" {
-                $file_path = Join-Path -Path $PSVirtualEnv.RequireDir -ChildPath $Requirement 
+                if ($RequirementList){
+                    $result = ValidateVirtualEnvFiles -Type "Requirement"
+                }
+                else {
+                    $file_path = Join-Path -Path $PSVirtualEnv.RequireDir -ChildPath $Requirement 
 
-                $result = Get-Content $file_path
+                    $result = Get-Content $file_path
+                }
                 break;
             }
 
             "Script" {
-                $file_path = Join-Path -Path $PSVirtualEnv.ScriptDir -ChildPath $Script
+                if ($ScriptList){
+                    $result = ValidateVirtualEnvFiles -Type "Script"
+                }
+                else {
+                    $file_path = Join-Path -Path $PSVirtualEnv.ScriptDir -ChildPath $Script
 
-                $result = Get-Content $file_path
+                    $result = Get-Content $file_path
+                }
                 break;
             }
 
             "SearchDirs" {
-                $file_path = Join-Path -Path $PSVirtualEnv.SearchDir -ChildPath $SearchDirs
+                if ($SearchDirsList){
+                    $result = ValidateVirtualEnvSearchDirs
+                }
+                else {
+                    $file_path = Join-Path -Path $PSVirtualEnv.SearchDir -ChildPath $SearchDirs
 
-                $result = Get-Content $file_path
+                    $result = Get-Content $file_path
 
-                if ($Unformatted) {
-                    $result = $result -join ";"
+                    if ($Unformatted) {
+                        $result = $result -join ";"
+                    }
                 }
 
                 break;
             }
 
-            "Settings" {
-                $file_path = $PSVirtualEnv.VenvSettings
+            "Template" {
+                $templates = Get-Content -Path $PSVirtualEnv.TemplateFile | ConvertFrom-Json
 
-                $result = Get-Content $file_path | ConvertFrom-Json
-                
+                if ($TemplateList){
+                    $result = $templates
+                }
+                else {
+                    $result = $templates | Where-Object {$_.Name -match $Template}
+                }
+
                 if (-not $Unformatted){
                     $result = $result | Format-Table
                 }

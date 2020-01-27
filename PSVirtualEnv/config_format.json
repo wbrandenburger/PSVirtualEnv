@@ -48,8 +48,8 @@
         "Folder" :  true
     },
     {
-        "Id" : "VenvSettings",
-        "Field" : "venv-setting-file", 
+        "Id" : "TemplateFile",
+        "Field" : "venv-template-file", 
         "Section" : "user", 
         "Default" : "%(LocalDir)s\\setting.json",
         "Required" : true
