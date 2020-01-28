@@ -149,7 +149,7 @@ function Get-VirtualEnvFile {
                     $result = $result | Format-Table
                 }
 
-                break;
+                break
             }
 
             "Requirement" {
@@ -161,7 +161,7 @@ function Get-VirtualEnvFile {
 
                     $result = Get-Content $file_path
                 }
-                break;
+                break
             }
 
             "Script" {
@@ -173,7 +173,7 @@ function Get-VirtualEnvFile {
 
                     $result = Get-Content $file_path
                 }
-                break;
+                break
             }
 
             "SearchDirs" {
@@ -190,24 +190,21 @@ function Get-VirtualEnvFile {
                     }
                 }
 
-                break;
+                break
             }
 
             "Template" {
-                $templates = Get-Content -Path $PSVirtualEnv.TemplateFile | ConvertFrom-Json
+                $result= Get-Content -Path $PSVirtualEnv.TemplateFile | ConvertFrom-Json
 
-                if ($TemplateList){
-                    $result = $templates
-                }
-                else {
-                    $result = $templates | Where-Object {$_.Name -match $Template}
+                if (-not $TemplateList){
+                    $result = $result | Where-Object {$_.Name -eq $Template}
                 }
 
                 if (-not $Unformatted){
                     $result = $result | Format-Table
                 }
 
-                break;
+                break
             }
         }
 

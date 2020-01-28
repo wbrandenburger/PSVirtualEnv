@@ -91,27 +91,27 @@ function Edit-VirtualEnvFile {
         switch ($PSCmdlet.ParameterSetName) {
             "Config" {
                 $file_path = $Module.Config
-                break;
+                break
             }
 
             "Requirement" {
                 $file_path = Join-Path -Path $PSVirtualEnv.RequireDir -ChildPath $Requirement 
-                break;
+                break
             }
 
             "Script" {
                 $file_path = Join-Path -Path $PSVirtualEnv.ScriptDir -ChildPath $Script
-                break;
+                break
             }
 
             "SearchDirs" {
                 $file_path = Join-Path -Path $PSVirtualEnv.SearchDir -ChildPath $SearchDirs
-                break;
+                break
             }
 
             "Template" {
                 $file_path = $PSVirtualEnv.TemplateFile
-                break;
+                break
             }
         }
 
