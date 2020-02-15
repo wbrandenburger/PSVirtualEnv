@@ -62,7 +62,7 @@ function Stop-VirtualEnv {
 
         # deactivation of a running virtual environment
         Restore-VirtualEnv
-        if ($old_venv -like "Python*") {
+        if (-not ($old_venv -like "Python*")) {
             Set-VirtualEnvSystem -PrivateName $old_venv -Restore
         }
 
