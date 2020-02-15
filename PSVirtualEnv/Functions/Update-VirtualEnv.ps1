@@ -38,7 +38,7 @@ function Update-VirtualEnv {
 
     Param(
         [ValidateSet([ValidateVirtualEnv])]
-        [Parameter(Position=0, ValueFromPipeline, Mandatory, HelpMessage="Name of the virtual environment.")]
+        [Parameter(Position=0, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
         [System.String] $Name,
 
         [ValidateSet([ValidateVenvRequirements])]
@@ -63,19 +63,11 @@ function Update-VirtualEnv {
 
     Process {
 
-       # check valide virtual environment 
-       if ($Name)  {
-            if (-not (Test-VirtualEnv -Name $Name)){
-                Write-FormattedError -Message "The virtual environment '$($Name)' does not exist." -Module $PSVirtualEnv.Name -Space -Silent:$Silent -Space 
-                Get-VirtualEnv
-                return
-            }
-
+        if ($Name)  {
             $virtual_env = @{ Name = $Name }
         }
-
-        # get all existing virtual environments if 'Name' is not set
-        if ($All) {
+        else {
+            # get all existing virtual environments if 'Name' is not set
             $virtual_env = Get-VirtualEnv
         }
 

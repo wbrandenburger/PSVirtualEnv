@@ -116,17 +116,8 @@ function Install-VirtualEnv {
     
     Process {
 
-        # check valide virtual environment 
-        if ($Name)  {
-            if (-not (Test-VirtualEnv -Name $Name)){
-                Write-FormattedError -Message "The virtual environment '$($Name)' does not exist." -Module $PSVirtualEnv.Name -Space -Silent:$Silent -Space 
-                Get-VirtualEnv
-                return
-            }
+        $virtual_env = @{ Name = $Name }
 
-            $virtual_env = @{ Name = $Name }
-        }
-        
         switch ($PSCmdlet.ParameterSetName) {
             "Package" { 
                 # create a valide requirement file for a specified package

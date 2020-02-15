@@ -39,14 +39,14 @@ function Set-VirtualEnvSystem {
     Param(
 
         [ValidateSet([ValidateVenvSearchDirs])]
-        [Parameter(ParameterSetName="Path", Position=1, Mandatory, HelpMessage="Relative path to existing file with additional search directories.")]
+        [Parameter(ParameterSetName="Path", Position=0, Mandatory, HelpMessage="Relative path to existing file with additional search directories.")]
         [System.String] $Path,
 
         [ValidateSet([ValidateVirtualEnv])]     
-        [Parameter(ParameterSetName="Public", Position=1, Mandatory, HelpMessage="Name of the virtual environment.")]
+        [Parameter(ParameterSetName="Public", Position=0, Mandatory, HelpMessage="Name of the virtual environment.")]
         [System.String] $Name,
   
-        [Parameter(ParameterSetName="Private", Position=1, Mandatory, HelpMessage="Name of the virtual environment.")]
+        [Parameter(ParameterSetName="Private", Position=0, Mandatory, HelpMessage="Name of the virtual environment.")]
         [System.String] $PrivateName,
 
         [Parameter(HelpMessage="Remove defined systems' environment variables.")]

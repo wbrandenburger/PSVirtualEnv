@@ -76,36 +76,34 @@ function Get-VirtualEnv {
     .NOTES
     #>
 
-    [CmdletBinding(PositionalBinding, DefaultParameterSetName="All")]
+    [CmdletBinding(PositionalBinding)]
 
     [OutputType([System.Object])]
 
     Param (
         [ValidateSet([ValidateVirtualEnv])]
-        [Parameter(ParameterSetName="Single", Position=0, Mandatory, ValueFromPipeline, HelpMessage="Information about all packages installed in the specified virtual environment will be returned.")]
+        [Parameter(Position=0, ValueFromPipeline, HelpMessage="Information about all packages installed in the specified virtual environment will be returned.")]
         [System.String] $Name,
 
-        [Parameter(ParameterSetName="Single", HelpMessage="Return information about required packages.")]
+        [Parameter(HelpMessage="Return information about required packages.")]
         [Switch] $Full,
 
-        [Parameter(ParameterSetName="Single", HelpMessage="Return information not as readable table with additional details.")]
+        [Parameter(HelpMessage="Return information not as readable table with additional details.")]
         [Switch] $Unformatted
     )
 
     Process {
 
-        switch ($PSCmdlet.ParameterSetName) {
-            "Single" {
-                return Get-VirtualEnvPackage -Name $Name -Full:$Full -Unformatted:$Unformatted
+        if ($Name) {
+            return Get-VirtualEnvPackage -Name $Name -Full:$Full -Unformatted:$Unformatted
+        }
+        else{
+            # get all virtual environment directories in predefined directory as well as the local directories and requirement files
+            $virtual_env = Get-VirtualEnvWorkDir
+            if (-not $virtual_env) { 
+                Write-FormattedError -Message "In predefined directory do not exist any virtual environments" -Module $PSVirtualEnv.Name -Space 
             }
-            "All" {
-                # get all virtual environment directories in predefined directory as well as the local directories and requirement files
-                $virtual_env = Get-VirtualEnvWorkDir
-                if (-not $virtual_env) { 
-                    Write-FormattedError -Message "In predefined directory do not exist any virtual environments" -Module $PSVirtualEnv.Name -Space 
-                }
-                return $virtual_env
-            }
+            return $virtual_env
         }
     }
 }

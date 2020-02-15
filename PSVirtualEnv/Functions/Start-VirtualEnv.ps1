@@ -66,12 +66,6 @@ function Start-VirtualEnv {
             $Name = $PrivateName
         }
 
-        # check whether the specified virtual environment exists
-        if (-not $(Test-VirtualEnv -Name $Name -Verbose)){
-            Get-VirtualEnv
-            return $Null
-        }
-
         # deactivation of a running virtual environment
         Restore-VirtualEnv
 
