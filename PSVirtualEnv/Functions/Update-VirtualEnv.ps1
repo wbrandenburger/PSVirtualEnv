@@ -38,14 +38,14 @@ function Update-VirtualEnv {
 
     Param(
         [ValidateSet([ValidateVirtualEnv])]
-        [Parameter(Position=1, ValueFromPipeline, Mandatory, HelpMessage="Name of the virtual environment.")]
+        [Parameter(Position=0, ValueFromPipeline, Mandatory, HelpMessage="Name of the virtual environment.")]
         [System.String] $Name,
 
         [ValidateSet([ValidateVenvRequirements])]
-        [Parameter(ParameterSetName="Requirement", Position=2, HelpMessage="Relative path to a requirements file in predefined requirements folder.")]
+        [Parameter(ParameterSetName="Requirement", Position=1, HelpMessage="Relative path to a requirements file in predefined requirements folder.")]
         [System.String] $Requirement,
 
-        [Parameter(ParameterSetName="Package", Position=2, Mandatory, HelpMessage="Specified packages will be upgraded.")]
+        [Parameter(ParameterSetName="Package", Position=1, Mandatory, HelpMessage="Specified packages will be upgraded.")]
         [System.String[]] $Package,
 
         [Parameter(ParameterSetName="Pip", HelpMessage="If switch 'silent' is true package pip will be upgraded in specified virtual environment.")]

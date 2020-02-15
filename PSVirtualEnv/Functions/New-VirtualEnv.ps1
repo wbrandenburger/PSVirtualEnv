@@ -91,18 +91,18 @@ function New-VirtualEnv {
     [OutputType([Void])]
 
     Param(
-        [Parameter(ParameterSetName="Default", Position=1, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment to be created.")]
+        [Parameter(ParameterSetName="Default", Position=0, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment to be created.")]
         [System.String] $Name,
 
         [ValidateSet([ValidateVenvTemplates])]
-        [Parameter(ParameterSetName="Template", Position=1,HelpMessage="Predefined template linked with requirement files.")]
+        [Parameter(ParameterSetName="Template", Position=0, Mandatory, HelpMessage="Predefined template linked with requirement files.")]
         [System.String] $Template,
 
         [Parameter(Position=2, HelpMessage="Relative path to a folder or executable of a python distribution.")]
         [System.String] $Path,
 
         [ValidateSet([ValidateVenvRequirements])]
-        [Parameter(ParameterSetName="Default", HelpMessage="Path to a requirement file, or name of a virtual environment.")]
+        [Parameter(ParameterSetName="Default", Position=1, HelpMessage="Path to a requirement file, or name of a virtual environment.")]
         [System.String] $Requirement,
 
         # [ValidateSet([ValidateVenvLocalDirs])]

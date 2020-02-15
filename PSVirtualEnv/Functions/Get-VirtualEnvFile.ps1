@@ -95,28 +95,28 @@ function Get-VirtualEnvFile {
 
     Param(
         [ValidateSet([ValidateVenvRequirements])]
-        [Parameter(ParameterSetName="Requirement", Position=1,  HelpMessage="Relative path to a requirements file in predefined requirements folder.")]
+        [Parameter(ParameterSetName="Requirement", Position=0,  HelpMessage="Relative path to a requirements file in predefined requirements folder.")]
         [System.String] $Requirement,
         
-        [Parameter(ParameterSetName="Requirement", Position=1,  HelpMessage="Show all requirements files provided in predefined requirements folder.")]
+        [Parameter(ParameterSetName="Requirement", HelpMessage="Show all requirements files provided in predefined requirements folder.")]
         [Switch] $RequirementList,
         
         [ValidateSet([ValidateVenvScripts])]
-        [Parameter(ParameterSetName="Script", Position=1, HelpMessage="Relative path to a script file in predefined scripts folder.")]
+        [Parameter(ParameterSetName="Script", Position=0, HelpMessage="Relative path to a script file in predefined scripts folder.")]
         [System.String] $Script,
 
-        [Parameter(ParameterSetName="Script", Position=1,  HelpMessage="Show all script files provided in predefined script folder.")]
+        [Parameter(ParameterSetName="Script", HelpMessage="Show all script files provided in predefined script folder.")]
         [Switch] $ScriptList,
 
         [ValidateSet([ValidateVenvSearchDirs])]
-        [Parameter(ParameterSetName="SearchDirs", Position=1,  HelpMessage="Relative path to existing file with additional search directories in predefined folder.")]
+        [Parameter(ParameterSetName="SearchDirs", Position=0,  HelpMessage="Relative path to existing file with additional search directories in predefined folder.")]
         [System.String] $SearchDirs,
 
-        [Parameter(ParameterSetName="SearchDirs", Position=1,  HelpMessage="Show all existing files with additional search directories provided in predefined folder.")]
+        [Parameter(ParameterSetName="SearchDirs",  HelpMessage="Show all existing files with additional search directories provided in predefined folder.")]
         [Switch] $SearchDirsList,
 
         [ValidateSet([ValidateVenvTemplates])]
-        [Parameter(ParameterSetName="Template", Position=1, HelpMessage="Show a template for special virtual environments.")]
+        [Parameter(ParameterSetName="Template", Position=0, HelpMessage="Show a template for special virtual environments.")]
         [System.String] $Template,
 
         [Parameter(ParameterSetName="Template", HelpMessage="Show all templates for special virtual environments.")]

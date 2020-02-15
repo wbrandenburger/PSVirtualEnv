@@ -78,23 +78,23 @@ function New-VirtualEnvFile {
     Param(
         
         [ValidateSet([ValidateVenvRequirementsFolder])]
-        [Parameter(ParameterSetName="Requirement", Position=1, Mandatory, ValueFromPipeline, HelpMessage="Relative path to a requirements folder.")]
+        [Parameter(ParameterSetName="Requirement", Position=0, Mandatory, ValueFromPipeline, HelpMessage="Relative path to a requirements folder.")]
         [System.String] $Requirement,
 
         [ValidateSet([ValidateVenvScriptsFolder])]
-        [Parameter(ParameterSetName="Script", Position=1, Mandatory, ValueFromPipeline, HelpMessage="Relative path to a script files folder.")]
+        [Parameter(ParameterSetName="Script", Position=0, Mandatory, ValueFromPipeline, HelpMessage="Relative path to a script files folder.")]
         [System.String] $Script,
 
-        [Parameter(ParameterSetName="Requirement", Position=2, Mandatory, ValueFromPipeline, HelpMessage="Name of requirement file to be created.")]
-        [Parameter(ParameterSetName="Script", Position=2, Mandatory, ValueFromPipeline, HelpMessage="Name of requirement or script file to be created.")]
+        [Parameter(ParameterSetName="Requirement", Position=1, Mandatory, ValueFromPipeline, HelpMessage="Name of requirement file to be created.")]
+        [Parameter(ParameterSetName="Script", Position=1, Mandatory, ValueFromPipeline, HelpMessage="Name of requirement or script file to be created.")]
         [System.String] $Name,
 
         [ValidateSet(".py",".ps1")]
-        [Parameter(ParameterSetName="Script", Position=3, HelpMessage="Extension of python script file to be created.")]
+        [Parameter(ParameterSetName="Script", Position=2, HelpMessage="Extension of python script file to be created.")]
         [System.String] $Extension = ".py",
 
         [ValidateSet([ValidateVirtualEnv])]
-        [Parameter(ParameterSetName="VirtualEnv", Position=1, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
+        [Parameter(ParameterSetName="VirtualEnv", Position=0, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
         [System.String] $VirtualEnv="",
 
         [Parameter(ParameterSetName="VirtualEnv", HelpMessage="If switch 'All' is true, the requirement file for all existing virtual environments will be generated.")]

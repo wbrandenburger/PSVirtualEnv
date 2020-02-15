@@ -45,34 +45,32 @@ function New-VirtualEnvLocal {
     [OutputType([Void])]
 
     Param (
+
+        [CmdletBinding(PositionalBinding, DefaultParameterSetName="Single")]
+
         [ValidateSet([ValidateVirtualEnv])]
-        [Parameter(Position=1, ValueFromPipeline, HelpMessage="Name of the virtual environment to be changed.")]
+        [Parameter(ParameterSetName="Single", Position=0, ValueFromPipeline, HelpMessage="Name of the virtual environment to be changed.")]
         [System.String] $Name="",
 
-        [Parameter(HelpMessage="If switch 'All' is true, all existing virtual environments will be changed.")]
+        [Parameter(ParameterSetName="All", HelpMessage="If switch 'All' is true, all existing virtual environments will be changed.")]
         [Switch] $All
     )
     
     Process {
-        # check valide virtual environment 
-        if ($Name)  {
-            if (-not(Test-VirtualEnv -Name $Name)){
-                Write-FormattedError -Message "The virtual environment '$($Name)' does not exist." -Module $PSVirtualEnv.Name -Space
-                Get-VirtualEnv
 
-                return
+        switch ($PSCmdlet.ParameterSetName) {
+            "Single" {
+                $virtualEnv = @{ Name = $Name }
+                break
             }
-
-            $virtualEnv = @{ Name = $Name }
-        }
-
-        # get all existing virtual environments if 'Name' is not set
-        if ($All) {
-            $virtualEnv = Get-VirtualEnv
+            "All" {
+                # get all existing virtual environments if 'Name' is not set
+                $virtualEnv = Get-VirtualEnv
+                break
+            }
         }
 
         $virtualEnv | ForEach-Object {
-
 
             # get absolute path of requirement file and download directoy
             $requirementFile = Get-RequirementFile -Name $_.Name

@@ -50,10 +50,10 @@ function Start-VirtualEnv {
 
     Param(
         [ValidateSet([ValidateVirtualEnv])]     
-        [Parameter(ParameterSetname="Public", Position=1, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
+        [Parameter(ParameterSetname="Public", Position=0, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
         [System.String] $Name,
 
-        [Parameter(ParameterSetname="Private", Position=1, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
+        [Parameter(ParameterSetname="Private", Position=0, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
         [System.String] $PrivateName,
 
         [Parameter(HelpMessage="If switch 'silent' is true no output will written to host.")]

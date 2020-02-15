@@ -55,7 +55,7 @@ function Rename-VirtualEnvFile {
 
     Param(
         [ValidateSet([ValidateVenvRequirements])]
-        [Parameter(ParameterSetName="Requirement", Position=1,  HelpMessage="Relative path to a requirements file in predefined requirements folder.")]
+        [Parameter(ParameterSetName="Requirement", Position=0,  HelpMessage="Relative path to a requirements file in predefined requirements folder.")]
         [System.String] $Requirement,
 
         # [ValidateSet([ValidateVenvScripts])]
@@ -63,7 +63,7 @@ function Rename-VirtualEnvFile {
         # [System.String] $Script,
 
         [ValidateSet([ValidateVenvSearchDirs])]
-        [Parameter(ParameterSetName="SearchDirs", Position=1,  HelpMessage="Relative path to existing file with additional search directories in predefined folder.")]
+        [Parameter(ParameterSetName="SearchDirs", Position=0,  HelpMessage="Relative path to existing file with additional search directories in predefined folder.")]
         [System.String] $SearchDirs,
 
         [Parameter(Position=2, Mandatory,  HelpMessage="New file name for requirements or script file.")]

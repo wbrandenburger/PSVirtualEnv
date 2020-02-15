@@ -85,7 +85,7 @@ Function Set-Window {
         [Parameter(Mandatory=$False, ValueFromPipelineByPropertyName=$True, ParameterSetName="Name", HelpMessage="Name of the process to determine the window characteristics. (All processes if omitted).")]
         [String]$ProcessName="*",
 
-        [Parameter(Mandatory=$True, ValueFromPipeline=$False,       ParameterSetName="Id", HelpMessage="Id of the process to determine the window characteristics. ")]
+        [Parameter(Mandatory, ValueFromPipeline=$False,       ParameterSetName="Id", HelpMessage="Id of the process to determine the window characteristics. ")]
         [Int]$Id,
 
         [Parameter(HelpMessage="Set the position of the window in pixels from the left.")]

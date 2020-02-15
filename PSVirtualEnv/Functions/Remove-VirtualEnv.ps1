@@ -46,18 +46,12 @@ function Remove-VirtualEnv  {
 
     Param(
         [ValidateSet([ValidateVirtualEnv])]
-        [Parameter(Position=1, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
+        [Parameter(Position=0, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
         [System.String] $Name
     )
 
     Process{
-        
-        # check whether the specified virtual environment exists
-        if (-not $(Test-VirtualEnv -Name $Name -Verbose)){
-            Get-VirtualEnv
-            return
-        }
-
+    
         # deactivation of a running virtual environment
         Restore-VirtualEnv
 

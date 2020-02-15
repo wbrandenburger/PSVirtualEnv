@@ -96,18 +96,18 @@ function Install-VirtualEnv {
 
     Param (
         [ValidateSet([ValidateVirtualEnv])]
-        [Parameter(Position=1, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
-        [System.String] $Name="",
+        [Parameter(Position=0, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
+        [System.String] $Name,
 
-        [Parameter(ParameterSetName="Package", Position=2, Mandatory, HelpMessage="Specified packages will be installed.")]
+        [Parameter(ParameterSetName="Package", Position=1, Mandatory, HelpMessage="Specified packages will be installed.")]
         [System.String[]] $Package,
 
         [ValidateSet([ValidateVenvRequirements])]
-        [Parameter(ParameterSetName="Requirement", Position=2, HelpMessage="Relative path to a requirements file in predefined requirements folder.")]
+        [Parameter(ParameterSetName="Requirement", Position=1, HelpMessage="Relative path to a requirements file in predefined requirements folder.")]
         [System.String] $Requirement,
 
         [ValidateSet([ValidateVenvLocalDirs])]
-        [Parameter(ParameterSetName="Offline", Position=2, HelpMessage="Path to a folder with local packages.")]
+        [Parameter(ParameterSetName="Offline", Position=1, HelpMessage="Path to a folder with local packages.")]
         [System.String] $Offline="",
 
         [Parameter(HelpMessage="If switch 'silent' is true no output will written to host.")]

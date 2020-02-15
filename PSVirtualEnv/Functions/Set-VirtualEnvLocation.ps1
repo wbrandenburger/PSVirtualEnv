@@ -55,7 +55,7 @@ function Set-VirtualEnvLocation {
 
     Param(
         [ValidateSet([ValidateVirtualEnv])]     
-        [Parameter(Position=1, ValueFromPipeline, HelpMessage="Name of virtual environment, which should be started.")]
+        [Parameter(Position=0, ValueFromPipeline, HelpMessage="Name of virtual environment, which should be started.")]
         [System.String] $Name
     )
 

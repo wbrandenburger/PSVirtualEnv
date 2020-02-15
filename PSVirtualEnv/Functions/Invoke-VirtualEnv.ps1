@@ -48,20 +48,20 @@ function Invoke-VirtualEnv {
     Param(
 
         [ValidateSet([ValidateVirtualEnv])]
-        [Parameter(Position=1, ValueFromPipeline, Mandatory, HelpMessage="Name of the virtual environment.")]
+        [Parameter(Position=0, Mandatory, ValueFromPipeline, HelpMessage="Name of the virtual environment.")]
         [System.String] $Name,
 
-        [Parameter(ParameterSetName="ArgumentList", Position=2, Mandatory,  HelpMessage="Specifies parameters or parameter values to use when this cmdlet starts the process. If parameters or parameter values contain a space, they need surrounded with escaped double quotes.")]
+        [Parameter(ParameterSetName="ArgumentList", Position=1, Mandatory,  HelpMessage="Specifies parameters or parameter values to use when this cmdlet starts the process. If parameters or parameter values contain a space, they need surrounded with escaped double quotes.")]
         [System.String[]] $ArgumentList,
 
         [ValidateSet([ValidateVenvScripts])]
-        [Parameter(ParameterSetName="Script", Position=2, ValueFromPipeline, HelpMessage="Relative path to a script file in predefined scripts folder.")]
+        [Parameter(ParameterSetName="Script", Position=1, Mandatory, ValueFromPipeline, HelpMessage="Relative path to a script file in predefined scripts folder.")]
         [System.String] $Script,
 
-        [Parameter(ParameterSetName="Script", Position=3, ValueFromPipeline, HelpMessage="Specifies parameters or parameter values to use when this cmdlet starts the process. If parameters or parameter values contain a space, they need surrounded with escaped double quotes.")]
+        [Parameter(ParameterSetName="Script", Position=2, ValueFromPipeline, HelpMessage="Specifies parameters or parameter values to use when this cmdlet starts the process. If parameters or parameter values contain a space, they need surrounded with escaped double quotes.")]
         [System.String] $ScriptArgumentList,
 
-        [Parameter(ParameterSetName="ScriptBlock", Position=2, HelpMessage="Specifies the commands to run. Enclose the commands in braces ( { } ) to create a script block.")]
+        [Parameter(ParameterSetName="ScriptBlock", Position=1, Mandatory, HelpMessage="Specifies the commands to run. Enclose the commands in braces ( { } ) to create a script block.")]
         [ScriptBlock] $ScriptBlock,
 
         [Parameter(HelpMessage="If switch 'silent' is true no output will written to host.")]

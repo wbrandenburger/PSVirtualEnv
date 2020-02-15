@@ -44,15 +44,15 @@ function Remove-VirtualEnvFile {
 
     Param(
         [ValidateSet([ValidateVenvRequirements])]
-        [Parameter(ParameterSetName="Requirement", Position=1, ValueFromPipeline, HelpMessage="Relative path to a requirements file in predefined requirements folder.")]
+        [Parameter(ParameterSetName="Requirement", Position=0, ValueFromPipeline, HelpMessage="Relative path to a requirements file in predefined requirements folder.")]
         [System.String] $Requirement,
 
         [ValidateSet([ValidateVenvScripts])]
-        [Parameter(ParameterSetName="Script", Position=1, ValueFromPipeline, HelpMessage="Relative path to a script file in predefined scripts folder.")]
+        [Parameter(ParameterSetName="Script", Position=0, ValueFromPipeline, HelpMessage="Relative path to a script file in predefined scripts folder.")]
         [System.String] $Script,
 
         [ValidateSet([ValidateVenvTemplates])]
-        [Parameter(ParameterSetName="Template", Position=1, HelpMessage="Show a template for special virtual environments.")]
+        [Parameter(ParameterSetName="Template", Position=0, HelpMessage="Show a template for special virtual environments.")]
         [System.String] $Template
     )
 
