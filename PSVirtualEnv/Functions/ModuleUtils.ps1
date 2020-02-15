@@ -40,13 +40,12 @@ function Set-VirtualEnv {
 
     # start virtual environment session
     if ($Name) {
-        if ($Name -eq "Python")
-        {
+        if ($Name -eq "Python"){   
             $virtual_env = $python_home
             $path_new = "$($python_home);$($python_home)\Scripts;" + $env:PATH
         }
         else{
-            $virtual_env  = Get-VirtualEnvPath -Name $Name
+            $virtual_env = Get-VirtualEnvPath -Name $Name
             $path_new = "$(Get-VirtualEnvPath -Name $Name)\Scripts;" + $env:PATH
         }
 
