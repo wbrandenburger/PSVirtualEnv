@@ -64,6 +64,22 @@ Class ValidateVenvScripts: IValidateSetValuesGenerator {
 
 #   validation --------------------------------------------------------------
 # ---------------------------------------------------------------------------
+Class ValidateVenvLocal: IValidateSetValuesGenerator {
+    [String[]] GetValidValues() {
+        return [String[]] (ValidateVirtualEnvFiles -Type "Offline")
+    }
+}
+
+#   validation --------------------------------------------------------------
+# ---------------------------------------------------------------------------
+Class ValidateVenvLocalFolder: IValidateSetValuesGenerator {
+    [String[]] GetValidValues() {
+        return [String[]] (ValidateVirtualEnvFiles -Type "Offline" -Folder)
+    }
+}
+
+#   validation --------------------------------------------------------------
+# ---------------------------------------------------------------------------
 Class ValidateVenvScriptsFolder: IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
         return [String[]] (ValidateVirtualEnvFiles -Type "Script" -Folder)

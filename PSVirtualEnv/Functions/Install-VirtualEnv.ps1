@@ -106,7 +106,7 @@ function Install-VirtualEnv {
         [Parameter(ParameterSetName="Requirement", Position=1, HelpMessage="Relative path to a requirements file in predefined requirements folder.")]
         [System.String] $Requirement,
 
-        [ValidateSet([ValidateVenvLocalDirs])]
+        [ValidateSet([ValidateVenvLocal])]
         [Parameter(ParameterSetName="Offline", Position=1, HelpMessage="Path to a folder with local packages.")]
         [System.String] $Offline="",
 
@@ -139,20 +139,8 @@ function Install-VirtualEnv {
             "Offline" {
                 $local_path = Join-Path -Path $PSVirtualEnv.LocalDir -ChildPath $Offline
 
-                if (-not $(Test-Path -Path $local_path)){
-                    Write-FormattedError -Message "File $($local_path) does not exist. Abort operation." -Module $PSVirtualEnv.Name
-                    return
-                }
-    
-                $packages = Get-ChildItem -Path $local_path  
-    
-                $packages_bin = $packages | Where-Object {-not ($_.Name -match ".zip")} |  Select-Object -ExpandProperty FullName
-                $packages_rep = $packages | Where-Object {$_.Name -match ".zip"} |  Select-Object -ExpandProperty FullName
-    
-                $packages =  $packages_bin + $packages_rep
-    
                 $requirement_file = New-TemporaryFile -Extension ".txt"
-                Out-File -FilePath $requirement_file -InputObject $packages                
+                Out-File -FilePath $requirement_file -InputObject $local_path         
                 break
             }
         }

@@ -52,7 +52,7 @@ function Set-VirtualEnv {
         # set environment path and virtual environment environment variable
         [System.Environment]::SetEnvironmentVariable("PATH", $path_new, "process")
         [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.ProjectEnv, $virtual_env, "process")
-        [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.PythonHome, $virtual_env, "process")
+        [System.Environment]::SetEnvironmentVariable($PSVirtualEnv.PythonHome, $python_home, "process")
     }
 }
 

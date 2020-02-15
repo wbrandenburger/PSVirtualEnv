@@ -16,7 +16,6 @@
     @{ Name = "ls-venv-file";   Value = "Get-VirtualEnvFile"}
     @{ Name = "mk-venv";        Value = "New-VirtualEnv"}
     @{ Name = "mk-venv-file";   Value = "New-VirtualEnvFile"}
-    @{ Name = "mk-venv-local";  Value = "New-VirtualEnvLocal"}
     @{ Name = "rm-venv";        Value = "Remove-VirtualEnv"}
     @{ Name = "rm-venv-file";   Value = "Remove-VirtualEnvFile"}
     @{ Name = "sa-venv";        Value = "Start-VirtualEnv"}

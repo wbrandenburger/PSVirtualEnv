@@ -54,33 +54,6 @@ function ValidateVirtualEnvDirectories {
 
 #   function ----------------------------------------------------------------
 # ---------------------------------------------------------------------------
-function ValidateVirtualEnvLocalDirs {
-
-    <#
-    .DESCRIPTION
-        Return values for the use of validating existing local package folders.
-    
-    .OUTPUTS
-        System.String[]. Local package folder.
-    #>
-
-    [CmdletBinding(PositionalBinding)]
-    
-    [OutputType([System.String[]])]
-
-    Param()
-
-    Process{
-
-        $file_list = (Get-ChildItem -Path $PSVirtualEnv.LocalDir -Directory)
-        return ($file_list | ForEach-Object {
-            $_ -replace ($PSVirtualEnv.LocalDir -replace "\\", "\\")})
-    }
-}
-
-
-#   function ----------------------------------------------------------------
-# ---------------------------------------------------------------------------
 function ValidateVirtualEnvSearchDirs {
     <#
     .DESCRIPTION
@@ -147,7 +120,7 @@ function ValidateVirtualEnvFiles {
 
     Param(
 
-        [ValidateSet("Requirement", "Script")]
+        [ValidateSet("Requirement", "Script", "Offline")]
         [Parameter(Position=1, Mandatory)]
         [System.String] $Type, 
         
@@ -165,6 +138,11 @@ function ValidateVirtualEnvFiles {
             "Script" {
                 $file_path = $PSVirtualEnv.ScriptDir
                 $file_include = "*.py", "*.ps1"
+                break;
+            }
+            "Offline" {
+                $file_path = $PSVirtualEnv.LocalDir
+                $file_include = "*.whl"
                 break;
             }
         }
