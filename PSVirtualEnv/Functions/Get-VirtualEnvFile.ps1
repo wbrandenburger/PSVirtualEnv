@@ -94,6 +94,10 @@ function Get-VirtualEnvFile {
     [OutputType([System.String])]
 
     Param(
+
+        [Parameter(ParameterSetName="Log",  HelpMessage="Show pip's last log file.")]
+        [Switch] $Log,
+
         [ValidateSet([ValidateVenvRequirements])]
         [Parameter(ParameterSetName="Requirement", Position=0,  HelpMessage="Relative path to a requirements file in predefined requirements folder.")]
         [System.String] $Requirement,
@@ -148,7 +152,12 @@ function Get-VirtualEnvFile {
                 if (-not $Unformatted){
                     $result = $result | Format-Table
                 }
+                break
+            }
 
+            "Log" {
+                $file_path = $PSVirtualEnv.PipLogFile
+                $result =  Get-Content -FilePath $file_path
                 break
             }
 
@@ -189,7 +198,6 @@ function Get-VirtualEnvFile {
                         $result = $result -join ";"
                     }
                 }
-
                 break
             }
 
@@ -203,7 +211,6 @@ function Get-VirtualEnvFile {
                 if (-not $Unformatted){
                     $result = $result | Format-Table
                 }
-
                 break
             }
         }

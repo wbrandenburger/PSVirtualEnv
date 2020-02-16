@@ -146,11 +146,13 @@ function Update-VirtualEnvPip {
 
     Set-VirtualEnv -Name $Name
 
+    $options_cmd = "--cache-dir", "$($PSVirtualEnv.PipCache)", "--log", "$($PSVirtualEnv.PipLogFile)" 
+
     # install packages from a requirement file
     if ($Silent) {
-        python -m pip install --upgrade pip 2>&1> $Null
+        python -m pip install --upgrade pip $options_cmd 2>&1> $Null
     } else {
-        python -m pip install --upgrade pip 
+        python -m pip install --upgrade pip $options_cmd
     }
 
     Restore-VirtualEnv

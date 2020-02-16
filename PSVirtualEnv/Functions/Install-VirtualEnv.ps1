@@ -220,15 +220,17 @@ function Install-VirtualEnvPackage {
         $message = "reinstall"
     }
 
+    $options_cmd = "--cache-dir", "$($PSVirtualEnv.PipCache)", "--log", "$($PSVirtualEnv.PipLogFile)" 
+
     Write-FormattedProcess -Message "Try to $($message) packages from requirement file '$Requirement'." -Module $PSVirtualEnv.Name -Silent:$Silent
 
     Set-VirtualEnv -Name $Name
     
     # install packages from a requirement file
     if ($Silent) {
-        pip $install_cmd --requirement $Requirement $upgrade_cmd $dev_cmd 2>&1> $Null
+        pip $install_cmd --requirement $Requirement $upgrade_cmd $dev_cmd $options_cmd 2>&1> $Null
     } else {
-        pip $install_cmd --requirement $Requirement $upgrade_cmd $dev_cmd
+        pip $install_cmd --requirement $Requirement $upgrade_cmd $dev_cmd $options_cmd
     }
 
     Restore-VirtualEnv

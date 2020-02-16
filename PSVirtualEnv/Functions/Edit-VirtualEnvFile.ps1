@@ -68,6 +68,9 @@ function Edit-VirtualEnvFile {
     [OutputType([Void])]
 
     Param(
+        [Parameter(ParameterSetName="Log",  HelpMessage="Show pip's last log file.")]
+        [Switch] $Log,
+
         [ValidateSet([ValidateVenvRequirements])]
         [Parameter(ParameterSetName="Requirement", Position=1,  HelpMessage="Relative path to a requirements file in predefined requirements folder.")]
         [System.String] $Requirement,
@@ -91,6 +94,10 @@ function Edit-VirtualEnvFile {
         switch ($PSCmdlet.ParameterSetName) {
             "Config" {
                 $file_path = $Module.Config
+                break
+            }
+            "Log" {
+                $file_path = $PSVirtualEnv.PipLogFile
                 break
             }
 
